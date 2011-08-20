@@ -36,8 +36,17 @@ Player = (I) ->
     I.airborne = true
     I.velocity.scale$(I.launchBoost)
 
+  self.bind "draw", (canvas) ->
+    canvas.strokeColor("#000")
+
+    p = Point.fromAngle(I.heading).scale(10)
+    canvas.drawLine(-p.x, -p.y, p.x, p.y, 5)
+
   self.bind "update", ->
     waterLevel = 160
+
+    I.x += I.velocity.x
+    I.y += I.velocity.y
 
     headingChange = I.rotationVelocity
     headingChange *= 2 if I.airborne
@@ -46,6 +55,8 @@ Player = (I) ->
       I.heading -= headingChange
     if keydown.right
       I.heading += headingChange
+
+    I.heading = I.heading.constrainRotation()
 
     if I.y > MAX_DEPTH
       wipeout()
