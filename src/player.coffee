@@ -2,13 +2,11 @@ Player = (I) ->
   Object.reverseMerge I,
     airborne: true
     heading: Math.TAU / 4
-    height: 16
     sprite: "player"
     launchBoost: 1.5
     rotationVelocity: Math.TAU / 64
     waterSpeed: 5
     velocity: Point(0, 0)
-    width: 16
     zIndex: 5
 
   self = GameObject(I)
