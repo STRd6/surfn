@@ -1,11 +1,16 @@
 window.engine = Engine
-  backgroundColor: "blue"
+  backgroundColor: false
+  clear: true
   canvas: $("canvas").powerCanvas()
   zSort: true
 
 player = engine.add
   x: 20
   y: 20
+
+box = engine.add
+  x: -50
+  y: -50
 
 player.bind "update", ->
   if keydown.left
