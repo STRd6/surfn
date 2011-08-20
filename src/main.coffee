@@ -1,5 +1,5 @@
 window.engine = Engine
-  backgroundColor: "red orange"
+  backgroundColor: Color("burntorange")
   canvas: $("canvas").powerCanvas()
   zSort: true
 
@@ -24,19 +24,6 @@ water = engine.add
 
 water.bind "update", ->
   water.I.x = player.I.x - App.width/2
-
-player.bind "update", ->
-  if keydown.left
-    player.I.x -= 1
-
-  if keydown.right
-    player.I.x += 1
-
-  if keydown.up
-    player.I.y -= 1
-
-  if keydown.down
-    player.I.y += 1
 
 engine.bind "afterUpdate", ->
   engine.I.cameraTransform = Matrix.translation(App.width/2 - player.I.x, App.height/2 - player.I.y)
