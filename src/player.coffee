@@ -2,11 +2,13 @@ Player = (I) ->
   Object.reverseMerge I,
     airborne: true
     heading: Math.TAU / 4
+    height: 16
     sprite: "player"
     launchBoost: 1.5
     rotationVelocity: Math.TAU / 64
     waterSpeed: 5
     velocity: Point(0, 0)
+    width: 16
     zIndex: 5
 
   self = GameObject(I)
@@ -37,11 +39,17 @@ Player = (I) ->
     I.airborne = true
     I.velocity.scale$(I.launchBoost)
 
+  self.unbind "draw"
+
   self.bind "draw", (canvas) ->
     canvas.strokeColor("#000")
 
     p = Point.fromAngle(I.heading).scale(10)
     canvas.drawLine(-p.x, -p.y, p.x, p.y, 5)
+
+    if I.sprite
+      if I.sprite.draw?
+        I.sprite.draw(canvas, -I.width/2, -I.height/2)
 
   self.bind "update", ->
     waterLevel = 160
