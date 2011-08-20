@@ -3,6 +3,7 @@ Player = (I) ->
     airborne: true
     sprite: "player"
     launchBoost: 1.5
+    rotationVelocity: Math.TAU / 64
     waterSpeed: 5
     zIndex: 5
 
@@ -35,17 +36,15 @@ Player = (I) ->
     I.velocity.$scale(I.launchBoost)
 
   self.bind "update", ->
+    waterLevel = 160
+
+    headingChange = I.rotationVelocity
+    headingChange *= 2 if I.airborne
+
     if keydown.left
-      I.x -= 1
-
+      I.heading -= headingChange
     if keydown.right
-      I.x += 1
-
-    if keydown.up
-      I.y -= 1
-
-    if keydown.down
-      I.y += 1
+      I.heading += headingChange
 
     if I.y > MAX_DEPTH
       wipeout()
@@ -59,7 +58,7 @@ Player = (I) ->
 
       I.velocity = Point.fromAngle(I.heading).scale(speed)
     else
-      if !airborne
+      if !I.airborne
         launch()
 
       I.velocity.$add(GRAVITY)
