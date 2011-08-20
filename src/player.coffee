@@ -34,7 +34,7 @@ Player = (I) ->
 
   launch = () ->
     I.airborne = true
-    I.velocity.$scale(I.launchBoost)
+    I.velocity.scale$(I.launchBoost)
 
   self.bind "update", ->
     waterLevel = 160
@@ -62,7 +62,7 @@ Player = (I) ->
       if !I.airborne
         launch()
 
-      I.velocity.$add(GRAVITY)
+      I.velocity.add$(GRAVITY)
 
   return self
 
