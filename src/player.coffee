@@ -16,6 +16,16 @@ Player = (I) ->
   GRAVITY = Point(0, 0.25)
   MAX_DEPTH = App.height
 
+  sprites = [0, 4, 8, 12].map (n) ->
+    Sprite.loadByName("player_#{n}")
+
+  setSprite = ->
+    n = ((I.heading + Math.TAU/8) / (Math.TAU / 4)).floor().mod(4)
+
+    I.sprite = sprites[n]
+
+    console.log n
+
   wipeout = () ->
     I.x = 0
     I.y = 80
@@ -66,6 +76,8 @@ Player = (I) ->
       I.heading += headingChange
 
     I.heading = I.heading.constrainRotation()
+
+    setSprite()
 
     if I.y > MAX_DEPTH
       wipeout()
