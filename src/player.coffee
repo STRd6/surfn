@@ -5,6 +5,7 @@ Player = (I) ->
     launchBoost: 1.5
     rotationVelocity: Math.TAU / 64
     waterSpeed: 5
+    velocity: Point(0, 0)
     zIndex: 5
 
   self = GameObject(I)
