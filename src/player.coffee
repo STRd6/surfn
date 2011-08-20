@@ -20,11 +20,10 @@ Player = (I) ->
     Sprite.loadByName("player_#{n}")
 
   setSprite = ->
-    n = ((I.heading + Math.TAU/8) / (Math.TAU / 4)).floor().mod(4)
+    t = 4
+    n = (t * I.heading / Math.TAU).round().mod(t)
 
     I.sprite = sprites[n]
-
-    console.log n
 
   wipeout = () ->
     I.x = 0
