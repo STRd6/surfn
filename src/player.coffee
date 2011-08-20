@@ -1,6 +1,7 @@
 Player = (I) ->
   Object.reverseMerge I,
     airborne: true
+    heading: Math.TAU / 4
     sprite: "player"
     launchBoost: 1.5
     rotationVelocity: Math.TAU / 64
@@ -17,7 +18,7 @@ Player = (I) ->
     I.x = 0
     I.y = 80
     I.velocity = Point(0, 0)
-    I.heading = Math.PI / 2
+    I.heading = Math.TAU / 4
 
   land = () ->
     if I.velocity.x > 1.5
