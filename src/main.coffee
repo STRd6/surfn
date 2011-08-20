@@ -1,5 +1,5 @@
 window.engine = Engine
-  backgroundColor: "orange"
+  backgroundColor: "red orange"
   canvas: $("canvas").powerCanvas()
   zSort: true
 
