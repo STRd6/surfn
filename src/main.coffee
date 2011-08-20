@@ -1,6 +1,5 @@
 window.engine = Engine
-  backgroundColor: false
-  clear: true
+  backgroundColor: "orange"
   canvas: $("canvas").powerCanvas()
   zSort: true
 
@@ -18,6 +17,12 @@ player.bind "update", ->
 
   if keydown.right
     player.I.x += 1
+
+  if keydown.up
+    player.I.y -= 1
+
+  if keydown.down
+    player.I.y += 1
 
 engine.bind "afterUpdate", ->
   engine.I.cameraTransform = Matrix.translation(App.width/2 - player.I.x, App.height/2 - player.I.y)
