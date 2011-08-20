@@ -9,6 +9,7 @@ Player = (I) ->
   self = GameObject(I)
 
   GRAVITY = Point(0, 0.25)
+  MAX_DEPTH = App.height
 
   wipeout = () ->
     I.x = 0
@@ -46,7 +47,7 @@ Player = (I) ->
     if keydown.down
       I.y += 1
 
-    if I.y > CANVAS_HEIGHT
+    if I.y > MAX_DEPTH
       wipeout()
     else if I.y >= waterLevel
       if I.airborne
