@@ -16,12 +16,15 @@ Player = (I) ->
   GRAVITY = Point(0, 0.25)
   MAX_DEPTH = App.height
 
-  sprites = [0, 4, 8, 12].map (n) ->
-    Sprite.loadByName("player_#{n}")
+  sprites = []
+  angleSprites = 8
+  angleSprites.times (n) ->
+    t = n * 2
+    sprites.push Sprite.loadByName("player_#{t}")
 
   setSprite = ->
-    t = 4
-    n = (t * I.heading / Math.TAU).round().mod(t)
+    angleSprites
+    n = (angleSprites * I.heading / Math.TAU).round().mod(angleSprites)
 
     I.sprite = sprites[n]
 
@@ -54,7 +57,7 @@ Player = (I) ->
     canvas.strokeColor("#000")
 
     p = Point.fromAngle(I.heading).scale(10)
-    canvas.drawLine(-p.x, -p.y, p.x, p.y, 5)
+    # canvas.drawLine(-p.x, -p.y, p.x, p.y, 5)
 
     if I.sprite
       if I.sprite.draw?
