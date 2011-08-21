@@ -30,6 +30,8 @@ Player = (I) ->
   wipeout = (causeOfDeath) ->
     I.active = false
 
+    Sound.play("crash")
+
     engine.add 
       class: "GameOver"
       causeOfDeath: causeOfDeath
