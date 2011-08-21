@@ -55,6 +55,8 @@ Player = (I) ->
     I.airborne = true
     I.velocity.scale$(I.launchBoost)
 
+    Sound.play("splash")
+
   self.bind "drawDebug", (canvas) ->
     canvas.strokeColor("rgba(0, 255, 0, 0.75)")
 
