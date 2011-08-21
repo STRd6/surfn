@@ -58,12 +58,16 @@ clock = 0
 engine.bind "update", ->
   clock += 1
 
-  if clock % 30 == 0
-    if player = engine.find("Player").first()
+  if player = engine.find("Player").first()
+    if clock % 30 == 0
+        engine.add
+          class: "Rock"
+          x: player.I.x + 2 * App.width
+
+    if clock % 55 == 0
       engine.add
-        class: "Rock"
+        class: "Cloud"
         x: player.I.x + 2 * App.width
-        y: 160 + rand(160)
 
 restartGame = ->
   doRestart = ->
