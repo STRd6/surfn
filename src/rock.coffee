@@ -8,5 +8,12 @@ Rock = (I) ->
 
   self = Base(I)
 
+  self.bind "update", ->
+    destruction = engine.find(".destruction").first()
+
+    if destruction
+      if I.x < destruction.I.x - I.width
+        I.active = false
+
   self
 
