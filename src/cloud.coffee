@@ -3,7 +3,7 @@ Cloud = (I) ->
     sprite: "cloud"
     height: 32
     width: 128
-    y: -160 + rand(240)
+    y: -120 + rand(240)
     zIndex: 1
 
   self = Base(I)
