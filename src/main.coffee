@@ -107,5 +107,7 @@ engine.bind "draw", (canvas) ->
 engine.bind "restart", ->
   restartGame()
 
+Music.play "SurfN-2-Sur5"
+
 engine.start()
 
