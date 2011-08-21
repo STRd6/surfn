@@ -1,4 +1,4 @@
-engine = Engine
+window.engine = Engine
   backgroundColor: Color("burntorange")
   canvas: $("canvas").powerCanvas()
   zSort: true
@@ -23,13 +23,15 @@ water = engine.add
 
 destruction = engine.add
   color: "red"
+  destruction: true
   x: -240
   y: 0
   width: 10
   height: App.height
+  zIndex: 7
 
 destruction.bind "update", ->
-  destruction.I.x = 2
+  destruction.I.x += 2
 
 water.bind "update", ->
   water.I.x = player.I.x - App.width/2
@@ -40,10 +42,9 @@ engine.bind "update", ->
 
   if clock % 30 == 0
     engine.add
-      sprite: "rocks"
+      class: "Rock"
       x: destruction.I.x + 2 * App.width + 32
       y: 160 + rand(160)
-      zIndex: 6
 
 
 engine.bind "afterUpdate", ->
@@ -53,4 +54,5 @@ engine.bind "draw", (canvas) ->
   engine.find("Player, Rock").invoke("trigger", "drawDebug", canvas)
 
 engine.start()
+
 
