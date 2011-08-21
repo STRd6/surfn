@@ -6337,7 +6337,31 @@ Rock = function(I) {
     height: 32,
     radius: 16,
     width: 32,
+    y: 160 + rand(160),
     zIndex: 6
+  });
+  self = Base(I);
+  self.bind("update", function() {
+    var destruction;
+    destruction = engine.find(".destruction").first();
+    if (destruction) {
+      if (I.x < destruction.I.x - I.width) {
+        return I.active = false;
+      }
+    }
+  });
+  return self;
+};;
+;
+var Cloud;
+Cloud = function(I) {
+  var self;
+  Object.reverseMerge(I, {
+    sprite: "cloud",
+    height: 32,
+    width: 128,
+    y: -120 + rand(240),
+    zIndex: 1
   });
   self = Base(I);
   self.bind("update", function() {
@@ -6375,6 +6399,12 @@ setUpGame = function() {
     "class": "Rock",
     x: 60,
     y: 180
+  });
+  (4).times(function(n) {
+    return engine.add({
+      "class": "Cloud",
+      x: n * 128
+    });
   });
   water = engine.add({
     color: "blue",
@@ -6414,12 +6444,17 @@ clock = 0;
 engine.bind("update", function() {
   var player;
   clock += 1;
-  if (clock % 30 === 0) {
-    if (player = engine.find("Player").first()) {
-      return engine.add({
+  if (player = engine.find("Player").first()) {
+    if (clock % 30 === 0) {
+      engine.add({
         "class": "Rock",
-        x: player.I.x + 2 * App.width,
-        y: 160 + rand(160)
+        x: player.I.x + 2 * App.width
+      });
+    }
+    if (clock % 55 === 0) {
+      return engine.add({
+        "class": "Cloud",
+        x: player.I.x + 2 * App.width
       });
     }
   }
