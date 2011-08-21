@@ -3,7 +3,7 @@ Music = (->
     loop: "loop"
   .appendTo('body').get(0)
 
-  track.volume = 0.40
+  track.volume = 1
 
   play: (name) ->
     track.src = "#{BASE_URL}/sounds/#{name}.mp3"
