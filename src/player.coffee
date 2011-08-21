@@ -65,6 +65,8 @@ Player = (I) ->
     I.x += I.velocity.x
     I.y += I.velocity.y
 
+    I.waterSpeed = 5 + I.age / 200
+
     circle = self.circle()
     hitRock = false
     engine.find("Rock").each (rock) ->
