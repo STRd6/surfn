@@ -7,6 +7,8 @@ window.engine = Engine
 
 depthsSprites = [Sprite.loadByName("depths0"), Sprite.loadByName("depths1")]
 churnSprites = [Sprite.loadByName("churn")]
+waveSprites = ["wave", "wave1"].map (name) ->
+  Sprite.loadByName name
 
 setUpGame = ->
   player = engine.add
@@ -37,9 +39,10 @@ setUpGame = ->
     zIndex: 7
 
   destruction.bind "update", ->
-    destruction.I.x += 2
+    destruction.I.x += 2 + destruction.I.age / 175
 
   destruction.bind "draw", (canvas) ->
+    waveSprites.wrap((destruction.I.age / 8).floor()).fill(canvas, -App.width, 0, App.width + 16, App.height)
     churnSprites.wrap((destruction.I.age / 8).floor()).fill(canvas, 0, 0, 32, App.height)
 
   water.bind "update", ->
