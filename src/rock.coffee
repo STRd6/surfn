@@ -4,6 +4,7 @@ Rock = (I) ->
     height: 32
     radius: 16
     width: 32
+    y: 160 + rand(160)
     zIndex: 6
 
   self = Base(I)
