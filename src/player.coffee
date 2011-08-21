@@ -10,7 +10,9 @@ Player = (I) ->
     velocity: Point(0, 0)
     zIndex: 5
 
-  self = GameObject(I)
+  self = GameObject(I).extend
+    center: ->
+      Point(I.x, I.y)
 
   GRAVITY = Point(0, 0.25)
   MAX_DEPTH = App.height
@@ -65,10 +67,10 @@ Player = (I) ->
 
       canvas.fillCircle(x, y, I.radius, "rgba(255, 0, 255, 0.5)")
 
-    canvas.strokeColor("rgba(0, 255, 0, 0.5)")
+    canvas.strokeColor("rgba(0, 255, 0, 0.75)")
 
     p = Point.fromAngle(I.heading).scale(10)
-    canvas.drawLine(I.x - p.x, I.y - p.y, I.x + p.x, I.y + p.y, 5)
+    canvas.drawLine(I.x - p.x, I.y - p.y, I.x + p.x, I.y + p.y, 1)
 
   self.bind "update", ->
     waterLevel = 160
