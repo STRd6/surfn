@@ -3632,7 +3632,7 @@ Emitterable = function(I, self) {
   /**
   Called before the engine draws the game objects on the canvas.
   
-  The current camera transform <b>is</b> applied.
+  The current camera transform is applied.
   
   @name beforeDraw
   @methodOf Engine#
@@ -3641,10 +3641,19 @@ Emitterable = function(I, self) {
   /**
   Called after the engine draws on the canvas.
   
-  The current camera transform <b>is not</b> applied, you may
-  choose to apply it yourself using <code>I.cameraTransform</code>.
+  The current camera transform is applied.
   
   @name draw
+  @methodOf Engine#
+  @event
+  */
+  /**
+  Called after the engine draws.
+  
+  The current camera transform is not applied. This is great for
+  adding overlays.
+  
+  @name overlay
   @methodOf Engine#
   @event
   */
@@ -3703,9 +3712,10 @@ Emitterable = function(I, self) {
         } else {
           drawObjects = I.objects;
         }
-        return drawObjects.invoke("draw", canvas);
+        drawObjects.invoke("draw", canvas);
+        return self.trigger("draw", I.canvas);
       });
-      return self.trigger("draw", I.canvas);
+      return self.trigger("overlay", I.canvas);
     };
     step = function() {
       if (!I.paused || frameAdvance) {
@@ -6151,12 +6161,13 @@ Player = function(I) {
     heading: Math.TAU / 4,
     sprite: "player",
     launchBoost: 1.5,
+    radius: 8,
     rotationVelocity: Math.TAU / 64,
     waterSpeed: 5,
     velocity: Point(0, 0),
     zIndex: 5
   });
-  self = GameObject(I);
+  self = Base(I);
   GRAVITY = Point(0, 0.25);
   MAX_DEPTH = App.height;
   sprites = [];
@@ -6171,25 +6182,30 @@ Player = function(I) {
     n = (angleSprites * I.heading / Math.TAU).round().mod(angleSprites);
     return I.sprite = sprites[n];
   };
-  wipeout = function() {
-    I.x = 0;
-    I.y = 80;
-    I.velocity = Point(0, 0);
-    return I.heading = Math.TAU / 4;
+  wipeout = function(causeOfDeath) {
+    I.active = false;
+    return engine.add({
+      "class": "GameOver",
+      causeOfDeath: causeOfDeath,
+      distance: I.x,
+      time: I.age,
+      x: I.x,
+      y: I.y
+    });
   };
   land = function() {
     var _ref, _ref2, _ref3;
     if (I.velocity.x > 1.5) {
       if (!((0 <= (_ref = I.heading) && _ref <= Math.PI / 2))) {
-        wipeout();
+        wipeout("bad landing");
       }
     } else if (I.velocity.x < -1.5) {
       if (!((Math.PI / 2 <= (_ref2 = I.heading) && _ref2 <= Math.PI))) {
-        wipeout();
+        wipeout("bad landing");
       }
     } else {
-      if (!((Math.PI / 4 <= (_ref3 = I.heading) && _ref3 <= 3 * Math.PI / 4))) {
-        wipeout();
+      if (!((Math.PI / 5 <= (_ref3 = I.heading) && _ref3 <= 4 * Math.PI / 5))) {
+        wipeout("bad landing");
       }
     }
     return I.airborne = false;
@@ -6198,22 +6214,38 @@ Player = function(I) {
     I.airborne = true;
     return I.velocity.scale$(I.launchBoost);
   };
-  self.unbind("draw");
-  self.bind("draw", function(canvas) {
+  self.bind("drawDebug", function(canvas) {
     var p;
-    canvas.strokeColor("#000");
+    canvas.strokeColor("rgba(0, 255, 0, 0.75)");
     p = Point.fromAngle(I.heading).scale(10);
-    if (I.sprite) {
-      if (I.sprite.draw != null) {
-        return I.sprite.draw(canvas, -I.width / 2, -I.height / 2);
-      }
-    }
+    return canvas.drawLine(I.x - p.x, I.y - p.y, I.x + p.x, I.y + p.y, 1);
   });
   self.bind("update", function() {
-    var headingChange, speed, waterLevel;
-    waterLevel = 160;
+    var circle, headingChange, hitDestruction, hitRock, speed, waterLevel;
     I.x += I.velocity.x;
     I.y += I.velocity.y;
+    circle = self.circle();
+    hitRock = false;
+    engine.find("Rock").each(function(rock) {
+      if (Collision.circular(circle, rock.circle())) {
+        return hitRock = true;
+      }
+    });
+    if (hitRock) {
+      wipeout("a rock");
+      return;
+    }
+    hitDestruction = false;
+    engine.find(".destruction").each(function(destruction) {
+      if (I.x < destruction.I.x) {
+        return hitDestruction = true;
+      }
+    });
+    if (hitDestruction) {
+      wipeout("a rogue wave");
+      return;
+    }
+    waterLevel = 160;
     headingChange = I.rotationVelocity;
     if (I.airborne) {
       headingChange *= 2;
@@ -6227,7 +6259,7 @@ Player = function(I) {
     I.heading = I.heading.constrainRotation();
     setSprite();
     if (I.y > MAX_DEPTH) {
-      return wipeout();
+      return wipeout("the depths");
     } else if (I.y >= waterLevel) {
       if (I.airborne) {
         land();
@@ -6244,58 +6276,160 @@ Player = function(I) {
   });
   return self;
 };;
+var Base;
+Base = function(I) {
+  var self;
+  self = GameObject(I).extend({
+    center: function() {
+      return Point(I.x, I.y);
+    }
+  });
+  self.unbind("draw");
+  self.bind("draw", function(canvas) {
+    if (I.sprite) {
+      if (I.sprite.draw != null) {
+        return I.sprite.draw(canvas, -I.width / 2, -I.height / 2);
+      }
+    }
+  });
+  self.bind("drawDebug", function(canvas) {
+    var center, x, y;
+    if (I.radius) {
+      center = self.center();
+      x = center.x;
+      y = center.y;
+      return canvas.fillCircle(x, y, I.radius, "rgba(255, 0, 255, 0.5)");
+    }
+  });
+  return self;
+};;
+var Rock;
+Rock = function(I) {
+  var self;
+  Object.reverseMerge(I, {
+    sprite: "rocks",
+    height: 32,
+    radius: 16,
+    width: 32,
+    zIndex: 6
+  });
+  self = Base(I);
+  self.bind("update", function() {
+    var destruction;
+    destruction = engine.find(".destruction").first();
+    if (destruction) {
+      if (I.x < destruction.I.x - I.width) {
+        return I.active = false;
+      }
+    }
+  });
+  return self;
+};;
+var GameOver;
+GameOver = function(I) {
+  var lineHeight, self;
+  Object.reverseMerge(I, {
+    zIndex: 10
+  });
+  lineHeight = 24;
+  self = GameObject(I).extend({
+    draw: function(canvas) {
+      canvas.font("bold 24px consolas, 'Courier New', 'andale mono', 'lucida console', monospace");
+      canvas.fillColor("#FFF");
+      return canvas.withTransform(Matrix.translation(I.x - App.width / 2, 0), function() {
+        canvas.centerText("surf'd for " + (I.distance.toFixed(2)) + " meters", I.y - lineHeight);
+        canvas.centerText("sur5'd for " + ((I.time / 30).toFixed(2)) + " seconds", I.y);
+        return canvas.centerText("succumb'd to " + I.causeOfDeath, I.y + lineHeight);
+      });
+    }
+  });
+  self.bind("update", function() {
+    if (keydown.space || keydown["return"] || keydown.escape) {
+      return engine.trigger("restart");
+    }
+  });
+  return self;
+};;
 App.entities = {};;
-;$(function(){ var box, clock, destruction, player, water;
+;$(function(){ var DEBUG_DRAW, clock, restartGame, setUpGame;
+DEBUG_DRAW = false;
 window.engine = Engine({
   backgroundColor: Color("burntorange"),
   canvas: $("canvas").powerCanvas(),
   zSort: true
 });
-player = engine.add({
-  "class": "Player",
-  x: 20,
-  y: 20
-});
-box = engine.add({
-  sprite: "rocks",
-  x: 60,
-  y: 180,
-  zIndex: 6
-});
-water = engine.add({
-  color: "blue",
-  x: 0,
-  y: 160,
-  width: App.width,
-  height: App.height,
-  zIndex: 0
-});
-destruction = engine.add({
-  color: "red",
-  x: -240,
-  y: 0,
-  width: 10,
-  height: App.height
-});
-destruction.bind("update", function() {
-  return destruction.I.x += 2;
-});
-water.bind("update", function() {
-  return water.I.x = player.I.x - App.width / 2;
-});
+setUpGame = function() {
+  var box, destruction, player, water;
+  player = engine.add({
+    "class": "Player",
+    x: 0,
+    y: 0
+  });
+  box = engine.add({
+    "class": "Rock",
+    x: 60,
+    y: 180
+  });
+  water = engine.add({
+    color: "blue",
+    x: 0,
+    y: 160,
+    width: App.width + 64,
+    height: App.height,
+    zIndex: 0
+  });
+  destruction = engine.add({
+    color: "red",
+    destruction: true,
+    x: -240,
+    y: 0,
+    width: 10,
+    height: App.height,
+    zIndex: 7
+  });
+  destruction.bind("update", function() {
+    return destruction.I.x += 2;
+  });
+  return water.bind("update", function() {
+    return water.I.x = player.I.x - App.width / 2 - 32;
+  });
+};
+setUpGame();
 clock = 0;
 engine.bind("update", function() {
+  var destruction;
   clock += 1;
   if (clock % 30 === 0) {
-    return engine.add({
-      sprite: "rocks",
-      x: destruction.I.x + 2 * App.width + 32,
-      y: 160 + rand(160),
-      zIndex: 6
-    });
+    if (destruction = engine.find(".destruction").first()) {
+      return engine.add({
+        "class": "Rock",
+        x: destruction.I.x + 2 * App.width + 32,
+        y: 160 + rand(160)
+      });
+    }
   }
 });
+restartGame = function() {
+  var doRestart;
+  doRestart = function() {
+    engine.I.objects.clear();
+    engine.unbind("afterUpdate", doRestart);
+    return setUpGame();
+  };
+  return engine.bind("afterUpdate", doRestart);
+};
 engine.bind("afterUpdate", function() {
-  return engine.I.cameraTransform = Matrix.translation(App.width / 2 - player.I.x, App.height / 2 - player.I.y);
+  var player;
+  if (player = engine.find("Player").first()) {
+    return engine.I.cameraTransform = Matrix.translation(App.width / 2 - player.I.x, App.height / 2 - player.I.y);
+  }
+});
+engine.bind("draw", function(canvas) {
+  if (DEBUG_DRAW) {
+    return engine.find("Player, Rock").invoke("trigger", "drawDebug", canvas);
+  }
+});
+engine.bind("restart", function() {
+  return restartGame();
 });
 engine.start(); });
