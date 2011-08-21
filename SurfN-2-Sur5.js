@@ -6380,6 +6380,10 @@ Rock = function(I) {
 App.entities = {};;
 ;$(function(){ var DEBUG_DRAW, churnSprites, clock, depthsSprites, restartGame, setUpGame, waveSprites;
 DEBUG_DRAW = false;
+parent.gameControlData = {
+  Movement: "Left/Right Arrow Keys",
+  Restart: "Enter or Spacebar"
+};
 window.engine = Engine({
   backgroundColor: Color("burntorange"),
   canvas: $("canvas").powerCanvas(),
