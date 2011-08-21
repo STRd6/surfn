@@ -6153,6 +6153,58 @@ The <code>Tilemap</code> module provides a way to load tilemaps in the engine.
 })();;
 ;
 ;
+var Base;
+Base = function(I) {
+  var self;
+  self = GameObject(I).extend({
+    center: function() {
+      return Point(I.x, I.y);
+    }
+  });
+  self.unbind("draw");
+  self.bind("draw", function(canvas) {
+    if (I.sprite) {
+      if (I.sprite.draw != null) {
+        return I.sprite.draw(canvas, -I.width / 2, -I.height / 2);
+      }
+    }
+  });
+  self.bind("drawDebug", function(canvas) {
+    var center, x, y;
+    if (I.radius) {
+      center = self.center();
+      x = center.x;
+      y = center.y;
+      return canvas.fillCircle(x, y, I.radius, "rgba(255, 0, 255, 0.5)");
+    }
+  });
+  return self;
+};;
+var GameOver;
+GameOver = function(I) {
+  var lineHeight, self;
+  Object.reverseMerge(I, {
+    zIndex: 10
+  });
+  lineHeight = 24;
+  self = GameObject(I).extend({
+    draw: function(canvas) {
+      canvas.font("bold 24px consolas, 'Courier New', 'andale mono', 'lucida console', monospace");
+      canvas.fillColor("#FFF");
+      return canvas.withTransform(Matrix.translation(I.x - App.width / 2, 0), function() {
+        canvas.centerText("surf'd for " + (I.distance.toFixed(2)) + " meters", I.y - lineHeight);
+        canvas.centerText("sur5'd for " + ((I.time / 30).toFixed(2)) + " seconds", I.y);
+        return canvas.centerText("succumb'd to " + I.causeOfDeath, I.y + lineHeight);
+      });
+    }
+  });
+  self.bind("update", function() {
+    if (keydown.space || keydown["return"] || keydown.escape) {
+      return engine.trigger("restart");
+    }
+  });
+  return self;
+};;
 var Player;
 Player = function(I) {
   var GRAVITY, MAX_DEPTH, angleSprites, land, launch, self, setSprite, sprites, wipeout;
@@ -6277,33 +6329,6 @@ Player = function(I) {
   });
   return self;
 };;
-var Base;
-Base = function(I) {
-  var self;
-  self = GameObject(I).extend({
-    center: function() {
-      return Point(I.x, I.y);
-    }
-  });
-  self.unbind("draw");
-  self.bind("draw", function(canvas) {
-    if (I.sprite) {
-      if (I.sprite.draw != null) {
-        return I.sprite.draw(canvas, -I.width / 2, -I.height / 2);
-      }
-    }
-  });
-  self.bind("drawDebug", function(canvas) {
-    var center, x, y;
-    if (I.radius) {
-      center = self.center();
-      x = center.x;
-      y = center.y;
-      return canvas.fillCircle(x, y, I.radius, "rgba(255, 0, 255, 0.5)");
-    }
-  });
-  return self;
-};;
 var Rock;
 Rock = function(I) {
   var self;
@@ -6326,40 +6351,19 @@ Rock = function(I) {
   });
   return self;
 };;
-var GameOver;
-GameOver = function(I) {
-  var lineHeight, self;
-  Object.reverseMerge(I, {
-    zIndex: 10
-  });
-  lineHeight = 24;
-  self = GameObject(I).extend({
-    draw: function(canvas) {
-      canvas.font("bold 24px consolas, 'Courier New', 'andale mono', 'lucida console', monospace");
-      canvas.fillColor("#FFF");
-      return canvas.withTransform(Matrix.translation(I.x - App.width / 2, 0), function() {
-        canvas.centerText("surf'd for " + (I.distance.toFixed(2)) + " meters", I.y - lineHeight);
-        canvas.centerText("sur5'd for " + ((I.time / 30).toFixed(2)) + " seconds", I.y);
-        return canvas.centerText("succumb'd to " + I.causeOfDeath, I.y + lineHeight);
-      });
-    }
-  });
-  self.bind("update", function() {
-    if (keydown.space || keydown["return"] || keydown.escape) {
-      return engine.trigger("restart");
-    }
-  });
-  return self;
-};;
 App.entities = {};;
-;$(function(){ var DEBUG_DRAW, clock, depthsSprite, restartGame, setUpGame;
+;$(function(){ var DEBUG_DRAW, churnSprites, clock, depthsSprites, restartGame, setUpGame, waveSprites;
 DEBUG_DRAW = false;
 window.engine = Engine({
   backgroundColor: Color("burntorange"),
   canvas: $("canvas").powerCanvas(),
   zSort: true
 });
-depthsSprite = Sprite.loadByName("depths");
+depthsSprites = [Sprite.loadByName("depths0"), Sprite.loadByName("depths1")];
+churnSprites = [Sprite.loadByName("churn")];
+waveSprites = ["wave", "wave1"].map(function(name) {
+  return Sprite.loadByName(name);
+});
 setUpGame = function() {
   var box, destruction, player, water;
   player = engine.add({
@@ -6390,14 +6394,18 @@ setUpGame = function() {
     zIndex: 7
   });
   destruction.bind("update", function() {
-    return destruction.I.x += 2;
+    return destruction.I.x += 2 + destruction.I.age / 175;
+  });
+  destruction.bind("draw", function(canvas) {
+    waveSprites.wrap((destruction.I.age / 8).floor()).fill(canvas, -App.width, 0, App.width + 16, App.height);
+    return churnSprites.wrap((destruction.I.age / 8).floor()).fill(canvas, 0, 0, 32, App.height);
   });
   water.bind("update", function() {
     return water.I.x = player.I.x - App.width / 2 - 32;
   });
   return water.bind("draw", function(canvas) {
     return canvas.withTransform(Matrix.translation(-player.I.x.mod(32), 0), function() {
-      return depthsSprite.fill(canvas, 0, App.height / 2, water.I.width, App.height);
+      return depthsSprites.wrap((water.I.age / 8).floor()).fill(canvas, 0, App.height / 2, water.I.width, App.height);
     });
   });
 };
