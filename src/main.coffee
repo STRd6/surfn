@@ -28,6 +28,7 @@ setUpGame = ->
 
   water = engine.add
     color: "blue"
+    water: true
     x: 0
     y: 160
     width: App.width + 64
