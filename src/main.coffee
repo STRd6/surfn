@@ -54,7 +54,7 @@ setUpGame = ->
   water.bind "update", ->
     water.I.x = player.I.x - App.width/2 - 32
 
-    amplitude = (10 + water.I.age / 90)
+    amplitude = (30 + water.I.age / 90)
 
     if rand(3) == 0 && water.I.age.mod(90) == 0
       Sound.play("wave")
