@@ -6180,6 +6180,28 @@ Base = function(I) {
   });
   return self;
 };;
+var Cloud;
+Cloud = function(I) {
+  var self;
+  Object.reverseMerge(I, {
+    sprite: "cloud",
+    height: 32,
+    width: 128,
+    y: -120 + rand(240),
+    zIndex: 1
+  });
+  self = Base(I);
+  self.bind("update", function() {
+    var destruction;
+    destruction = engine.find(".destruction").first();
+    if (destruction) {
+      if (I.x < destruction.I.x - I.width) {
+        return I.active = false;
+      }
+    }
+  });
+  return self;
+};;
 var GameOver;
 GameOver = function(I) {
   var lineHeight, self;
@@ -6236,6 +6258,7 @@ Player = function(I) {
   };
   wipeout = function(causeOfDeath) {
     I.active = false;
+    Sound.play("crash");
     return engine.add({
       "class": "GameOver",
       causeOfDeath: causeOfDeath,
@@ -6260,11 +6283,13 @@ Player = function(I) {
         wipeout("bad landing");
       }
     }
-    return I.airborne = false;
+    I.airborne = false;
+    return Sound.play("land");
   };
   launch = function() {
     I.airborne = true;
-    return I.velocity.scale$(I.launchBoost);
+    I.velocity.scale$(I.launchBoost);
+    return Sound.play("splash");
   };
   self.bind("drawDebug", function(canvas) {
     var p;
@@ -6352,29 +6377,6 @@ Rock = function(I) {
   });
   return self;
 };;
-;
-var Cloud;
-Cloud = function(I) {
-  var self;
-  Object.reverseMerge(I, {
-    sprite: "cloud",
-    height: 32,
-    width: 128,
-    y: -120 + rand(240),
-    zIndex: 1
-  });
-  self = Base(I);
-  self.bind("update", function() {
-    var destruction;
-    destruction = engine.find(".destruction").first();
-    if (destruction) {
-      if (I.x < destruction.I.x - I.width) {
-        return I.active = false;
-      }
-    }
-  });
-  return self;
-};;
 App.entities = {};;
 ;$(function(){ var DEBUG_DRAW, churnSprites, clock, depthsSprites, restartGame, setUpGame, waveSprites;
 DEBUG_DRAW = false;
@@ -6431,7 +6433,13 @@ setUpGame = function() {
     return churnSprites.wrap((destruction.I.age / 8).floor()).fill(canvas, 0, 0, 32, App.height);
   });
   water.bind("update", function() {
-    return water.I.x = player.I.x - App.width / 2 - 32;
+    var amplitude;
+    water.I.x = player.I.x - App.width / 2 - 32;
+    amplitude = 10 + water.I.age / 90;
+    if (rand(3) === 0 && water.I.age.mod(90) === 0) {
+      Sound.play("wave");
+    }
+    return water.I.y = 160 + amplitude * Math.sin(Math.TAU / 120 * water.I.age);
   });
   return water.bind("draw", function(canvas) {
     return canvas.withTransform(Matrix.translation(-player.I.x.mod(32), 0), function() {
