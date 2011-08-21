@@ -9,5 +9,3 @@ GameOver = (I) ->
       canvas.centerText("and", I.y)
       canvas.centerText("sur5'd for #{(I.time / 30).toFixed(2)}", I.y + lineHeight)
 
-  return self
-
