@@ -47,6 +47,8 @@ setUpGame = ->
   destruction.bind "update", ->
     destruction.I.x += 2 + destruction.I.age / 175
 
+    destruction.I.x = destruction.I.x.clamp(player.I.x - 1.5 * App.width, Infinity)
+
   destruction.bind "draw", (canvas) ->
     waveSprites.wrap((destruction.I.age / 8).floor()).fill(canvas, -App.width, 0, App.width + 16, App.height)
     churnSprites.wrap((destruction.I.age / 8).floor()).fill(canvas, 0, 0, 32, App.height)
@@ -54,7 +56,7 @@ setUpGame = ->
   water.bind "update", ->
     water.I.x = player.I.x - App.width/2 - 32
 
-    amplitude = (30 + water.I.age / 90)
+    amplitude = (15 + water.I.age / 30)
 
     if rand(3) == 0 && water.I.age.mod(90) == 0
       Sound.play("wave")
