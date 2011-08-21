@@ -4,6 +4,7 @@ Player = (I) ->
     heading: Math.TAU / 4
     sprite: "player"
     launchBoost: 1.5
+    radius: 8
     rotationVelocity: Math.TAU / 64
     waterSpeed: 5
     velocity: Point(0, 0)
@@ -52,14 +53,22 @@ Player = (I) ->
   self.unbind "draw"
 
   self.bind "draw", (canvas) ->
-    canvas.strokeColor("#000")
-
-    p = Point.fromAngle(I.heading).scale(10)
-    # canvas.drawLine(-p.x, -p.y, p.x, p.y, 5)
-
     if I.sprite
       if I.sprite.draw?
         I.sprite.draw(canvas, -I.width/2, -I.height/2)
+
+  self.bind "drawDebug", (canvas) ->
+    if I.radius
+      center = self.center()
+      x = center.x
+      y = center.y
+
+      canvas.fillCircle(x, y, I.radius, "rgba(255, 0, 255, 0.5)")
+
+    canvas.strokeColor("rgba(0, 255, 0, 0.5)")
+
+    p = Point.fromAngle(I.heading).scale(10)
+    canvas.drawLine(I.x - p.x, I.y - p.y, I.x + p.x, I.y + p.y, 5)
 
   self.bind "update", ->
     waterLevel = 160
