@@ -13,7 +13,6 @@ Player = (I) ->
   self = Base(I)
 
   GRAVITY = Point(0, 0.25)
-  MAX_DEPTH = App.height
 
   sprites = []
   angleSprites = 8
@@ -91,7 +90,8 @@ Player = (I) ->
       wipeout("a rogue wave")
       return
 
-    waterLevel = 160
+    waterLevel = engine.find(".water").first().I.y
+    depthsLevel = waterLevel + 160
 
     headingChange = I.rotationVelocity
     headingChange *= 2 if I.airborne
@@ -105,7 +105,7 @@ Player = (I) ->
 
     setSprite()
 
-    if I.y > MAX_DEPTH
+    if I.y > depthsLevel
       wipeout("the depths")
     else if I.y >= waterLevel
       if I.airborne
