@@ -55,7 +55,7 @@ setUpGame = ->
 
     amplitude = (10 + water.I.age / 90)
 
-    if water.I.age.mod(90) == 0
+    if rand(3) == 0 && water.I.age.mod(90) == 0
       Sound.play("wave")
 
     water.I.y = 160 + amplitude * Math.sin(Math.TAU / 120 * water.I.age)
