@@ -5,6 +5,8 @@ window.engine = Engine
   canvas: $("canvas").powerCanvas()
   zSort: true
 
+depthsSprite = Sprite.loadByName "depths"
+
 setUpGame = ->
   player = engine.add
     class: "Player"
@@ -39,6 +41,10 @@ setUpGame = ->
   water.bind "update", ->
     water.I.x = player.I.x - App.width/2 - 32
 
+  water.bind "draw", (canvas) ->
+    canvas.withTransform Matrix.translation(-player.I.x.mod(32), 0), ->
+      depthsSprite.fill(canvas, 0, App.height/2, water.I.width, App.height)
+
 setUpGame()
 
 clock = 0
@@ -46,12 +52,11 @@ engine.bind "update", ->
   clock += 1
 
   if clock % 30 == 0
-    if destruction = engine.find(".destruction").first()
+    if player = engine.find("Player").first()
       engine.add
         class: "Rock"
-        x: destruction.I.x + 2 * App.width + 32
+        x: player.I.x + 2 * App.width
         y: 160 + rand(160)
-
 
 restartGame = ->
   doRestart = ->
