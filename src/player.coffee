@@ -51,6 +51,8 @@ Player = (I) ->
 
     I.airborne = false
 
+    Sound.play("land")
+
   launch = () ->
     I.airborne = true
     I.velocity.scale$(I.launchBoost)
