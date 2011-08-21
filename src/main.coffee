@@ -1,5 +1,9 @@
 DEBUG_DRAW = false
 
+parent.gameControlData =
+  Movement: "Left/Right Arrow Keys"
+  Restart: "Enter or Spacebar"
+
 window.engine = Engine
   backgroundColor: Color("burntorange")
   canvas: $("canvas").powerCanvas()
