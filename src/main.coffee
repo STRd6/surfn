@@ -53,6 +53,13 @@ setUpGame = ->
   water.bind "update", ->
     water.I.x = player.I.x - App.width/2 - 32
 
+    amplitude = (10 + water.I.age / 90)
+
+    if water.I.age.mod(90) == 0
+      Sound.play("wave")
+
+    water.I.y = 160 + amplitude * Math.sin(Math.TAU / 120 * water.I.age)
+
   water.bind "draw", (canvas) ->
     canvas.withTransform Matrix.translation(-player.I.x.mod(32), 0), ->
       depthsSprites.wrap((water.I.age / 8).floor()).fill(canvas, 0, App.height/2, water.I.width, App.height)
