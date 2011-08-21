@@ -5,7 +5,8 @@ window.engine = Engine
   canvas: $("canvas").powerCanvas()
   zSort: true
 
-depthsSprite = Sprite.loadByName "depths"
+depthsSprites = [Sprite.loadByName("depths0"), Sprite.loadByName("depths1")]
+churnSprites = [Sprite.loadByName("churn")]
 
 setUpGame = ->
   player = engine.add
@@ -38,12 +39,15 @@ setUpGame = ->
   destruction.bind "update", ->
     destruction.I.x += 2
 
+  destruction.bind "draw", (canvas) ->
+    churnSprites.wrap((destruction.I.age / 8).floor()).fill(canvas, 0, 0, 32, App.height)
+
   water.bind "update", ->
     water.I.x = player.I.x - App.width/2 - 32
 
   water.bind "draw", (canvas) ->
     canvas.withTransform Matrix.translation(-player.I.x.mod(32), 0), ->
-      depthsSprite.fill(canvas, 0, App.height/2, water.I.width, App.height)
+      depthsSprites.wrap((water.I.age / 8).floor()).fill(canvas, 0, App.height/2, water.I.width, App.height)
 
 setUpGame()
 
