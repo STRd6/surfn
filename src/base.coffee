@@ -2,9 +2,9 @@ Base = (I) ->
 
   self = GameObject(I).extend
     center: ->
+       Point(I.x, I.y)
 
-
-  self.bind "drawDebug"
+  self.bind "drawDebug", (canvas) ->
     if I.radius
       center = self.center()
       x = center.x
