@@ -6377,6 +6377,20 @@ Rock = function(I) {
   });
   return self;
 };;
+var Music;
+Music = (function() {
+  var track;
+  track = $("<audio />", {
+    loop: "loop"
+  }).appendTo('body').get(0);
+  track.volume = 1;
+  return {
+    play: function(name) {
+      track.src = "" + BASE_URL + "/sounds/" + name + ".mp3";
+      return track.play();
+    }
+  };
+})();;
 App.entities = {};;
 ;$(function(){ var DEBUG_DRAW, churnSprites, clock, depthsSprites, restartGame, setUpGame, waveSprites;
 DEBUG_DRAW = false;
@@ -6496,4 +6510,5 @@ engine.bind("draw", function(canvas) {
 engine.bind("restart", function() {
   return restartGame();
 });
+Music.play("SurfN-2-Sur5");
 engine.start(); });
