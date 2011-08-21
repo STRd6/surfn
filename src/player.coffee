@@ -31,7 +31,7 @@ Player = (I) ->
     I.active = false
 
     engine.add 
-      class: "Game Over"
+      class: "GameOver"
       distance: I.x
       time: I.age
       y: I.y
