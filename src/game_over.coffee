@@ -14,5 +14,9 @@ GameOver = (I) ->
         canvas.centerText("sur5'd for #{(I.time / 30).toFixed(2)} seconds", I.y)
         canvas.centerText("succumb'd to #{I.causeOfDeath}", I.y + lineHeight)
 
+  self.bind "update", ->
+    if keydown.space || keydown.return || keydown.escape
+      engine.trigger "restart"
+
   return self
 
