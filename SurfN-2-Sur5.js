@@ -6224,6 +6224,7 @@ Player = function(I) {
     var circle, headingChange, hitDestruction, hitRock, speed, waterLevel;
     I.x += I.velocity.x;
     I.y += I.velocity.y;
+    I.waterSpeed = 5 + I.age / 200;
     circle = self.circle();
     hitRock = false;
     engine.find("Rock").each(function(rock) {
@@ -6351,13 +6352,14 @@ GameOver = function(I) {
   return self;
 };;
 App.entities = {};;
-;$(function(){ var DEBUG_DRAW, clock, restartGame, setUpGame;
+;$(function(){ var DEBUG_DRAW, clock, depthsSprite, restartGame, setUpGame;
 DEBUG_DRAW = false;
 window.engine = Engine({
   backgroundColor: Color("burntorange"),
   canvas: $("canvas").powerCanvas(),
   zSort: true
 });
+depthsSprite = Sprite.loadByName("depths");
 setUpGame = function() {
   var box, destruction, player, water;
   player = engine.add({
@@ -6390,20 +6392,25 @@ setUpGame = function() {
   destruction.bind("update", function() {
     return destruction.I.x += 2;
   });
-  return water.bind("update", function() {
+  water.bind("update", function() {
     return water.I.x = player.I.x - App.width / 2 - 32;
+  });
+  return water.bind("draw", function(canvas) {
+    return canvas.withTransform(Matrix.translation(-player.I.x.mod(32), 0), function() {
+      return depthsSprite.fill(canvas, 0, App.height / 2, water.I.width, App.height);
+    });
   });
 };
 setUpGame();
 clock = 0;
 engine.bind("update", function() {
-  var destruction;
+  var player;
   clock += 1;
   if (clock % 30 === 0) {
-    if (destruction = engine.find(".destruction").first()) {
+    if (player = engine.find("Player").first()) {
       return engine.add({
         "class": "Rock",
-        x: destruction.I.x + 2 * App.width + 32,
+        x: player.I.x + 2 * App.width,
         y: 160 + rand(160)
       });
     }
