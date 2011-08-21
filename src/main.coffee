@@ -5,8 +5,8 @@ window.engine = Engine
 
 player = engine.add
   class: "Player"
-  x: 20
-  y: 20
+  x: 0
+  y: 0
 
 box = engine.add
   class: "Rock"
