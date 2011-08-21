@@ -21,6 +21,11 @@ setUpGame = ->
     x: 60
     y: 180
 
+  4.times (n) ->
+    engine.add
+      class: "Cloud"
+      x: n * 128
+
   water = engine.add
     color: "blue"
     x: 0
