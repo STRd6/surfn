@@ -50,7 +50,7 @@ engine.bind "update", ->
 engine.bind "afterUpdate", ->
   engine.I.cameraTransform = Matrix.translation(App.width/2 - player.I.x, App.height/2 - player.I.y)
 
-engine.bind "overlay", (canvas) ->
+engine.bind "draw", (canvas) ->
   engine.find("Player, Rock").invoke("trigger", "drawDebug", canvas)
 
 engine.start()
