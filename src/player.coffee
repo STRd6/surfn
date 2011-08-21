@@ -10,9 +10,7 @@ Player = (I) ->
     velocity: Point(0, 0)
     zIndex: 5
 
-  self = GameObject(I).extend
-    center: ->
-      Point(I.x, I.y)
+  self = Base(I)
 
   GRAVITY = Point(0, 0.25)
   MAX_DEPTH = App.height
@@ -60,13 +58,6 @@ Player = (I) ->
         I.sprite.draw(canvas, -I.width/2, -I.height/2)
 
   self.bind "drawDebug", (canvas) ->
-    if I.radius
-      center = self.center()
-      x = center.x
-      y = center.y
-
-      canvas.fillCircle(x, y, I.radius, "rgba(255, 0, 255, 0.5)")
-
     canvas.strokeColor("rgba(0, 255, 0, 0.75)")
 
     p = Point.fromAngle(I.heading).scale(10)
