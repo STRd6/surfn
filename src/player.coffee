@@ -50,13 +50,6 @@ Player = (I) ->
     I.airborne = true
     I.velocity.scale$(I.launchBoost)
 
-  self.unbind "draw"
-
-  self.bind "draw", (canvas) ->
-    if I.sprite
-      if I.sprite.draw?
-        I.sprite.draw(canvas, -I.width/2, -I.height/2)
-
   self.bind "drawDebug", (canvas) ->
     canvas.strokeColor("rgba(0, 255, 0, 0.75)")
 
