@@ -9,10 +9,9 @@ player = engine.add
   y: 20
 
 box = engine.add
-  sprite: "rocks"
+  class: "Rock"
   x: 60
   y: 180
-  zIndex: 6
 
 water = engine.add
   color: "blue"
