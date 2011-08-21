@@ -6229,7 +6229,7 @@ GameOver = function(I) {
 };;
 var Player;
 Player = function(I) {
-  var GRAVITY, MAX_DEPTH, angleSprites, land, launch, self, setSprite, sprites, wipeout;
+  var GRAVITY, angleSprites, land, launch, self, setSprite, sprites, wipeout;
   Object.reverseMerge(I, {
     airborne: true,
     heading: Math.TAU / 4,
@@ -6243,7 +6243,6 @@ Player = function(I) {
   });
   self = Base(I);
   GRAVITY = Point(0, 0.25);
-  MAX_DEPTH = App.height;
   sprites = [];
   angleSprites = 8;
   angleSprites.times(function(n) {
@@ -6298,7 +6297,7 @@ Player = function(I) {
     return canvas.drawLine(I.x - p.x, I.y - p.y, I.x + p.x, I.y + p.y, 1);
   });
   self.bind("update", function() {
-    var circle, headingChange, hitDestruction, hitRock, speed, waterLevel;
+    var circle, depthsLevel, headingChange, hitDestruction, hitRock, speed, waterLevel;
     I.x += I.velocity.x;
     I.y += I.velocity.y;
     I.waterSpeed = 5 + I.age / 200;
@@ -6323,7 +6322,8 @@ Player = function(I) {
       wipeout("a rogue wave");
       return;
     }
-    waterLevel = 160;
+    waterLevel = engine.find(".water").first().I.y;
+    depthsLevel = waterLevel + 160;
     headingChange = I.rotationVelocity;
     if (I.airborne) {
       headingChange *= 2;
@@ -6336,7 +6336,7 @@ Player = function(I) {
     }
     I.heading = I.heading.constrainRotation();
     setSprite();
-    if (I.y > MAX_DEPTH) {
+    if (I.y > depthsLevel) {
       return wipeout("the depths");
     } else if (I.y >= waterLevel) {
       if (I.airborne) {
@@ -6410,6 +6410,7 @@ setUpGame = function() {
   });
   water = engine.add({
     color: "blue",
+    water: true,
     x: 0,
     y: 160,
     width: App.width + 64,
@@ -6426,7 +6427,8 @@ setUpGame = function() {
     zIndex: 7
   });
   destruction.bind("update", function() {
-    return destruction.I.x += 2 + destruction.I.age / 175;
+    destruction.I.x += 2 + destruction.I.age / 175;
+    return destruction.I.x = destruction.I.x.clamp(player.I.x - 4 * App.width, Infinity);
   });
   destruction.bind("draw", function(canvas) {
     waveSprites.wrap((destruction.I.age / 8).floor()).fill(canvas, -App.width, 0, App.width + 16, App.height);
@@ -6435,7 +6437,7 @@ setUpGame = function() {
   water.bind("update", function() {
     var amplitude;
     water.I.x = player.I.x - App.width / 2 - 32;
-    amplitude = 10 + water.I.age / 90;
+    amplitude = 15 + water.I.age / 30;
     if (rand(3) === 0 && water.I.age.mod(90) === 0) {
       Sound.play("wave");
     }
