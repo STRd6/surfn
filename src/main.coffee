@@ -47,7 +47,7 @@ setUpGame = ->
   destruction.bind "update", ->
     destruction.I.x += 2 + destruction.I.age / 175
 
-    destruction.I.x = destruction.I.x.clamp(player.I.x - 1.5 * App.width, Infinity)
+    destruction.I.x = destruction.I.x.clamp(player.I.x - 4 * App.width, Infinity)
 
   destruction.bind "draw", (canvas) ->
     waveSprites.wrap((destruction.I.age / 8).floor()).fill(canvas, -App.width, 0, App.width + 16, App.height)
