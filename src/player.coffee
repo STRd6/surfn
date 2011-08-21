@@ -27,25 +27,27 @@ Player = (I) ->
 
     I.sprite = sprites[n]
 
-  wipeout = () ->
+  wipeout = (causeOfDeath) ->
     I.active = false
 
     engine.add 
       class: "GameOver"
+      causeOfDeath: causeOfDeath
       distance: I.x
       time: I.age
+      x: I.x
       y: I.y
 
   land = () ->
     if I.velocity.x > 1.5
       unless 0 <= I.heading <= Math.PI/2
-        wipeout()
+        wipeout("bad landing")
     else if I.velocity.x < -1.5
       unless Math.PI/2 <= I.heading <= Math.PI
-        wipeout()
+        wipeout("bad landing")
     else
-      unless Math.PI/4 <= I.heading <= 3*Math.PI/4
-        wipeout()
+      unless Math.PI/5 <= I.heading <= 4*Math.PI/5
+        wipeout("bad landing")
 
     I.airborne = false
 
@@ -70,7 +72,15 @@ Player = (I) ->
         hitRock = true
 
     if hitRock
-      wipeout()
+      wipeout("a rock")
+      return
+
+    hitDestruction = false
+    engine.find(".destruction").each (destruction) ->
+      if I.x < destruction.I.x
+        hitDestruction = true
+    if hitDestruction
+      wipeout("a rogue wave")
       return
 
     waterLevel = 160
@@ -88,7 +98,7 @@ Player = (I) ->
     setSprite()
 
     if I.y > MAX_DEPTH
-      wipeout()
+      wipeout("the depths")
     else if I.y >= waterLevel
       if I.airborne
         land()
