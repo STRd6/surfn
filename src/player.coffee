@@ -28,10 +28,13 @@ Player = (I) ->
     I.sprite = sprites[n]
 
   wipeout = () ->
-    I.x = 0
-    I.y = 80
-    I.velocity = Point(0, 0)
-    I.heading = Math.TAU / 4
+    I.active = false
+
+    engine.add 
+      class: "Game Over"
+      distance: I.x
+      time: I.age
+      y: I.y
 
   land = () ->
     if I.velocity.x > 1.5
@@ -57,10 +60,20 @@ Player = (I) ->
     canvas.drawLine(I.x - p.x, I.y - p.y, I.x + p.x, I.y + p.y, 1)
 
   self.bind "update", ->
-    waterLevel = 160
-
     I.x += I.velocity.x
     I.y += I.velocity.y
+
+    circle = self.circle()
+    hitRock = false
+    engine.find("Rock").each (rock) ->
+      if Collision.circular circle, rock.circle()
+        hitRock = true
+
+    if hitRock
+      wipeout()
+      return
+
+    waterLevel = 160
 
     headingChange = I.rotationVelocity
     headingChange *= 2 if I.airborne
