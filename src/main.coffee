@@ -1,4 +1,4 @@
-window.engine = Engine
+engine = Engine
   backgroundColor: Color("burntorange")
   canvas: $("canvas").powerCanvas()
   zSort: true
@@ -30,7 +30,7 @@ destruction = engine.add
   height: App.height
 
 destruction.bind "update", ->
-  destruction.I.x += 2
+  destruction.I.x = 2
 
 water.bind "update", ->
   water.I.x = player.I.x - App.width/2
@@ -50,6 +50,8 @@ engine.bind "update", ->
 engine.bind "afterUpdate", ->
   engine.I.cameraTransform = Matrix.translation(App.width/2 - player.I.x, App.height/2 - player.I.y)
 
-engine.start()
+engine.bind "overlay", (canvas) ->
+  engine.find("Player, Rock").invoke("trigger", "drawDebug", canvas)
 
+engine.start()
 
