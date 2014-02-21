@@ -1,13 +1,13 @@
+Dust = require "dust"
+
 DEBUG_DRAW = false
 
 parent.gameControlData =
   Movement: "Left/Right Arrow Keys"
   Restart: "Enter or Spacebar"
 
-window.engine = Engine
-  backgroundColor: Color("burntorange")
-  canvas: $("canvas").powerCanvas()
-  zSort: true
+window.engine = Dust.init
+  backgroundColor: "#CC5500"
 
 depthsSprites = [Sprite.loadByName("depths0"), Sprite.loadByName("depths1")]
 churnSprites = [Sprite.loadByName("churn")]
