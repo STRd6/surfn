@@ -128,3 +128,6 @@ Music.play "SurfN-2-Sur5"
 
 engine.start()
 
+# Meta controls
+$(document).on "keydown", null, "pause", ->
+  engine.pause()
