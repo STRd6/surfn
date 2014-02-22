@@ -2,7 +2,11 @@ Dust = require "dust"
 
 require "../duct_tape"
 
+require "./cloud"
 require "./player"
+require "./rock"
+
+Music = require "./music"
 
 DEBUG_DRAW = false
 
@@ -10,8 +14,13 @@ parent.gameControlData =
   Movement: "Left/Right Arrow Keys"
   Restart: "Enter or Spacebar"
 
+{width, height} = require "/pixie"
+
 window.engine = Dust.init
-  backgroundColor: "#CC5500"
+  width: width
+  height: height
+
+engine.I.backgroundColor = "#CC5500"
 
 depthsSprites = [Sprite.loadByName("depths0"), Sprite.loadByName("depths1")]
 churnSprites = [Sprite.loadByName("churn")]
@@ -39,8 +48,8 @@ setUpGame = ->
     water: true
     x: 0
     y: 160
-    width: App.width + 64
-    height: App.height
+    width: width + 64
+    height: height
     zIndex: 0
 
   destruction = engine.add
@@ -49,20 +58,20 @@ setUpGame = ->
     x: -240
     y: 0
     width: 10
-    height: App.height
+    height: height
     zIndex: 7
 
   destruction.bind "update", ->
     destruction.I.x += 2 + destruction.I.age / 175
 
-    destruction.I.x = destruction.I.x.clamp(player.I.x - 4 * App.width, Infinity)
+    destruction.I.x = destruction.I.x.clamp(player.I.x - 4 * width, Infinity)
 
   destruction.bind "draw", (canvas) ->
-    waveSprites.wrap((destruction.I.age / 8).floor()).fill(canvas, -App.width, 0, App.width + 16, App.height)
-    churnSprites.wrap((destruction.I.age / 8).floor()).fill(canvas, 0, 0, 32, App.height)
+    waveSprites.wrap((destruction.I.age / 8).floor()).fill(canvas, -width, 0, width + 16, height)
+    churnSprites.wrap((destruction.I.age / 8).floor()).fill(canvas, 0, 0, 32, height)
 
   water.bind "update", ->
-    water.I.x = player.I.x - App.width/2 - 32
+    water.I.x = player.I.x - width/2 - 32
 
     amplitude = (15 + water.I.age / 30)
 
@@ -73,7 +82,7 @@ setUpGame = ->
 
   water.bind "draw", (canvas) ->
     canvas.withTransform Matrix.translation(-player.I.x.mod(32), 0), ->
-      depthsSprites.wrap((water.I.age / 8).floor()).fill(canvas, 0, App.height/2, water.I.width, App.height)
+      depthsSprites.wrap((water.I.age / 8).floor()).fill(canvas, 0, height/2, water.I.width, height)
 
 setUpGame()
 
@@ -85,12 +94,12 @@ engine.bind "update", ->
     if clock % 30 == 0
         engine.add
           class: "Rock"
-          x: player.I.x + 2 * App.width
+          x: player.I.x + 2 * width
 
     if clock % 55 == 0
       engine.add
         class: "Cloud"
-        x: player.I.x + 2 * App.width
+        x: player.I.x + 2 * width
 
 restartGame = ->
   doRestart = ->
@@ -102,7 +111,7 @@ restartGame = ->
 
 engine.bind "afterUpdate", ->
   if player = engine.find("Player").first()
-    engine.I.cameraTransform = Matrix.translation(App.width/2 - player.I.x, App.height/2 - player.I.y)
+    engine.I.cameraTransform = Matrix.translation(width/2 - player.I.x, height/2 - player.I.y)
 
 engine.bind "draw", (canvas) ->
   if DEBUG_DRAW

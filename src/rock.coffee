@@ -1,5 +1,9 @@
-Rock = (I) ->
-  Object.reverseMerge I,
+{Util:{defaults}, GameObject} = require "dust"
+
+Base = require "./base"
+
+module.exports = GameObject.registry.Rock = (I={}) ->
+  defaults I,
     sprite: "rocks"
     height: 32
     radius: 16
@@ -9,7 +13,7 @@ Rock = (I) ->
 
   self = Base(I)
 
-  self.bind "update", ->
+  self.on "update", ->
     destruction = engine.find(".destruction").first()
 
     if destruction
@@ -17,4 +21,3 @@ Rock = (I) ->
         I.active = false
 
   self
-

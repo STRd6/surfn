@@ -1,12 +1,11 @@
-Music = (->
-  track = $ "<audio />",
-    loop: "loop"
-  .appendTo('body').get(0)
+track = $ "<audio />",
+  loop: "loop"
+.appendTo('body').get(0)
 
-  track.volume = 1
+track.volume = 1
 
+module.exports =
   play: (name) ->
-    track.src = "#{BASE_URL}/sounds/#{name}.mp3"
+    # TODO: Music
+    # track.src = "#{BASE_URL}/sounds/#{name}.mp3"
     track.play()
-)()
-

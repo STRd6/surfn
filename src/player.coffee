@@ -1,6 +1,8 @@
-{Util:defaults, GameObject} = require "dust"
+{Util:{defaults}, GameObject} = require "dust"
 
-GameObject.registry.Player = (I) ->
+Base = require "./base"
+
+module.exports = GameObject.registry.Player = (I={}) ->
   defaults I,
     airborne: true
     heading: Math.TAU / 4
@@ -125,4 +127,3 @@ GameObject.registry.Player = (I) ->
       I.velocity.add$(GRAVITY)
 
   return self
-

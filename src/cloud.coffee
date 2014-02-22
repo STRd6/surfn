@@ -1,5 +1,9 @@
-Cloud = (I) ->
-  Object.reverseMerge I,
+{Util:{defaults}, GameObject} = require "dust"
+
+Base = require "./base"
+
+module.exports = GameObject.registry.Cloud = (I) ->
+  defaults I,
     sprite: "cloud"
     height: 32
     width: 128
@@ -8,7 +12,7 @@ Cloud = (I) ->
 
   self = Base(I)
 
-  self.bind "update", ->
+  self.on "update", ->
     destruction = engine.find(".destruction").first()
 
     if destruction
@@ -16,4 +20,3 @@ Cloud = (I) ->
         I.active = false
 
   self
-
