@@ -1,5 +1,8 @@
 Dust = require "dust"
 
+# TODO: Clean up globals
+global.Collision = Dust.Collision
+
 require "../duct_tape"
 
 require "./cloud"
