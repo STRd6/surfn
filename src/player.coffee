@@ -41,7 +41,7 @@ module.exports = GameObject.registry.Player = (I={}) ->
       distance: I.x
       time: I.age
       x: I.x
-      y: I.y
+      y: 160
 
   land = () ->
     if I.velocity.x > 1.5

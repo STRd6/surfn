@@ -11,10 +11,11 @@ require "./cloud"
 require "./player"
 require "./rock"
 require "/water"
+require "./game_over"
 
 Music = require "./music"
 
-DEBUG_DRAW = false
+DEBUG_DRAW = 0# true
 
 parent.gameControlData =
   Movement: "Left/Right Arrow Keys"
@@ -104,18 +105,19 @@ engine.bind "update", ->
         x: player.I.x + 2 * width
 
 restartGame = ->
+  engine.objects().invoke "destroy"
+
   doRestart = ->
-    engine.I.objects.clear()
     engine.unbind "afterUpdate", doRestart
     setUpGame()
 
-  engine.bind "afterUpdate", doRestart
+  engine.on "afterUpdate", doRestart
 
-engine.bind "afterUpdate", ->
+engine.on "afterUpdate", ->
   if player = engine.find("Player").first()
     engine.I.cameraTransform = Matrix.translation(width/2 - player.I.x, height/2 - player.I.y)
 
-engine.bind "draw", (canvas) ->
+engine.on "draw", (canvas) ->
   if DEBUG_DRAW
     engine.find("Player, Rock").invoke("trigger", "drawDebug", canvas)
 
