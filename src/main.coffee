@@ -3,11 +3,14 @@ Dust = require "dust"
 # TODO: Clean up globals
 global.Collision = Dust.Collision
 
+global.Sound = require "sound"
+
 require "../duct_tape"
 
 require "./cloud"
 require "./player"
 require "./rock"
+require "/water"
 
 Music = require "./music"
 
@@ -47,13 +50,9 @@ setUpGame = ->
       x: n * 128
 
   water = engine.add
-    color: "blue"
-    water: true
-    x: 0
-    y: 160
+    class: "Water"
     width: width + 64
     height: height
-    zIndex: 0
 
   destruction = engine.add
     color: "red"

@@ -8,3 +8,4 @@ remoteDependencies: [
 ]
 dependencies:
   dust: "distri/dust:v0.1.8-alpha.0"
+  sound: "distri/sound:v0.1.0"

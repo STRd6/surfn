@@ -105,7 +105,7 @@ module.exports = GameObject.registry.Player = (I={}) ->
     if keydown.right
       I.heading += headingChange
 
-    I.heading = I.heading.constrainRotation()
+    # I.heading = I.heading.constrainRotation()
 
     setSprite()
 
@@ -124,6 +124,6 @@ module.exports = GameObject.registry.Player = (I={}) ->
       if !I.airborne
         launch()
 
-      I.velocity.add$(GRAVITY)
+      I.velocity = I.velocity.add(GRAVITY)
 
   return self
