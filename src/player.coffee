@@ -1,5 +1,7 @@
-Player = (I) ->
-  Object.reverseMerge I,
+{Util:defaults, GameObject} = require "dust"
+
+GameObject.registry.Player = (I) ->
+  defaults I,
     airborne: true
     heading: Math.TAU / 4
     sprite: "player"
@@ -31,7 +33,7 @@ Player = (I) ->
 
     Sound.play("crash")
 
-    engine.add 
+    engine.add
       class: "GameOver"
       causeOfDeath: causeOfDeath
       distance: I.x

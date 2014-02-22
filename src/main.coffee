@@ -1,5 +1,9 @@
 Dust = require "dust"
 
+require "../duct_tape"
+
+require "./player"
+
 DEBUG_DRAW = false
 
 parent.gameControlData =
