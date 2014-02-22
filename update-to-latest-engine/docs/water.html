@@ -2,7 +2,7 @@
 
 <html>
 <head>
-  <title>duct_tape</title>
+  <title>water</title>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
   <link rel="stylesheet" media="all" href="http://strd6.github.io/cdn/parallel/docco.css" />
@@ -18,7 +18,7 @@
               <div class="pilwrap">
                 <a class="pilcrow" href="#section-1">&#182;</a>
               </div>
-              <h1 id="duct-tape">Duct Tape</h1>
+              <h1 id="water">Water</h1>
 
             </div>
             <div class="content"><pre><code class="lang-coffeescript">
@@ -32,23 +32,23 @@
               <div class="pilwrap">
                 <a class="pilcrow" href="#section-2">&#182;</a>
               </div>
-              <p>Load Sprites by named resource.</p>
-
+              
             </div>
-            <div class="content"><pre><code class="lang-coffeescript">{Util:{extend}} = require <span class="string">"dust"</span>
-images = require <span class="string">"./images"</span>
+            <div class="content"><pre><code class="lang-coffeescript">{Util:{defaults}, GameObject} = require <span class="string">"dust"</span>
 
-Sprite.<span class="function"><span class="title">loadByName</span></span> = (name) -&gt;
-  url = images[name]
+module.exports = GameObject.registry.<span class="function"><span class="title">Water</span></span> = (I={}) -&gt;
+  defaults I,
+    color: <span class="string">"blue"</span>
+    water: <span class="literal">true</span>
+    x: <span class="number">0</span>
+    y: <span class="number">160</span>
+    zIndex: <span class="number">0</span>
 
-  Sprite.load(url)
+  self = GameObject(I)
 
-extend Number.prototype,
-  approach: (target, maxDelta) -&gt;
-    <span class="keyword">this</span> + (target - <span class="keyword">this</span>).clamp(-maxDelta, maxDelta)
+  self.attrAccessor <span class="string">"water"</span>
 
-  approachByRatio: (target, ratio) -&gt;
-    <span class="property">@approach</span>(target, <span class="keyword">this</span> * ratio)</code></pre>
+  <span class="keyword">return</span> self</code></pre>
 </div>
         </li>
         

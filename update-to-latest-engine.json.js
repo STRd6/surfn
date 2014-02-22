@@ -75,7 +75,7 @@ window["STRd6/SurfN-2-Sur5:update-to-latest-engine"]({
     "src/main.coffee": {
       "path": "src/main.coffee",
       "mode": "100644",
-      "content": "Dust = require \"dust\"\n\n# TODO: Clean up globals\nglobal.Collision = Dust.Collision\n\nrequire \"../duct_tape\"\n\nrequire \"./cloud\"\nrequire \"./player\"\nrequire \"./rock\"\n\nMusic = require \"./music\"\n\nDEBUG_DRAW = false\n\nparent.gameControlData =\n  Movement: \"Left/Right Arrow Keys\"\n  Restart: \"Enter or Spacebar\"\n\n{width, height} = require \"/pixie\"\n\nwindow.engine = Dust.init\n  width: width\n  height: height\n\nengine.I.backgroundColor = \"#CC5500\"\n\ndepthsSprites = [Sprite.loadByName(\"depths0\"), Sprite.loadByName(\"depths1\")]\nchurnSprites = [Sprite.loadByName(\"churn\")]\nwaveSprites = [\"wave\", \"wave1\"].map (name) ->\n  Sprite.loadByName name\n\nsetUpGame = ->\n  player = engine.add\n    class: \"Player\"\n    x: 0\n    y: 0\n\n  box = engine.add\n    class: \"Rock\"\n    x: 60\n    y: 180\n\n  4.times (n) ->\n    engine.add\n      class: \"Cloud\"\n      x: n * 128\n\n  water = engine.add\n    color: \"blue\"\n    water: true\n    x: 0\n    y: 160\n    width: width + 64\n    height: height\n    zIndex: 0\n\n  destruction = engine.add\n    color: \"red\"\n    destruction: true\n    x: -240\n    y: 0\n    width: 10\n    height: height\n    zIndex: 7\n\n  destruction.bind \"update\", ->\n    destruction.I.x += 2 + destruction.I.age / 175\n\n    destruction.I.x = destruction.I.x.clamp(player.I.x - 4 * width, Infinity)\n\n  destruction.bind \"draw\", (canvas) ->\n    waveSprites.wrap((destruction.I.age / 8).floor()).fill(canvas, -width, 0, width + 16, height)\n    churnSprites.wrap((destruction.I.age / 8).floor()).fill(canvas, 0, 0, 32, height)\n\n  water.bind \"update\", ->\n    water.I.x = player.I.x - width/2 - 32\n\n    amplitude = (15 + water.I.age / 30)\n\n    if rand(3) == 0 && water.I.age.mod(90) == 0\n      Sound.play(\"wave\")\n\n    water.I.y = 160 + amplitude * Math.sin(Math.TAU / 120 * water.I.age)\n\n  water.bind \"draw\", (canvas) ->\n    canvas.withTransform Matrix.translation(-player.I.x.mod(32), 0), ->\n      depthsSprites.wrap((water.I.age / 8).floor()).fill(canvas, 0, height/2, water.I.width, height)\n\nsetUpGame()\n\nclock = 0\nengine.bind \"update\", ->\n  clock += 1\n\n  if player = engine.find(\"Player\").first()\n    if clock % 30 == 0\n        engine.add\n          class: \"Rock\"\n          x: player.I.x + 2 * width\n\n    if clock % 55 == 0\n      engine.add\n        class: \"Cloud\"\n        x: player.I.x + 2 * width\n\nrestartGame = ->\n  doRestart = ->\n    engine.I.objects.clear()\n    engine.unbind \"afterUpdate\", doRestart\n    setUpGame()\n\n  engine.bind \"afterUpdate\", doRestart\n\nengine.bind \"afterUpdate\", ->\n  if player = engine.find(\"Player\").first()\n    engine.I.cameraTransform = Matrix.translation(width/2 - player.I.x, height/2 - player.I.y)\n\nengine.bind \"draw\", (canvas) ->\n  if DEBUG_DRAW\n    engine.find(\"Player, Rock\").invoke(\"trigger\", \"drawDebug\", canvas)\n\nengine.bind \"restart\", ->\n  restartGame()\n\nMusic.play \"SurfN-2-Sur5\"\n\nengine.start()\n\n",
+      "content": "Dust = require \"dust\"\n\n# TODO: Clean up globals\nglobal.Collision = Dust.Collision\n\nglobal.Sound = require \"sound\"\n\nrequire \"../duct_tape\"\n\nrequire \"./cloud\"\nrequire \"./player\"\nrequire \"./rock\"\nrequire \"/water\"\n\nMusic = require \"./music\"\n\nDEBUG_DRAW = false\n\nparent.gameControlData =\n  Movement: \"Left/Right Arrow Keys\"\n  Restart: \"Enter or Spacebar\"\n\n{width, height} = require \"/pixie\"\n\nwindow.engine = Dust.init\n  width: width\n  height: height\n\nengine.I.backgroundColor = \"#CC5500\"\n\ndepthsSprites = [Sprite.loadByName(\"depths0\"), Sprite.loadByName(\"depths1\")]\nchurnSprites = [Sprite.loadByName(\"churn\")]\nwaveSprites = [\"wave\", \"wave1\"].map (name) ->\n  Sprite.loadByName name\n\nsetUpGame = ->\n  player = engine.add\n    class: \"Player\"\n    x: 0\n    y: 0\n\n  box = engine.add\n    class: \"Rock\"\n    x: 60\n    y: 180\n\n  4.times (n) ->\n    engine.add\n      class: \"Cloud\"\n      x: n * 128\n\n  water = engine.add\n    class: \"Water\"\n    width: width + 64\n    height: height\n\n  destruction = engine.add\n    color: \"red\"\n    destruction: true\n    x: -240\n    y: 0\n    width: 10\n    height: height\n    zIndex: 7\n\n  destruction.bind \"update\", ->\n    destruction.I.x += 2 + destruction.I.age / 175\n\n    destruction.I.x = destruction.I.x.clamp(player.I.x - 4 * width, Infinity)\n\n  destruction.bind \"draw\", (canvas) ->\n    waveSprites.wrap((destruction.I.age / 8).floor()).fill(canvas, -width, 0, width + 16, height)\n    churnSprites.wrap((destruction.I.age / 8).floor()).fill(canvas, 0, 0, 32, height)\n\n  water.bind \"update\", ->\n    water.I.x = player.I.x - width/2 - 32\n\n    amplitude = (15 + water.I.age / 30)\n\n    if rand(3) == 0 && water.I.age.mod(90) == 0\n      Sound.play(\"wave\")\n\n    water.I.y = 160 + amplitude * Math.sin(Math.TAU / 120 * water.I.age)\n\n  water.bind \"draw\", (canvas) ->\n    canvas.withTransform Matrix.translation(-player.I.x.mod(32), 0), ->\n      depthsSprites.wrap((water.I.age / 8).floor()).fill(canvas, 0, height/2, water.I.width, height)\n\nsetUpGame()\n\nclock = 0\nengine.bind \"update\", ->\n  clock += 1\n\n  if player = engine.find(\"Player\").first()\n    if clock % 30 == 0\n        engine.add\n          class: \"Rock\"\n          x: player.I.x + 2 * width\n\n    if clock % 55 == 0\n      engine.add\n        class: \"Cloud\"\n        x: player.I.x + 2 * width\n\nrestartGame = ->\n  doRestart = ->\n    engine.I.objects.clear()\n    engine.unbind \"afterUpdate\", doRestart\n    setUpGame()\n\n  engine.bind \"afterUpdate\", doRestart\n\nengine.bind \"afterUpdate\", ->\n  if player = engine.find(\"Player\").first()\n    engine.I.cameraTransform = Matrix.translation(width/2 - player.I.x, height/2 - player.I.y)\n\nengine.bind \"draw\", (canvas) ->\n  if DEBUG_DRAW\n    engine.find(\"Player, Rock\").invoke(\"trigger\", \"drawDebug\", canvas)\n\nengine.bind \"restart\", ->\n  restartGame()\n\nMusic.play \"SurfN-2-Sur5\"\n\nengine.start()\n\n",
       "type": "blob"
     },
     "src/music.coffee": {
@@ -87,7 +87,7 @@ window["STRd6/SurfN-2-Sur5:update-to-latest-engine"]({
     "src/player.coffee": {
       "path": "src/player.coffee",
       "mode": "100644",
-      "content": "{Util:{defaults}, GameObject} = require \"dust\"\n\nBase = require \"./base\"\n\nmodule.exports = GameObject.registry.Player = (I={}) ->\n  defaults I,\n    airborne: true\n    heading: Math.TAU / 4\n    sprite: \"player\"\n    launchBoost: 1.5\n    radius: 8\n    rotationVelocity: Math.TAU / 64\n    waterSpeed: 5\n    velocity: Point(0, 0)\n    zIndex: 5\n\n  self = Base(I)\n\n  GRAVITY = Point(0, 0.25)\n\n  sprites = []\n  angleSprites = 8\n  angleSprites.times (n) ->\n    t = n * 2\n    sprites.push Sprite.loadByName(\"player_#{t}\")\n\n  setSprite = ->\n    angleSprites\n    n = (angleSprites * I.heading / Math.TAU).round().mod(angleSprites)\n\n    I.sprite = sprites[n]\n\n  wipeout = (causeOfDeath) ->\n    I.active = false\n\n    Sound.play(\"crash\")\n\n    engine.add\n      class: \"GameOver\"\n      causeOfDeath: causeOfDeath\n      distance: I.x\n      time: I.age\n      x: I.x\n      y: I.y\n\n  land = () ->\n    if I.velocity.x > 1.5\n      unless 0 <= I.heading <= Math.PI/2\n        wipeout(\"bad landing\")\n    else if I.velocity.x < -1.5\n      unless Math.PI/2 <= I.heading <= Math.PI\n        wipeout(\"bad landing\")\n    else\n      unless Math.PI/5 <= I.heading <= 4*Math.PI/5\n        wipeout(\"bad landing\")\n\n    I.airborne = false\n\n    Sound.play(\"land\")\n\n  launch = () ->\n    I.airborne = true\n    I.velocity.scale$(I.launchBoost)\n\n    Sound.play(\"splash\")\n\n  self.bind \"drawDebug\", (canvas) ->\n    canvas.strokeColor(\"rgba(0, 255, 0, 0.75)\")\n\n    p = Point.fromAngle(I.heading).scale(10)\n    canvas.drawLine(I.x - p.x, I.y - p.y, I.x + p.x, I.y + p.y, 1)\n\n  self.bind \"update\", ->\n    I.x += I.velocity.x\n    I.y += I.velocity.y\n\n    I.waterSpeed = 5 + I.age / 200\n\n    circle = self.circle()\n    hitRock = false\n    engine.find(\"Rock\").each (rock) ->\n      if Collision.circular circle, rock.circle()\n        hitRock = true\n\n    if hitRock\n      wipeout(\"a rock\")\n      return\n\n    hitDestruction = false\n    engine.find(\".destruction\").each (destruction) ->\n      if I.x < destruction.I.x\n        hitDestruction = true\n    if hitDestruction\n      wipeout(\"a rogue wave\")\n      return\n\n    waterLevel = engine.find(\".water\").first().I.y\n    depthsLevel = waterLevel + 160\n\n    headingChange = I.rotationVelocity\n    headingChange *= 2 if I.airborne\n\n    if keydown.left\n      I.heading -= headingChange\n    if keydown.right\n      I.heading += headingChange\n\n    I.heading = I.heading.constrainRotation()\n\n    setSprite()\n\n    if I.y > depthsLevel\n      wipeout(\"the depths\")\n    else if I.y >= waterLevel\n      if I.airborne\n        land()\n\n      speed = I.velocity.magnitude()\n\n      speed = speed.approachByRatio(I.waterSpeed, 0.1)\n\n      I.velocity = Point.fromAngle(I.heading).scale(speed)\n    else\n      if !I.airborne\n        launch()\n\n      I.velocity.add$(GRAVITY)\n\n  return self\n",
+      "content": "{Util:{defaults}, GameObject} = require \"dust\"\n\nBase = require \"./base\"\n\nmodule.exports = GameObject.registry.Player = (I={}) ->\n  defaults I,\n    airborne: true\n    heading: Math.TAU / 4\n    sprite: \"player\"\n    launchBoost: 1.5\n    radius: 8\n    rotationVelocity: Math.TAU / 64\n    waterSpeed: 5\n    velocity: Point(0, 0)\n    zIndex: 5\n\n  self = Base(I)\n\n  GRAVITY = Point(0, 0.25)\n\n  sprites = []\n  angleSprites = 8\n  angleSprites.times (n) ->\n    t = n * 2\n    sprites.push Sprite.loadByName(\"player_#{t}\")\n\n  setSprite = ->\n    angleSprites\n    n = (angleSprites * I.heading / Math.TAU).round().mod(angleSprites)\n\n    I.sprite = sprites[n]\n\n  wipeout = (causeOfDeath) ->\n    I.active = false\n\n    Sound.play(\"crash\")\n\n    engine.add\n      class: \"GameOver\"\n      causeOfDeath: causeOfDeath\n      distance: I.x\n      time: I.age\n      x: I.x\n      y: I.y\n\n  land = () ->\n    if I.velocity.x > 1.5\n      unless 0 <= I.heading <= Math.PI/2\n        wipeout(\"bad landing\")\n    else if I.velocity.x < -1.5\n      unless Math.PI/2 <= I.heading <= Math.PI\n        wipeout(\"bad landing\")\n    else\n      unless Math.PI/5 <= I.heading <= 4*Math.PI/5\n        wipeout(\"bad landing\")\n\n    I.airborne = false\n\n    Sound.play(\"land\")\n\n  launch = () ->\n    I.airborne = true\n    I.velocity.scale$(I.launchBoost)\n\n    Sound.play(\"splash\")\n\n  self.bind \"drawDebug\", (canvas) ->\n    canvas.strokeColor(\"rgba(0, 255, 0, 0.75)\")\n\n    p = Point.fromAngle(I.heading).scale(10)\n    canvas.drawLine(I.x - p.x, I.y - p.y, I.x + p.x, I.y + p.y, 1)\n\n  self.bind \"update\", ->\n    I.x += I.velocity.x\n    I.y += I.velocity.y\n\n    I.waterSpeed = 5 + I.age / 200\n\n    circle = self.circle()\n    hitRock = false\n    engine.find(\"Rock\").each (rock) ->\n      if Collision.circular circle, rock.circle()\n        hitRock = true\n\n    if hitRock\n      wipeout(\"a rock\")\n      return\n\n    hitDestruction = false\n    engine.find(\".destruction\").each (destruction) ->\n      if I.x < destruction.I.x\n        hitDestruction = true\n    if hitDestruction\n      wipeout(\"a rogue wave\")\n      return\n\n    waterLevel = engine.find(\".water\").first().I.y\n    depthsLevel = waterLevel + 160\n\n    headingChange = I.rotationVelocity\n    headingChange *= 2 if I.airborne\n\n    if keydown.left\n      I.heading -= headingChange\n    if keydown.right\n      I.heading += headingChange\n\n    # I.heading = I.heading.constrainRotation()\n\n    setSprite()\n\n    if I.y > depthsLevel\n      wipeout(\"the depths\")\n    else if I.y >= waterLevel\n      if I.airborne\n        land()\n\n      speed = I.velocity.magnitude()\n\n      speed = speed.approachByRatio(I.waterSpeed, 0.1)\n\n      I.velocity = Point.fromAngle(I.heading).scale(speed)\n    else\n      if !I.airborne\n        launch()\n\n      I.velocity = I.velocity.add(GRAVITY)\n\n  return self\n",
       "type": "blob"
     },
     "src/rock.coffee": {
@@ -105,13 +105,19 @@ window["STRd6/SurfN-2-Sur5:update-to-latest-engine"]({
     "pixie.cson": {
       "path": "pixie.cson",
       "mode": "100644",
-      "content": "author: \"STRd6\"\nname: \"SurfN-2-Sur5\"\nwidth: 480\nheight: 320\nentryPoint: \"src/main\"\nremoteDependencies: [\n  \"https://code.jquery.com/jquery-1.10.1.min.js\"\n]\ndependencies:\n  dust: \"distri/dust:v0.1.8-alpha.0\"\n",
+      "content": "author: \"STRd6\"\nname: \"SurfN-2-Sur5\"\nwidth: 480\nheight: 320\nentryPoint: \"src/main\"\nremoteDependencies: [\n  \"https://code.jquery.com/jquery-1.10.1.min.js\"\n]\ndependencies:\n  dust: \"distri/dust:v0.1.8-alpha.0\"\n  sound: \"distri/sound:v0.1.0\"\n",
       "type": "blob"
     },
     "duct_tape.coffee.md": {
       "path": "duct_tape.coffee.md",
       "mode": "100644",
-      "content": "Duct Tape\n=========\n\nLoad Sprites by named resource.\n\n    images = require \"./images\"\n\n    Sprite.loadByName = (name) ->\n      url = images[name]\n\n      Sprite.load(url)\n",
+      "content": "Duct Tape\n=========\n\nLoad Sprites by named resource.\n\n    {Util:{extend}} = require \"dust\"\n    images = require \"./images\"\n\n    Sprite.loadByName = (name) ->\n      url = images[name]\n\n      Sprite.load(url)\n\n    extend Number.prototype,\n      approach: (target, maxDelta) ->\n        this + (target - this).clamp(-maxDelta, maxDelta)\n\n      approachByRatio: (target, ratio) ->\n        @approach(target, this * ratio)\n",
+      "type": "blob"
+    },
+    "water.coffee.md": {
+      "path": "water.coffee.md",
+      "mode": "100644",
+      "content": "Water\n=====\n\n    {Util:{defaults}, GameObject} = require \"dust\"\n\n    module.exports = GameObject.registry.Water = (I={}) ->\n      defaults I,\n        color: \"blue\"\n        water: true\n        x: 0\n        y: 160\n        zIndex: 0\n\n      self = GameObject(I)\n\n      self.attrAccessor \"water\"\n\n      return self\n",
       "type": "blob"
     }
   },
@@ -133,7 +139,7 @@ window["STRd6/SurfN-2-Sur5:update-to-latest-engine"]({
     },
     "src/main": {
       "path": "src/main",
-      "content": "(function() {\n  var DEBUG_DRAW, Dust, Music, churnSprites, clock, depthsSprites, height, restartGame, setUpGame, waveSprites, width, _ref;\n\n  Dust = require(\"dust\");\n\n  global.Collision = Dust.Collision;\n\n  require(\"../duct_tape\");\n\n  require(\"./cloud\");\n\n  require(\"./player\");\n\n  require(\"./rock\");\n\n  Music = require(\"./music\");\n\n  DEBUG_DRAW = false;\n\n  parent.gameControlData = {\n    Movement: \"Left/Right Arrow Keys\",\n    Restart: \"Enter or Spacebar\"\n  };\n\n  _ref = require(\"/pixie\"), width = _ref.width, height = _ref.height;\n\n  window.engine = Dust.init({\n    width: width,\n    height: height\n  });\n\n  engine.I.backgroundColor = \"#CC5500\";\n\n  depthsSprites = [Sprite.loadByName(\"depths0\"), Sprite.loadByName(\"depths1\")];\n\n  churnSprites = [Sprite.loadByName(\"churn\")];\n\n  waveSprites = [\"wave\", \"wave1\"].map(function(name) {\n    return Sprite.loadByName(name);\n  });\n\n  setUpGame = function() {\n    var box, destruction, player, water;\n    player = engine.add({\n      \"class\": \"Player\",\n      x: 0,\n      y: 0\n    });\n    box = engine.add({\n      \"class\": \"Rock\",\n      x: 60,\n      y: 180\n    });\n    4..times(function(n) {\n      return engine.add({\n        \"class\": \"Cloud\",\n        x: n * 128\n      });\n    });\n    water = engine.add({\n      color: \"blue\",\n      water: true,\n      x: 0,\n      y: 160,\n      width: width + 64,\n      height: height,\n      zIndex: 0\n    });\n    destruction = engine.add({\n      color: \"red\",\n      destruction: true,\n      x: -240,\n      y: 0,\n      width: 10,\n      height: height,\n      zIndex: 7\n    });\n    destruction.bind(\"update\", function() {\n      destruction.I.x += 2 + destruction.I.age / 175;\n      return destruction.I.x = destruction.I.x.clamp(player.I.x - 4 * width, Infinity);\n    });\n    destruction.bind(\"draw\", function(canvas) {\n      waveSprites.wrap((destruction.I.age / 8).floor()).fill(canvas, -width, 0, width + 16, height);\n      return churnSprites.wrap((destruction.I.age / 8).floor()).fill(canvas, 0, 0, 32, height);\n    });\n    water.bind(\"update\", function() {\n      var amplitude;\n      water.I.x = player.I.x - width / 2 - 32;\n      amplitude = 15 + water.I.age / 30;\n      if (rand(3) === 0 && water.I.age.mod(90) === 0) {\n        Sound.play(\"wave\");\n      }\n      return water.I.y = 160 + amplitude * Math.sin(Math.TAU / 120 * water.I.age);\n    });\n    return water.bind(\"draw\", function(canvas) {\n      return canvas.withTransform(Matrix.translation(-player.I.x.mod(32), 0), function() {\n        return depthsSprites.wrap((water.I.age / 8).floor()).fill(canvas, 0, height / 2, water.I.width, height);\n      });\n    });\n  };\n\n  setUpGame();\n\n  clock = 0;\n\n  engine.bind(\"update\", function() {\n    var player;\n    clock += 1;\n    if (player = engine.find(\"Player\").first()) {\n      if (clock % 30 === 0) {\n        engine.add({\n          \"class\": \"Rock\",\n          x: player.I.x + 2 * width\n        });\n      }\n      if (clock % 55 === 0) {\n        return engine.add({\n          \"class\": \"Cloud\",\n          x: player.I.x + 2 * width\n        });\n      }\n    }\n  });\n\n  restartGame = function() {\n    var doRestart;\n    doRestart = function() {\n      engine.I.objects.clear();\n      engine.unbind(\"afterUpdate\", doRestart);\n      return setUpGame();\n    };\n    return engine.bind(\"afterUpdate\", doRestart);\n  };\n\n  engine.bind(\"afterUpdate\", function() {\n    var player;\n    if (player = engine.find(\"Player\").first()) {\n      return engine.I.cameraTransform = Matrix.translation(width / 2 - player.I.x, height / 2 - player.I.y);\n    }\n  });\n\n  engine.bind(\"draw\", function(canvas) {\n    if (DEBUG_DRAW) {\n      return engine.find(\"Player, Rock\").invoke(\"trigger\", \"drawDebug\", canvas);\n    }\n  });\n\n  engine.bind(\"restart\", function() {\n    return restartGame();\n  });\n\n  Music.play(\"SurfN-2-Sur5\");\n\n  engine.start();\n\n}).call(this);\n\n//# sourceURL=src/main.coffee",
+      "content": "(function() {\n  var DEBUG_DRAW, Dust, Music, churnSprites, clock, depthsSprites, height, restartGame, setUpGame, waveSprites, width, _ref;\n\n  Dust = require(\"dust\");\n\n  global.Collision = Dust.Collision;\n\n  global.Sound = require(\"sound\");\n\n  require(\"../duct_tape\");\n\n  require(\"./cloud\");\n\n  require(\"./player\");\n\n  require(\"./rock\");\n\n  require(\"/water\");\n\n  Music = require(\"./music\");\n\n  DEBUG_DRAW = false;\n\n  parent.gameControlData = {\n    Movement: \"Left/Right Arrow Keys\",\n    Restart: \"Enter or Spacebar\"\n  };\n\n  _ref = require(\"/pixie\"), width = _ref.width, height = _ref.height;\n\n  window.engine = Dust.init({\n    width: width,\n    height: height\n  });\n\n  engine.I.backgroundColor = \"#CC5500\";\n\n  depthsSprites = [Sprite.loadByName(\"depths0\"), Sprite.loadByName(\"depths1\")];\n\n  churnSprites = [Sprite.loadByName(\"churn\")];\n\n  waveSprites = [\"wave\", \"wave1\"].map(function(name) {\n    return Sprite.loadByName(name);\n  });\n\n  setUpGame = function() {\n    var box, destruction, player, water;\n    player = engine.add({\n      \"class\": \"Player\",\n      x: 0,\n      y: 0\n    });\n    box = engine.add({\n      \"class\": \"Rock\",\n      x: 60,\n      y: 180\n    });\n    4..times(function(n) {\n      return engine.add({\n        \"class\": \"Cloud\",\n        x: n * 128\n      });\n    });\n    water = engine.add({\n      \"class\": \"Water\",\n      width: width + 64,\n      height: height\n    });\n    destruction = engine.add({\n      color: \"red\",\n      destruction: true,\n      x: -240,\n      y: 0,\n      width: 10,\n      height: height,\n      zIndex: 7\n    });\n    destruction.bind(\"update\", function() {\n      destruction.I.x += 2 + destruction.I.age / 175;\n      return destruction.I.x = destruction.I.x.clamp(player.I.x - 4 * width, Infinity);\n    });\n    destruction.bind(\"draw\", function(canvas) {\n      waveSprites.wrap((destruction.I.age / 8).floor()).fill(canvas, -width, 0, width + 16, height);\n      return churnSprites.wrap((destruction.I.age / 8).floor()).fill(canvas, 0, 0, 32, height);\n    });\n    water.bind(\"update\", function() {\n      var amplitude;\n      water.I.x = player.I.x - width / 2 - 32;\n      amplitude = 15 + water.I.age / 30;\n      if (rand(3) === 0 && water.I.age.mod(90) === 0) {\n        Sound.play(\"wave\");\n      }\n      return water.I.y = 160 + amplitude * Math.sin(Math.TAU / 120 * water.I.age);\n    });\n    return water.bind(\"draw\", function(canvas) {\n      return canvas.withTransform(Matrix.translation(-player.I.x.mod(32), 0), function() {\n        return depthsSprites.wrap((water.I.age / 8).floor()).fill(canvas, 0, height / 2, water.I.width, height);\n      });\n    });\n  };\n\n  setUpGame();\n\n  clock = 0;\n\n  engine.bind(\"update\", function() {\n    var player;\n    clock += 1;\n    if (player = engine.find(\"Player\").first()) {\n      if (clock % 30 === 0) {\n        engine.add({\n          \"class\": \"Rock\",\n          x: player.I.x + 2 * width\n        });\n      }\n      if (clock % 55 === 0) {\n        return engine.add({\n          \"class\": \"Cloud\",\n          x: player.I.x + 2 * width\n        });\n      }\n    }\n  });\n\n  restartGame = function() {\n    var doRestart;\n    doRestart = function() {\n      engine.I.objects.clear();\n      engine.unbind(\"afterUpdate\", doRestart);\n      return setUpGame();\n    };\n    return engine.bind(\"afterUpdate\", doRestart);\n  };\n\n  engine.bind(\"afterUpdate\", function() {\n    var player;\n    if (player = engine.find(\"Player\").first()) {\n      return engine.I.cameraTransform = Matrix.translation(width / 2 - player.I.x, height / 2 - player.I.y);\n    }\n  });\n\n  engine.bind(\"draw\", function(canvas) {\n    if (DEBUG_DRAW) {\n      return engine.find(\"Player, Rock\").invoke(\"trigger\", \"drawDebug\", canvas);\n    }\n  });\n\n  engine.bind(\"restart\", function() {\n    return restartGame();\n  });\n\n  Music.play(\"SurfN-2-Sur5\");\n\n  engine.start();\n\n}).call(this);\n\n//# sourceURL=src/main.coffee",
       "type": "blob"
     },
     "src/music": {
@@ -143,7 +149,7 @@ window["STRd6/SurfN-2-Sur5:update-to-latest-engine"]({
     },
     "src/player": {
       "path": "src/player",
-      "content": "(function() {\n  var Base, GameObject, defaults, _ref, _ref1;\n\n  _ref = require(\"dust\"), (_ref1 = _ref.Util, defaults = _ref1.defaults), GameObject = _ref.GameObject;\n\n  Base = require(\"./base\");\n\n  module.exports = GameObject.registry.Player = function(I) {\n    var GRAVITY, angleSprites, land, launch, self, setSprite, sprites, wipeout;\n    if (I == null) {\n      I = {};\n    }\n    defaults(I, {\n      airborne: true,\n      heading: Math.TAU / 4,\n      sprite: \"player\",\n      launchBoost: 1.5,\n      radius: 8,\n      rotationVelocity: Math.TAU / 64,\n      waterSpeed: 5,\n      velocity: Point(0, 0),\n      zIndex: 5\n    });\n    self = Base(I);\n    GRAVITY = Point(0, 0.25);\n    sprites = [];\n    angleSprites = 8;\n    angleSprites.times(function(n) {\n      var t;\n      t = n * 2;\n      return sprites.push(Sprite.loadByName(\"player_\" + t));\n    });\n    setSprite = function() {\n      angleSprites;\n      var n;\n      n = (angleSprites * I.heading / Math.TAU).round().mod(angleSprites);\n      return I.sprite = sprites[n];\n    };\n    wipeout = function(causeOfDeath) {\n      I.active = false;\n      Sound.play(\"crash\");\n      return engine.add({\n        \"class\": \"GameOver\",\n        causeOfDeath: causeOfDeath,\n        distance: I.x,\n        time: I.age,\n        x: I.x,\n        y: I.y\n      });\n    };\n    land = function() {\n      var _ref2, _ref3, _ref4;\n      if (I.velocity.x > 1.5) {\n        if (!((0 <= (_ref2 = I.heading) && _ref2 <= Math.PI / 2))) {\n          wipeout(\"bad landing\");\n        }\n      } else if (I.velocity.x < -1.5) {\n        if (!((Math.PI / 2 <= (_ref3 = I.heading) && _ref3 <= Math.PI))) {\n          wipeout(\"bad landing\");\n        }\n      } else {\n        if (!((Math.PI / 5 <= (_ref4 = I.heading) && _ref4 <= 4 * Math.PI / 5))) {\n          wipeout(\"bad landing\");\n        }\n      }\n      I.airborne = false;\n      return Sound.play(\"land\");\n    };\n    launch = function() {\n      I.airborne = true;\n      I.velocity.scale$(I.launchBoost);\n      return Sound.play(\"splash\");\n    };\n    self.bind(\"drawDebug\", function(canvas) {\n      var p;\n      canvas.strokeColor(\"rgba(0, 255, 0, 0.75)\");\n      p = Point.fromAngle(I.heading).scale(10);\n      return canvas.drawLine(I.x - p.x, I.y - p.y, I.x + p.x, I.y + p.y, 1);\n    });\n    self.bind(\"update\", function() {\n      var circle, depthsLevel, headingChange, hitDestruction, hitRock, speed, waterLevel;\n      I.x += I.velocity.x;\n      I.y += I.velocity.y;\n      I.waterSpeed = 5 + I.age / 200;\n      circle = self.circle();\n      hitRock = false;\n      engine.find(\"Rock\").each(function(rock) {\n        if (Collision.circular(circle, rock.circle())) {\n          return hitRock = true;\n        }\n      });\n      if (hitRock) {\n        wipeout(\"a rock\");\n        return;\n      }\n      hitDestruction = false;\n      engine.find(\".destruction\").each(function(destruction) {\n        if (I.x < destruction.I.x) {\n          return hitDestruction = true;\n        }\n      });\n      if (hitDestruction) {\n        wipeout(\"a rogue wave\");\n        return;\n      }\n      waterLevel = engine.find(\".water\").first().I.y;\n      depthsLevel = waterLevel + 160;\n      headingChange = I.rotationVelocity;\n      if (I.airborne) {\n        headingChange *= 2;\n      }\n      if (keydown.left) {\n        I.heading -= headingChange;\n      }\n      if (keydown.right) {\n        I.heading += headingChange;\n      }\n      I.heading = I.heading.constrainRotation();\n      setSprite();\n      if (I.y > depthsLevel) {\n        return wipeout(\"the depths\");\n      } else if (I.y >= waterLevel) {\n        if (I.airborne) {\n          land();\n        }\n        speed = I.velocity.magnitude();\n        speed = speed.approachByRatio(I.waterSpeed, 0.1);\n        return I.velocity = Point.fromAngle(I.heading).scale(speed);\n      } else {\n        if (!I.airborne) {\n          launch();\n        }\n        return I.velocity.add$(GRAVITY);\n      }\n    });\n    return self;\n  };\n\n}).call(this);\n\n//# sourceURL=src/player.coffee",
+      "content": "(function() {\n  var Base, GameObject, defaults, _ref, _ref1;\n\n  _ref = require(\"dust\"), (_ref1 = _ref.Util, defaults = _ref1.defaults), GameObject = _ref.GameObject;\n\n  Base = require(\"./base\");\n\n  module.exports = GameObject.registry.Player = function(I) {\n    var GRAVITY, angleSprites, land, launch, self, setSprite, sprites, wipeout;\n    if (I == null) {\n      I = {};\n    }\n    defaults(I, {\n      airborne: true,\n      heading: Math.TAU / 4,\n      sprite: \"player\",\n      launchBoost: 1.5,\n      radius: 8,\n      rotationVelocity: Math.TAU / 64,\n      waterSpeed: 5,\n      velocity: Point(0, 0),\n      zIndex: 5\n    });\n    self = Base(I);\n    GRAVITY = Point(0, 0.25);\n    sprites = [];\n    angleSprites = 8;\n    angleSprites.times(function(n) {\n      var t;\n      t = n * 2;\n      return sprites.push(Sprite.loadByName(\"player_\" + t));\n    });\n    setSprite = function() {\n      angleSprites;\n      var n;\n      n = (angleSprites * I.heading / Math.TAU).round().mod(angleSprites);\n      return I.sprite = sprites[n];\n    };\n    wipeout = function(causeOfDeath) {\n      I.active = false;\n      Sound.play(\"crash\");\n      return engine.add({\n        \"class\": \"GameOver\",\n        causeOfDeath: causeOfDeath,\n        distance: I.x,\n        time: I.age,\n        x: I.x,\n        y: I.y\n      });\n    };\n    land = function() {\n      var _ref2, _ref3, _ref4;\n      if (I.velocity.x > 1.5) {\n        if (!((0 <= (_ref2 = I.heading) && _ref2 <= Math.PI / 2))) {\n          wipeout(\"bad landing\");\n        }\n      } else if (I.velocity.x < -1.5) {\n        if (!((Math.PI / 2 <= (_ref3 = I.heading) && _ref3 <= Math.PI))) {\n          wipeout(\"bad landing\");\n        }\n      } else {\n        if (!((Math.PI / 5 <= (_ref4 = I.heading) && _ref4 <= 4 * Math.PI / 5))) {\n          wipeout(\"bad landing\");\n        }\n      }\n      I.airborne = false;\n      return Sound.play(\"land\");\n    };\n    launch = function() {\n      I.airborne = true;\n      I.velocity.scale$(I.launchBoost);\n      return Sound.play(\"splash\");\n    };\n    self.bind(\"drawDebug\", function(canvas) {\n      var p;\n      canvas.strokeColor(\"rgba(0, 255, 0, 0.75)\");\n      p = Point.fromAngle(I.heading).scale(10);\n      return canvas.drawLine(I.x - p.x, I.y - p.y, I.x + p.x, I.y + p.y, 1);\n    });\n    self.bind(\"update\", function() {\n      var circle, depthsLevel, headingChange, hitDestruction, hitRock, speed, waterLevel;\n      I.x += I.velocity.x;\n      I.y += I.velocity.y;\n      I.waterSpeed = 5 + I.age / 200;\n      circle = self.circle();\n      hitRock = false;\n      engine.find(\"Rock\").each(function(rock) {\n        if (Collision.circular(circle, rock.circle())) {\n          return hitRock = true;\n        }\n      });\n      if (hitRock) {\n        wipeout(\"a rock\");\n        return;\n      }\n      hitDestruction = false;\n      engine.find(\".destruction\").each(function(destruction) {\n        if (I.x < destruction.I.x) {\n          return hitDestruction = true;\n        }\n      });\n      if (hitDestruction) {\n        wipeout(\"a rogue wave\");\n        return;\n      }\n      waterLevel = engine.find(\".water\").first().I.y;\n      depthsLevel = waterLevel + 160;\n      headingChange = I.rotationVelocity;\n      if (I.airborne) {\n        headingChange *= 2;\n      }\n      if (keydown.left) {\n        I.heading -= headingChange;\n      }\n      if (keydown.right) {\n        I.heading += headingChange;\n      }\n      setSprite();\n      if (I.y > depthsLevel) {\n        return wipeout(\"the depths\");\n      } else if (I.y >= waterLevel) {\n        if (I.airborne) {\n          land();\n        }\n        speed = I.velocity.magnitude();\n        speed = speed.approachByRatio(I.waterSpeed, 0.1);\n        return I.velocity = Point.fromAngle(I.heading).scale(speed);\n      } else {\n        if (!I.airborne) {\n          launch();\n        }\n        return I.velocity = I.velocity.add(GRAVITY);\n      }\n    });\n    return self;\n  };\n\n}).call(this);\n\n//# sourceURL=src/player.coffee",
       "type": "blob"
     },
     "src/rock": {
@@ -158,12 +164,17 @@ window["STRd6/SurfN-2-Sur5:update-to-latest-engine"]({
     },
     "pixie": {
       "path": "pixie",
-      "content": "module.exports = {\"author\":\"STRd6\",\"name\":\"SurfN-2-Sur5\",\"width\":480,\"height\":320,\"entryPoint\":\"src/main\",\"remoteDependencies\":[\"https://code.jquery.com/jquery-1.10.1.min.js\"],\"dependencies\":{\"dust\":\"distri/dust:v0.1.8-alpha.0\"}};",
+      "content": "module.exports = {\"author\":\"STRd6\",\"name\":\"SurfN-2-Sur5\",\"width\":480,\"height\":320,\"entryPoint\":\"src/main\",\"remoteDependencies\":[\"https://code.jquery.com/jquery-1.10.1.min.js\"],\"dependencies\":{\"dust\":\"distri/dust:v0.1.8-alpha.0\",\"sound\":\"distri/sound:v0.1.0\"}};",
       "type": "blob"
     },
     "duct_tape": {
       "path": "duct_tape",
-      "content": "(function() {\n  var images;\n\n  images = require(\"./images\");\n\n  Sprite.loadByName = function(name) {\n    var url;\n    url = images[name];\n    return Sprite.load(url);\n  };\n\n}).call(this);\n\n//# sourceURL=duct_tape.coffee",
+      "content": "(function() {\n  var extend, images;\n\n  extend = require(\"dust\").Util.extend;\n\n  images = require(\"./images\");\n\n  Sprite.loadByName = function(name) {\n    var url;\n    url = images[name];\n    return Sprite.load(url);\n  };\n\n  extend(Number.prototype, {\n    approach: function(target, maxDelta) {\n      return this + (target - this).clamp(-maxDelta, maxDelta);\n    },\n    approachByRatio: function(target, ratio) {\n      return this.approach(target, this * ratio);\n    }\n  });\n\n}).call(this);\n\n//# sourceURL=duct_tape.coffee",
+      "type": "blob"
+    },
+    "water": {
+      "path": "water",
+      "content": "(function() {\n  var GameObject, defaults, _ref, _ref1;\n\n  _ref = require(\"dust\"), (_ref1 = _ref.Util, defaults = _ref1.defaults), GameObject = _ref.GameObject;\n\n  module.exports = GameObject.registry.Water = function(I) {\n    var self;\n    if (I == null) {\n      I = {};\n    }\n    defaults(I, {\n      color: \"blue\",\n      water: true,\n      x: 0,\n      y: 160,\n      zIndex: 0\n    });\n    self = GameObject(I);\n    self.attrAccessor(\"water\");\n    return self;\n  };\n\n}).call(this);\n\n//# sourceURL=water.coffee",
       "type": "blob"
     }
   },
@@ -3947,6 +3958,178 @@ window["STRd6/SurfN-2-Sur5:update-to-latest-engine"]({
           }
         }
       }
+    },
+    "sound": {
+      "source": {
+        "LICENSE": {
+          "path": "LICENSE",
+          "mode": "100644",
+          "content": "The MIT License (MIT)\n\nCopyright (c) 2014 distri\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of\nthis software and associated documentation files (the \"Software\"), to deal in\nthe Software without restriction, including without limitation the rights to\nuse, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of\nthe Software, and to permit persons to whom the Software is furnished to do so,\nsubject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS\nFOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR\nCOPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER\nIN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN\nCONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.\n",
+          "type": "blob"
+        },
+        "README.md": {
+          "path": "README.md",
+          "mode": "100644",
+          "content": "sound\n=====\n\nSounds in da browser.\n",
+          "type": "blob"
+        },
+        "main.coffee.md": {
+          "path": "main.coffee.md",
+          "mode": "100644",
+          "content": "Sound\n=====\n\nA simple interface for playing sounds in games.\n\nHelpers\n-------\n\n    extend = (target, sources...) ->\n      for source in sources\n        for name of source\n          target[name] = source[name]\n\n      return target\n\nImplementation\n--------------\n\n    format = \"wav\"\n    sounds = {}\n    globalVolume = 1\n\n    loadSoundChannel = (name) ->\n      url = \"#{Sound.basePath}/#{name}.#{format}\"\n\n      sound = extend document.createElement(\"audio\"),\n        autobuffer: true\n        preload: 'auto'\n        src: url\n\n    module.exports = Sound = (id, maxChannels) ->\n      play: ->\n        Sound.play(id, maxChannels)\n\n      stop: ->\n        Sound.stop(id)\n\n    extend Sound,\n      # TODO: Figure out handling of audio resources better\n      basePath: \"http://www.danielx.net/cdn/assets/\"\n\nSet the global volume modifier for all sound effects.\n\nAny value set is clamped between 0 and 1. This is multiplied\ninto each individual effect that plays.\n\nIf no argument is given return the current global sound effect volume.\n\n      volume: (newVolume) ->\n        if newVolume?\n          globalVolume = newVolume.clamp(0, 1)\n  \n        return globalVolume\n\nPlay a sound from your sounds directory with the given name.\n  \n>     # plays a sound called explode from your sounds directory\n>     Sound.play('explode')\n\n      play: (id, maxChannels) ->\n        # TODO: Too many channels crash Chrome!!!1\n        maxChannels ||= 4\n  \n        unless sounds[id]\n          sounds[id] = [loadSoundChannel(id)]\n  \n        channels = sounds[id]\n\n        freeChannels = channels.select (sound) ->\n          sound.currentTime is sound.duration or sound.currentTime is 0\n  \n        if channel = freeChannels.first()\n          try\n            channel.currentTime = 0\n  \n          channel.volume = globalVolume\n          channel.play()\n        else\n          if !maxChannels || channels.length < maxChannels\n            sound = loadSoundChannel(id)\n            channels.push(sound)\n            sound.play()\n            sound.volume = globalVolume\n\nStop a sound while it is playing.\n  \n>     Sound.stop('explode')\n\n      stop: (id) ->\n        sounds[id]?.stop()\n\nSet the global volume modifier for all sound effects.\n\nAny value set is clamped between 0 and 1. This is multiplied\ninto each individual effect that plays.\n\nIf no argument is given return the current global sound effect volume.\n\n    Sound.globalVolume = Sound.volume\n",
+          "type": "blob"
+        },
+        "pixie.cson": {
+          "path": "pixie.cson",
+          "mode": "100644",
+          "content": "version: \"0.1.0\"\n",
+          "type": "blob"
+        },
+        "test/sound.coffee": {
+          "path": "test/sound.coffee",
+          "mode": "100644",
+          "content": "Sound = require \"/main\"\n\ndescribe \"Sound\", ->\n  it \"Should do stuff\", ->\n    assert Sound.play\n",
+          "type": "blob"
+        }
+      },
+      "distribution": {
+        "main": {
+          "path": "main",
+          "content": "(function() {\n  var Sound, extend, format, globalVolume, loadSoundChannel, sounds,\n    __slice = [].slice;\n\n  extend = function() {\n    var name, source, sources, target, _i, _len;\n    target = arguments[0], sources = 2 <= arguments.length ? __slice.call(arguments, 1) : [];\n    for (_i = 0, _len = sources.length; _i < _len; _i++) {\n      source = sources[_i];\n      for (name in source) {\n        target[name] = source[name];\n      }\n    }\n    return target;\n  };\n\n  format = \"wav\";\n\n  sounds = {};\n\n  globalVolume = 1;\n\n  loadSoundChannel = function(name) {\n    var sound, url;\n    url = \"\" + Sound.basePath + \"/\" + name + \".\" + format;\n    return sound = extend(document.createElement(\"audio\"), {\n      autobuffer: true,\n      preload: 'auto',\n      src: url\n    });\n  };\n\n  module.exports = Sound = function(id, maxChannels) {\n    return {\n      play: function() {\n        return Sound.play(id, maxChannels);\n      },\n      stop: function() {\n        return Sound.stop(id);\n      }\n    };\n  };\n\n  extend(Sound, {\n    basePath: \"http://www.danielx.net/cdn/assets/\",\n    volume: function(newVolume) {\n      if (newVolume != null) {\n        globalVolume = newVolume.clamp(0, 1);\n      }\n      return globalVolume;\n    },\n    play: function(id, maxChannels) {\n      var channel, channels, freeChannels, sound;\n      maxChannels || (maxChannels = 4);\n      if (!sounds[id]) {\n        sounds[id] = [loadSoundChannel(id)];\n      }\n      channels = sounds[id];\n      freeChannels = channels.select(function(sound) {\n        return sound.currentTime === sound.duration || sound.currentTime === 0;\n      });\n      if (channel = freeChannels.first()) {\n        try {\n          channel.currentTime = 0;\n        } catch (_error) {}\n        channel.volume = globalVolume;\n        return channel.play();\n      } else {\n        if (!maxChannels || channels.length < maxChannels) {\n          sound = loadSoundChannel(id);\n          channels.push(sound);\n          sound.play();\n          return sound.volume = globalVolume;\n        }\n      }\n    },\n    stop: function(id) {\n      var _ref;\n      return (_ref = sounds[id]) != null ? _ref.stop() : void 0;\n    }\n  });\n\n  Sound.globalVolume = Sound.volume;\n\n}).call(this);\n\n//# sourceURL=main.coffee",
+          "type": "blob"
+        },
+        "pixie": {
+          "path": "pixie",
+          "content": "module.exports = {\"version\":\"0.1.0\"};",
+          "type": "blob"
+        },
+        "test/sound": {
+          "path": "test/sound",
+          "content": "(function() {\n  var Sound;\n\n  Sound = require(\"/main\");\n\n  describe(\"Sound\", function() {\n    return it(\"Should do stuff\", function() {\n      return assert(Sound.play);\n    });\n  });\n\n}).call(this);\n\n//# sourceURL=test/sound.coffee",
+          "type": "blob"
+        }
+      },
+      "progenitor": {
+        "url": "http://strd6.github.io/editor/"
+      },
+      "version": "0.1.0",
+      "entryPoint": "main",
+      "repository": {
+        "id": 17075989,
+        "name": "sound",
+        "full_name": "distri/sound",
+        "owner": {
+          "login": "distri",
+          "id": 6005125,
+          "avatar_url": "https://identicons.github.com/f90c81ffc1498e260c820082f2e7ca5f.png",
+          "gravatar_id": null,
+          "url": "https://api.github.com/users/distri",
+          "html_url": "https://github.com/distri",
+          "followers_url": "https://api.github.com/users/distri/followers",
+          "following_url": "https://api.github.com/users/distri/following{/other_user}",
+          "gists_url": "https://api.github.com/users/distri/gists{/gist_id}",
+          "starred_url": "https://api.github.com/users/distri/starred{/owner}{/repo}",
+          "subscriptions_url": "https://api.github.com/users/distri/subscriptions",
+          "organizations_url": "https://api.github.com/users/distri/orgs",
+          "repos_url": "https://api.github.com/users/distri/repos",
+          "events_url": "https://api.github.com/users/distri/events{/privacy}",
+          "received_events_url": "https://api.github.com/users/distri/received_events",
+          "type": "Organization",
+          "site_admin": false
+        },
+        "private": false,
+        "html_url": "https://github.com/distri/sound",
+        "description": "Sounds in da browser.",
+        "fork": false,
+        "url": "https://api.github.com/repos/distri/sound",
+        "forks_url": "https://api.github.com/repos/distri/sound/forks",
+        "keys_url": "https://api.github.com/repos/distri/sound/keys{/key_id}",
+        "collaborators_url": "https://api.github.com/repos/distri/sound/collaborators{/collaborator}",
+        "teams_url": "https://api.github.com/repos/distri/sound/teams",
+        "hooks_url": "https://api.github.com/repos/distri/sound/hooks",
+        "issue_events_url": "https://api.github.com/repos/distri/sound/issues/events{/number}",
+        "events_url": "https://api.github.com/repos/distri/sound/events",
+        "assignees_url": "https://api.github.com/repos/distri/sound/assignees{/user}",
+        "branches_url": "https://api.github.com/repos/distri/sound/branches{/branch}",
+        "tags_url": "https://api.github.com/repos/distri/sound/tags",
+        "blobs_url": "https://api.github.com/repos/distri/sound/git/blobs{/sha}",
+        "git_tags_url": "https://api.github.com/repos/distri/sound/git/tags{/sha}",
+        "git_refs_url": "https://api.github.com/repos/distri/sound/git/refs{/sha}",
+        "trees_url": "https://api.github.com/repos/distri/sound/git/trees{/sha}",
+        "statuses_url": "https://api.github.com/repos/distri/sound/statuses/{sha}",
+        "languages_url": "https://api.github.com/repos/distri/sound/languages",
+        "stargazers_url": "https://api.github.com/repos/distri/sound/stargazers",
+        "contributors_url": "https://api.github.com/repos/distri/sound/contributors",
+        "subscribers_url": "https://api.github.com/repos/distri/sound/subscribers",
+        "subscription_url": "https://api.github.com/repos/distri/sound/subscription",
+        "commits_url": "https://api.github.com/repos/distri/sound/commits{/sha}",
+        "git_commits_url": "https://api.github.com/repos/distri/sound/git/commits{/sha}",
+        "comments_url": "https://api.github.com/repos/distri/sound/comments{/number}",
+        "issue_comment_url": "https://api.github.com/repos/distri/sound/issues/comments/{number}",
+        "contents_url": "https://api.github.com/repos/distri/sound/contents/{+path}",
+        "compare_url": "https://api.github.com/repos/distri/sound/compare/{base}...{head}",
+        "merges_url": "https://api.github.com/repos/distri/sound/merges",
+        "archive_url": "https://api.github.com/repos/distri/sound/{archive_format}{/ref}",
+        "downloads_url": "https://api.github.com/repos/distri/sound/downloads",
+        "issues_url": "https://api.github.com/repos/distri/sound/issues{/number}",
+        "pulls_url": "https://api.github.com/repos/distri/sound/pulls{/number}",
+        "milestones_url": "https://api.github.com/repos/distri/sound/milestones{/number}",
+        "notifications_url": "https://api.github.com/repos/distri/sound/notifications{?since,all,participating}",
+        "labels_url": "https://api.github.com/repos/distri/sound/labels{/name}",
+        "releases_url": "https://api.github.com/repos/distri/sound/releases{/id}",
+        "created_at": "2014-02-22T02:01:15Z",
+        "updated_at": "2014-02-22T02:01:15Z",
+        "pushed_at": "2014-02-22T02:01:15Z",
+        "git_url": "git://github.com/distri/sound.git",
+        "ssh_url": "git@github.com:distri/sound.git",
+        "clone_url": "https://github.com/distri/sound.git",
+        "svn_url": "https://github.com/distri/sound",
+        "homepage": null,
+        "size": 0,
+        "stargazers_count": 0,
+        "watchers_count": 0,
+        "language": null,
+        "has_issues": true,
+        "has_downloads": true,
+        "has_wiki": true,
+        "forks_count": 0,
+        "mirror_url": null,
+        "open_issues_count": 0,
+        "forks": 0,
+        "open_issues": 0,
+        "watchers": 0,
+        "default_branch": "master",
+        "master_branch": "master",
+        "permissions": {
+          "admin": true,
+          "push": true,
+          "pull": true
+        },
+        "organization": {
+          "login": "distri",
+          "id": 6005125,
+          "avatar_url": "https://identicons.github.com/f90c81ffc1498e260c820082f2e7ca5f.png",
+          "gravatar_id": null,
+          "url": "https://api.github.com/users/distri",
+          "html_url": "https://github.com/distri",
+          "followers_url": "https://api.github.com/users/distri/followers",
+          "following_url": "https://api.github.com/users/distri/following{/other_user}",
+          "gists_url": "https://api.github.com/users/distri/gists{/gist_id}",
+          "starred_url": "https://api.github.com/users/distri/starred{/owner}{/repo}",
+          "subscriptions_url": "https://api.github.com/users/distri/subscriptions",
+          "organizations_url": "https://api.github.com/users/distri/orgs",
+          "repos_url": "https://api.github.com/users/distri/repos",
+          "events_url": "https://api.github.com/users/distri/events{/privacy}",
+          "received_events_url": "https://api.github.com/users/distri/received_events",
+          "type": "Organization",
+          "site_admin": false
+        },
+        "network_count": 0,
+        "subscribers_count": 2,
+        "branch": "v0.1.0",
+        "publishBranch": "gh-pages"
+      },
+      "dependencies": {}
     }
   }
 });
