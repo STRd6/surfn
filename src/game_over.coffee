@@ -5,7 +5,6 @@ module.exports = GameObject.registry.GameOver = (I={}) ->
     zIndex: 10
 
   lineHeight = 24
-  console.log I
 
   self = GameObject(I)
 

@@ -29,7 +29,6 @@ window.engine = Dust.init
 
 engine.I.backgroundColor = "#CC5500"
 
-depthsSprites = [Sprite.loadByName("depths0"), Sprite.loadByName("depths1")]
 churnSprites = [Sprite.loadByName("churn")]
 waveSprites = ["wave", "wave1"].map (name) ->
   Sprite.loadByName name
@@ -52,8 +51,6 @@ setUpGame = ->
 
   water = engine.add
     class: "Water"
-    width: width + 64
-    height: height
 
   destruction = engine.add
     color: "red"
@@ -72,20 +69,6 @@ setUpGame = ->
   destruction.bind "draw", (canvas) ->
     waveSprites.wrap((destruction.I.age / 8).floor()).fill(canvas, -width, 0, width + 16, height)
     churnSprites.wrap((destruction.I.age / 8).floor()).fill(canvas, 0, 0, 32, height)
-
-  water.bind "update", ->
-    water.I.x = player.I.x - width/2 - 32
-
-    amplitude = (15 + water.I.age / 30)
-
-    if rand(3) == 0 && water.I.age.mod(90) == 0
-      Sound.play("wave")
-
-    water.I.y = 160 + amplitude * Math.sin(Math.TAU / 120 * water.I.age)
-
-  water.bind "draw", (canvas) ->
-    canvas.withTransform Matrix.translation(-player.I.x.mod(32), 0), ->
-      depthsSprites.wrap((water.I.age / 8).floor()).fill(canvas, 0, height/2, water.I.width, height)
 
 setUpGame()
 

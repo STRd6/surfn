@@ -3,8 +3,10 @@ Duct Tape
 
 Load Sprites by named resource.
 
-    {Util:{extend}} = require "dust"
+    {Util:{extend}, GameObject} = require "dust"
     images = require "./images"
+
+    GameObject.defaultModules.push require "./bounds_extensions"
 
     Sprite.loadByName = (name) ->
       url = images[name]

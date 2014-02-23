@@ -60,7 +60,7 @@ module.exports = GameObject.registry.Player = (I={}) ->
 
   launch = () ->
     I.airborne = true
-    I.velocity.scale$(I.launchBoost)
+    I.velocity = I.velocity.scale(I.launchBoost)
 
     Sound.play("splash")
 
@@ -94,8 +94,9 @@ module.exports = GameObject.registry.Player = (I={}) ->
       wipeout("a rogue wave")
       return
 
-    waterLevel = engine.find(".water").first().I.y
-    depthsLevel = waterLevel + 160
+    water = engine.find(".water").first()
+    waterLevel = water.top()
+    depthsLevel = water.bottom()
 
     headingChange = I.rotationVelocity
     headingChange *= 2 if I.airborne
