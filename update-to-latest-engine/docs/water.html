@@ -36,17 +36,38 @@
             </div>
             <div class="content"><pre><code class="lang-coffeescript">{Util:{defaults}, GameObject} = require <span class="string">"dust"</span>
 
+depthsSprites = [Sprite.loadByName(<span class="string">"depths0"</span>), Sprite.loadByName(<span class="string">"depths1"</span>)]
+
 module.exports = GameObject.registry.<span class="function"><span class="title">Water</span></span> = (I={}) -&gt;
   defaults I,
     color: <span class="string">"blue"</span>
     water: <span class="literal">true</span>
     x: <span class="number">0</span>
-    y: <span class="number">160</span>
+    y: <span class="number">240</span>
+    width: <span class="number">480</span>
+    height: <span class="number">160</span>
     zIndex: <span class="number">0</span>
 
   self = GameObject(I)
 
   self.attrAccessor <span class="string">"water"</span>
+
+  self.<span class="literal">on</span> <span class="string">"update"</span>, -&gt;
+    <span class="keyword">if</span> player = engine.find(<span class="string">"Player"</span>).first()
+      I.x = player.I.x
+
+    amplitude = (<span class="number">15</span> + I.age / <span class="number">30</span>)
+
+    <span class="keyword">if</span> rand(<span class="number">3</span>) <span class="keyword">is</span> <span class="number">0</span> <span class="keyword">and</span> I.age.mod(<span class="number">90</span>) <span class="keyword">is</span> <span class="number">0</span>
+      Sound.play(<span class="string">"wave"</span>)
+
+    I.y = <span class="number">240</span> + amplitude * Math.sin(Math.TAU / <span class="number">120</span> * I.age)
+
+  self.<span class="literal">on</span> <span class="string">"draw"</span>, (canvas) -&gt;
+    offset = I.x.mod(<span class="number">32</span>)
+
+    canvas.withTransform Matrix.translation(-I.width/<span class="number">2</span>, <span class="number">0</span>), (canvas) -&gt;
+      depthsSprites.wrap((I.age / <span class="number">8</span>).floor()).fill(canvas, <span class="number">0</span>, I.height/<span class="number">2</span>, I.width, I.height)
 
   <span class="keyword">return</span> self</code></pre>
 </div>
