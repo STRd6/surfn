@@ -81,6 +81,16 @@ camera.on "afterUpdate", ->
     camera.I.transform.tx = 240 + player.I.x
 ###
 
+# TODO: This is a stupid hack because I haven't fixed the cameras yet
+engine.on "afterUpdate", ->
+  if player = engine.find("Player").first()
+    deltaX = 240 - player.I.x
+    
+    debugger
+
+    engine.objects().forEach (object) ->
+      object.I.x += deltaX
+
 clock = 0
 engine.on "update", ->
   clock += 1
