@@ -41,8 +41,8 @@ setUpGame = ->
 
   box = engine.add
     class: "Rock"
-    x: 60
-    y: 180
+    x: 160
+    y: 200
 
   4.times (n) ->
     engine.add
@@ -61,19 +61,28 @@ setUpGame = ->
     height: height
     zIndex: 7
 
-  destruction.bind "update", ->
-    destruction.I.x += 2 + destruction.I.age / 175
+  do (I=destruction.I, self=destruction) ->
+    self.on "update", ->
+      I.x += 2 + I.age / 175
+  
+      I.x = I.x.clamp(player.I.x - 4 * width, Infinity)
 
-    destruction.I.x = destruction.I.x.clamp(player.I.x - 4 * width, Infinity)
-
-  destruction.bind "draw", (canvas) ->
-    waveSprites.wrap((destruction.I.age / 8).floor()).fill(canvas, -width, 0, width + 16, height)
-    churnSprites.wrap((destruction.I.age / 8).floor()).fill(canvas, 0, 0, 32, height)
+    self.on "draw", (canvas) ->
+      waveSprites.wrap((destruction.I.age / 8).floor()).fill(canvas, -width, 0, width + 16, height)
+      churnSprites.wrap((destruction.I.age / 8).floor()).fill(canvas, 0, 0, 32, height)
 
 setUpGame()
 
+# TODO: This should be simpler like engine.follow("Player")
+###
+camera = engine.camera()
+camera.on "afterUpdate", ->
+  if player = engine.find("Player").first()
+    camera.I.transform.tx = 240 + player.I.x
+###
+
 clock = 0
-engine.bind "update", ->
+engine.on "update", ->
   clock += 1
 
   if player = engine.find("Player").first()
@@ -95,10 +104,6 @@ restartGame = ->
     setUpGame()
 
   engine.on "afterUpdate", doRestart
-
-engine.on "afterUpdate", ->
-  if player = engine.find("Player").first()
-    engine.I.cameraTransform = Matrix.translation(width/2 - player.I.x, height/2 - player.I.y)
 
 engine.on "draw", (canvas) ->
   if DEBUG_DRAW

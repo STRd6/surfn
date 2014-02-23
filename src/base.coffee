@@ -6,13 +6,6 @@ module.exports = (I) ->
     center: ->
        Point(I.x, I.y)
 
-  self.off "draw"
-
-  self.on "draw", (canvas) ->
-    if I.sprite
-      if I.sprite.draw?
-        I.sprite.draw(canvas, -I.width/2, -I.height/2)
-
   self.on "drawDebug", (canvas) ->
     if I.radius
       center = self.center()

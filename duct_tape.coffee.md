@@ -19,3 +19,10 @@ Load Sprites by named resource.
 
       approachByRatio: (target, ratio) ->
         @approach(target, this * ratio)
+
+      # TODO: Provide this safety for all number extensions
+      floor: ->
+        if isNaN(this)
+          throw "Can't floor NaN"
+        else
+          Math.floor(this)

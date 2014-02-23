@@ -4,7 +4,7 @@ Base = require "./base"
 
 module.exports = GameObject.registry.Rock = (I={}) ->
   defaults I,
-    sprite: "rocks"
+    spriteName: "rocks"
     height: 32
     radius: 16
     width: 32

@@ -6,7 +6,7 @@ module.exports = GameObject.registry.Player = (I={}) ->
   defaults I,
     airborne: true
     heading: Math.TAU / 4
-    sprite: "player"
+    spriteName: "player"
     launchBoost: 1.5
     radius: 8
     rotationVelocity: Math.TAU / 64
@@ -22,13 +22,12 @@ module.exports = GameObject.registry.Player = (I={}) ->
   angleSprites = 8
   angleSprites.times (n) ->
     t = n * 2
-    sprites.push Sprite.loadByName("player_#{t}")
+    sprites.push "player_#{t}"
 
   setSprite = ->
-    angleSprites
     n = (angleSprites * I.heading / Math.TAU).round().mod(angleSprites)
 
-    I.sprite = sprites[n]
+    I.spriteName = sprites[n]
 
   wipeout = (causeOfDeath) ->
     I.active = false

@@ -4,7 +4,7 @@ Base = require "./base"
 
 module.exports = GameObject.registry.Cloud = (I) ->
   defaults I,
-    sprite: "cloud"
+    spriteName: "cloud"
     height: 32
     width: 128
     y: -120 + rand(240)
