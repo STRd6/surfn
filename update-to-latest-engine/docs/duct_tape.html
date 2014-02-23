@@ -50,7 +50,14 @@ extend Number.prototype,
     <span class="keyword">this</span> + (target - <span class="keyword">this</span>).clamp(-maxDelta, maxDelta)
 
   approachByRatio: (target, ratio) -&gt;
-    <span class="property">@approach</span>(target, <span class="keyword">this</span> * ratio)</code></pre>
+    <span class="property">@approach</span>(target, <span class="keyword">this</span> * ratio)
+
+  <span class="comment"># TODO: Provide this safety for all number extensions</span>
+  floor: -&gt;
+    <span class="keyword">if</span> isNaN(<span class="keyword">this</span>)
+      <span class="keyword">throw</span> <span class="string">"Can't floor NaN"</span>
+    <span class="keyword">else</span>
+      Math.floor(<span class="keyword">this</span>)</code></pre>
 </div>
         </li>
         
