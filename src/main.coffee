@@ -2,7 +2,6 @@ Dust = require "dust"
 
 # TODO: Clean up globals
 global.Collision = Dust.Collision
-
 global.Sound = require "sound"
 
 require "../duct_tape"
@@ -68,8 +67,8 @@ setUpGame = ->
       I.x = I.x.clamp(player.I.x - 4 * width, Infinity)
 
     self.on "draw", (canvas) ->
-      waveSprites.wrap((destruction.I.age / 8).floor()).fill(canvas, -width, 0, width + 16, height)
-      churnSprites.wrap((destruction.I.age / 8).floor()).fill(canvas, 0, 0, 32, height)
+      waveSprites.wrap((I.age / 8).floor()).fill(canvas, -width, 0, width + 16, height)
+      churnSprites.wrap((I.age / 8).floor()).fill(canvas, 0, 0, 32, height)
 
 setUpGame()
 
@@ -85,8 +84,6 @@ camera.on "afterUpdate", ->
 engine.on "afterUpdate", ->
   if player = engine.find("Player").first()
     deltaX = 240 - player.I.x
-    
-    debugger
 
     engine.objects().forEach (object) ->
       object.I.x += deltaX
