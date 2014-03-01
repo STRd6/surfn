@@ -1,4 +1,7 @@
-window["STRd6/surfn:master"]({
+(function(pkg) {
+  // Expose a require for our package so scripts can access our modules
+  window.require = Require.generateFor(pkg);
+})({
   "source": {
     "entities/7C7549741A093CBDC189B189F0591864.entity": {
       "path": "entities/7C7549741A093CBDC189B189F0591864.entity",
