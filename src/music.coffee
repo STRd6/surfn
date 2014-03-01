@@ -6,6 +6,5 @@ track.volume = 1
 
 module.exports =
   play: (name) ->
-    # TODO: Music
-    # track.src = "#{BASE_URL}/sounds/#{name}.mp3"
+    track.src = require("/music")["SurfN-2-Sur5"]
     track.play()
