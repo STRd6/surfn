@@ -1,9 +1,9 @@
 CACHE MANIFEST
-# 1393636890098
+# 1393885056783
 
 CACHE:
 index.html
-
+https://code.jquery.com/jquery-1.10.1.min.js
 
 NETWORK:
 https://*
