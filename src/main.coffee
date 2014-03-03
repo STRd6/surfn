@@ -2,7 +2,13 @@ Dust = require "dust"
 
 # TODO: Clean up globals
 global.Collision = Dust.Collision
-global.Sound = require "sound"
+global.Sound = require "../lib/sound"
+
+# TODO: Fix this up a bit
+Sound.play = (name) ->
+  sounds = require "/sounds"
+
+  Sound.playFromURL(sounds[name])
 
 require "../duct_tape"
 
@@ -63,7 +69,7 @@ setUpGame = ->
   do (I=destruction.I, self=destruction) ->
     self.on "update", ->
       I.x += 2 + I.age / 175
-  
+
       I.x = I.x.clamp(player.I.x - 4 * width, Infinity)
 
     self.on "draw", (canvas) ->
