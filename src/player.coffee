@@ -1,8 +1,12 @@
-Player = (I) ->
-  Object.reverseMerge I,
+{Util:{defaults}, GameObject} = require "dust"
+
+Base = require "./base"
+
+module.exports = GameObject.registry.Player = (I={}) ->
+  defaults I,
     airborne: true
     heading: Math.TAU / 4
-    sprite: "player"
+    spriteName: "player"
     launchBoost: 1.5
     radius: 8
     rotationVelocity: Math.TAU / 64
@@ -18,26 +22,25 @@ Player = (I) ->
   angleSprites = 8
   angleSprites.times (n) ->
     t = n * 2
-    sprites.push Sprite.loadByName("player_#{t}")
+    sprites.push "player_#{t}"
 
   setSprite = ->
-    angleSprites
     n = (angleSprites * I.heading / Math.TAU).round().mod(angleSprites)
 
-    I.sprite = sprites[n]
+    I.spriteName = sprites[n]
 
   wipeout = (causeOfDeath) ->
     I.active = false
 
     Sound.play("crash")
 
-    engine.add 
+    engine.add
       class: "GameOver"
       causeOfDeath: causeOfDeath
       distance: I.x
       time: I.age
       x: I.x
-      y: I.y
+      y: 160
 
   land = () ->
     if I.velocity.x > 1.5
@@ -56,7 +59,7 @@ Player = (I) ->
 
   launch = () ->
     I.airborne = true
-    I.velocity.scale$(I.launchBoost)
+    I.velocity = I.velocity.scale(I.launchBoost)
 
     Sound.play("splash")
 
@@ -90,8 +93,9 @@ Player = (I) ->
       wipeout("a rogue wave")
       return
 
-    waterLevel = engine.find(".water").first().I.y
-    depthsLevel = waterLevel + 160
+    water = engine.find(".water").first()
+    waterLevel = water.top()
+    depthsLevel = water.bottom()
 
     headingChange = I.rotationVelocity
     headingChange *= 2 if I.airborne
@@ -101,7 +105,7 @@ Player = (I) ->
     if keydown.right
       I.heading += headingChange
 
-    I.heading = I.heading.constrainRotation()
+    # I.heading = I.heading.constrainRotation()
 
     setSprite()
 
@@ -120,7 +124,6 @@ Player = (I) ->
       if !I.airborne
         launch()
 
-      I.velocity.add$(GRAVITY)
+      I.velocity = I.velocity.add(GRAVITY)
 
   return self
-

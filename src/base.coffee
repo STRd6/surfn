@@ -1,17 +1,12 @@
-Base = (I) ->
+{GameObject} = require "dust"
+
+module.exports = (I) ->
 
   self = GameObject(I).extend
     center: ->
        Point(I.x, I.y)
 
-  self.unbind "draw"
-
-  self.bind "draw", (canvas) ->
-    if I.sprite
-      if I.sprite.draw?
-        I.sprite.draw(canvas, -I.width/2, -I.height/2)
-
-  self.bind "drawDebug", (canvas) ->
+  self.on "drawDebug", (canvas) ->
     if I.radius
       center = self.center()
       x = center.x
