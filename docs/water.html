@@ -56,12 +56,12 @@ module.exports = GameObject.registry.<span class="function"><span class="title">
     <span class="keyword">if</span> player = engine.find(<span class="string">"Player"</span>).first()
       I.x = player.I.x
 
-    amplitude = (<span class="number">15</span> + I.age / <span class="number">30</span>)
+    amplitude = (<span class="number">15</span> + I.age)
 
     <span class="keyword">if</span> rand(<span class="number">3</span>) <span class="keyword">is</span> <span class="number">0</span> <span class="keyword">and</span> I.age.mod(<span class="number">90</span>) <span class="keyword">is</span> <span class="number">0</span>
       Sound.play(<span class="string">"wave"</span>)
 
-    I.y = <span class="number">240</span> + amplitude * Math.sin(Math.TAU / <span class="number">120</span> * I.age)
+    I.y = <span class="number">240</span> + amplitude * Math.sin(Math.TAU / <span class="number">4</span> * I.age)
 
   self.<span class="literal">on</span> <span class="string">"draw"</span>, (canvas) -&gt;
     offset = I.x.mod(<span class="number">32</span>)
