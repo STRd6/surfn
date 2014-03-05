@@ -37,7 +37,7 @@ module.exports = GameObject.registry.Player = (I={}) ->
     engine.add
       class: "GameOver"
       causeOfDeath: causeOfDeath
-      distance: I.x
+      distance: I.x # TODO: This is busted because of camera hack
       time: I.age
       x: I.x
       y: 160

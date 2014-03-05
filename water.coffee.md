@@ -22,13 +22,13 @@ Water
       self.on "update", ->
         if player = engine.find("Player").first()
           I.x = player.I.x
-    
-        amplitude = (15 + I.age / 30)
-    
+
+        amplitude = (15 + I.age)
+
         if rand(3) is 0 and I.age.mod(90) is 0
           Sound.play("wave")
-    
-        I.y = 240 + amplitude * Math.sin(Math.TAU / 120 * I.age)
+
+        I.y = 240 + amplitude * Math.sin(Math.TAU / 4 * I.age)
 
       self.on "draw", (canvas) ->
         offset = I.x.mod(32)

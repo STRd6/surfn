@@ -99,7 +99,7 @@ engine.on "update", ->
   clock += 1
 
   if player = engine.find("Player").first()
-    if clock % 30 == 0
+    if clock % 60 == 0
         engine.add
           class: "Rock"
           x: player.I.x + 2 * width
