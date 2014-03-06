@@ -76,7 +76,26 @@ setUpGame = ->
       waveSprites.wrap((I.age / 8).floor()).fill(canvas, -width, 0, width + 16, height)
       churnSprites.wrap((I.age / 8).floor()).fill(canvas, 0, 0, 32, height)
 
-setUpGame()
+loadingBar = engine.add
+  x: width/2
+  y: height/2
+  width: 0
+  height: height
+  color: "white"
+
+require("/lib/preloader").preload
+  resources: [
+    "/images"
+    "/music"
+    "/sounds"
+  ].map require
+  progress: (percent) ->
+    console.log percent
+    loadingBar.I.width = percent * width
+
+  complete: ->
+    loadingBar.destroy()
+    setUpGame()
 
 # TODO: This should be simpler like engine.follow("Player")
 ###
