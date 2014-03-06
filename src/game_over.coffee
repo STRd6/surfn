@@ -13,12 +13,10 @@ module.exports = GameObject.registry.GameOver = (I={}) ->
 
     # TODO: Extract multiline text rendering
     lines = """
-      surf'd for #{I.distance} meters
-      sur5'd for #{(I.time).toFixed(2)} seconds
+      surf'd for #{(I.distance / 100).toFixed(2)} meters
+      sur5'd for #{I.time.toFixed(2)} seconds
       succumb'd to #{I.causeOfDeath}
     """.split("\n")
-    
-    debugger
 
     lines.forEach (line, i) ->
       canvas.centerText

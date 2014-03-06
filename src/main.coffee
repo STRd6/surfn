@@ -41,7 +41,7 @@ waveSprites = ["wave", "wave1"].map (name) ->
 setUpGame = ->
   player = engine.add
     class: "Player"
-    x: 0
+    x: 240
     y: 0
 
   box = engine.add
@@ -109,6 +109,8 @@ camera.on "afterUpdate", ->
 engine.on "afterUpdate", ->
   if player = engine.find("Player").first()
     deltaX = 240 - player.I.x
+
+    player.I.distance -= deltaX
 
     engine.objects().forEach (object) ->
       object.I.x += deltaX

@@ -5,6 +5,7 @@ Base = require "./base"
 module.exports = GameObject.registry.Player = (I={}) ->
   defaults I,
     airborne: true
+    distance: 0
     heading: Math.TAU / 4
     spriteName: "player"
     launchBoost: 1.5
@@ -37,9 +38,8 @@ module.exports = GameObject.registry.Player = (I={}) ->
     engine.add
       class: "GameOver"
       causeOfDeath: causeOfDeath
-      distance: I.x # TODO: This is busted because of camera hack
+      distance: I.distance
       time: I.age
-      x: I.x
       y: 160
 
   land = () ->
