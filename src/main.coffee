@@ -20,7 +20,7 @@ require "./game_over"
 
 Music = require "./music"
 
-DEBUG_DRAW = 0# true
+DEBUG_DRAW = false
 
 parent.gameControlData =
   Movement: "Left/Right Arrow Keys"

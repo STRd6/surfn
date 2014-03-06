@@ -67,7 +67,9 @@ module.exports = GameObject.registry.Player = (I={}) ->
     canvas.strokeColor("rgba(0, 255, 0, 0.75)")
 
     p = Point.fromAngle(I.heading).scale(10)
-    canvas.drawLine(I.x - p.x, I.y - p.y, I.x + p.x, I.y + p.y, 1)
+    canvas.drawLine
+      start: Point(I.x - p.x, I.y - p.y)
+      end: Point(I.x + p.x, I.y + p.y, 1)
 
   self.bind "update", ->
     I.x += I.velocity.x
