@@ -1,7 +1,7 @@
 Preloader
 =========
 
-Preload resources
+Preload resources.
 
 TODO: Error handling
 
@@ -9,6 +9,11 @@ TODO: Error handling
       preload: ({resources, complete, progress}) ->
         loading = 0
         loaded = 0
+        
+        failedResource = (url) ->
+          # TODO: Something other than just logging and ignoring
+          console.error "Failed to load:", url
+          loadedResource()
 
         loadedResource = (url) ->
           console.log "loaded:", url
@@ -25,6 +30,8 @@ TODO: Error handling
             url = resource[name]
 
             if url.match /\.(png|jpg|git)$/
+              # TODO: Error handling for sprites
+              # NOTE: Using Sprite constructor because otherwise we get flickering
               Sprite.load url, ->
                 loadedResource(url)
             else if url.match /\.(mp3|wav|ogg)/
@@ -33,7 +40,9 @@ TODO: Error handling
               element.volume = 0
               element.play()
               element.onloadeddata = ->
-                loadedResource(url)  
+                loadedResource(url)
+              element.onerror = ->
+                failedResource(url)
               element.src = url
             else
               console.warn "unknown file type", url
