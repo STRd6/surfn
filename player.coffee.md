@@ -57,7 +57,7 @@ Player
     
       launch = () ->
         I.airborne = true
-        I.velocity = I.velocity.scale(I.launchBoost)
+        I.velocity = I.velocity.norm(I.launchBoost * I.waterSpeed)
     
         Sound.play("splash")
     
@@ -123,7 +123,7 @@ Player
         else
           if !I.airborne
             launch()
-    
+
           I.velocity = I.velocity.add(GRAVITY)
     
       return self
