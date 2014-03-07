@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>main</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="http://strd6.github.io/cdn/parallel/docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    <ul class="sections">
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              <div class="pilwrap">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              <h1 id="surfn">Surfn</h1>
+
+            </div>
+            <div class="content"><pre><code class="lang-coffeescript">
+</code></pre>
+</div>
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              <div class="pilwrap">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>As a lone FBI agent you must surf to survive.</p>
+<p>Use the Dust game engine.</p>
+
+            </div>
+            <div class="content"><pre><code class="lang-coffeescript">Dust = require <span class="string">"dust"</span>
+
+<span class="comment"># TODO: Clean up globals</span>
+global.Collision = Dust.Collision
+global.Sound = require <span class="string">"/lib/sound"</span>
+
+<span class="comment"># TODO: Fix this up a bit</span>
+Sound.<span class="function"><span class="title">play</span></span> = (name) -&gt;
+  sounds = require <span class="string">"/sounds"</span>
+
+  Sound.playFromURL(sounds[name])
+
+require <span class="string">"/duct_tape"</span></code></pre>
+</div>
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              <div class="pilwrap">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>These register our GameObjects.</p>
+
+            </div>
+            <div class="content"><pre><code class="lang-coffeescript">require <span class="string">"./cloud"</span>
+require <span class="string">"./player"</span>
+require <span class="string">"./rock"</span>
+require <span class="string">"./water"</span>
+require <span class="string">"./game_over"</span>
+
+Music = require <span class="string">"/lib/music"</span>
+
+DEBUG_DRAW = <span class="literal">false</span></code></pre>
+</div>
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              <div class="pilwrap">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>Get the app size from our config.</p>
+
+            </div>
+            <div class="content"><pre><code class="lang-coffeescript">{width, height} = require <span class="string">"/pixie"</span>
+
+window.engine = Dust.init
+  width: width
+  height: height
+
+engine.I.backgroundColor = <span class="string">"#CC5500"</span>
+
+churnSprites = [Sprite.loadByName(<span class="string">"churn"</span>)]
+waveSprites = [<span class="string">"wave"</span>, <span class="string">"wave1"</span>].map (name) -&gt;
+  Sprite.loadByName name
+
+<span class="function"><span class="title">setUpGame</span></span> = -&gt;
+  player = engine.add
+    class: <span class="string">"Player"</span>
+    x: <span class="number">240</span>
+    y: <span class="number">0</span>
+
+  box = engine.add
+    class: <span class="string">"Rock"</span>
+    x: <span class="number">160</span>
+    y: <span class="number">200</span>
+
+  <span class="number">4.</span>times (n) -&gt;
+    engine.add
+      class: <span class="string">"Cloud"</span>
+      x: n * <span class="number">128</span>
+
+  water = engine.add
+    class: <span class="string">"Water"</span>
+
+  destruction = engine.add
+    color: <span class="string">"red"</span>
+    destruction: <span class="literal">true</span>
+    x: -<span class="number">240</span>
+    y: <span class="number">0</span>
+    width: <span class="number">10</span>
+    height: height
+    zIndex: <span class="number">7</span>
+
+  <span class="keyword">do</span> (I=destruction.I, self=destruction) -&gt;
+    self.<span class="literal">on</span> <span class="string">"update"</span>, -&gt;
+      I.x += <span class="number">2</span> + I.age / <span class="number">175</span>
+
+      I.x = I.x.clamp(player.I.x - <span class="number">4</span> * width, Infinity)
+
+    self.<span class="literal">on</span> <span class="string">"draw"</span>, (canvas) -&gt;
+      waveSprites.wrap((I.age / <span class="number">8</span>).floor()).fill(canvas, -width, <span class="number">0</span>, width + <span class="number">16</span>, height)
+      churnSprites.wrap((I.age / <span class="number">8</span>).floor()).fill(canvas, <span class="number">0</span>, <span class="number">0</span>, <span class="number">32</span>, height)
+
+loadingBar = engine.add
+  x: width/<span class="number">2</span>
+  y: height/<span class="number">2</span>
+  width: <span class="number">0</span>
+  height: height
+  color: <span class="string">"white"</span>
+
+require(<span class="string">"/lib/preloader"</span>).preload
+  resources: [
+    <span class="string">"/images"</span>
+    <span class="string">"/music"</span>
+    <span class="string">"/sounds"</span>
+  ].map require
+  progress: (percent) -&gt;
+    console.log percent
+    loadingBar.I.width = percent * width
+
+  complete: -&gt;
+    loadingBar.destroy()
+    setUpGame()
+
+<span class="comment"># TODO: This should be simpler like engine.follow("Player")</span>
+<span class="comment">###
+camera = engine.camera()
+camera.on "afterUpdate", -&gt;
+  if player = engine.find("Player").first()
+    camera.I.transform.tx = 240 + player.I.x
+###</span>
+
+<span class="comment"># TODO: This is a stupid hack because I haven't fixed the cameras yet</span>
+engine.<span class="literal">on</span> <span class="string">"afterUpdate"</span>, -&gt;
+  <span class="keyword">if</span> player = engine.find(<span class="string">"Player"</span>).first()
+    deltaX = <span class="number">240</span> - player.I.x
+
+    player.I.distance -= deltaX
+
+    engine.objects().forEach (object) -&gt;
+      object.I.x += deltaX
+
+clock = <span class="number">0</span>
+engine.<span class="literal">on</span> <span class="string">"update"</span>, -&gt;
+  clock += <span class="number">1</span>
+
+  <span class="keyword">if</span> player = engine.find(<span class="string">"Player"</span>).first()
+    <span class="keyword">if</span> clock % <span class="number">60</span> == <span class="number">0</span>
+        engine.add
+          class: <span class="string">"Rock"</span>
+          x: player.I.x + <span class="number">2</span> * width
+
+    <span class="keyword">if</span> clock % <span class="number">55</span> == <span class="number">0</span>
+      engine.add
+        class: <span class="string">"Cloud"</span>
+        x: player.I.x + <span class="number">2</span> * width
+
+<span class="function"><span class="title">restartGame</span></span> = -&gt;
+  engine.objects().invoke <span class="string">"destroy"</span>
+
+  <span class="function"><span class="title">doRestart</span></span> = -&gt;
+    engine.unbind <span class="string">"afterUpdate"</span>, doRestart
+    setUpGame()
+
+  engine.<span class="literal">on</span> <span class="string">"afterUpdate"</span>, doRestart
+
+engine.<span class="literal">on</span> <span class="string">"draw"</span>, (canvas) -&gt;
+  <span class="keyword">if</span> DEBUG_DRAW
+    engine.find(<span class="string">"Player, Rock"</span>).invoke(<span class="string">"trigger"</span>, <span class="string">"drawDebug"</span>, canvas)
+
+engine.bind <span class="string">"restart"</span>, -&gt;
+  restartGame()
+
+Music.play <span class="string">"SurfN-2-Sur5"</span>
+
+engine.start()
+
+<span class="comment"># Meta controls</span>
+$(document).<span class="literal">on</span> <span class="string">"keydown"</span>, <span class="literal">null</span>, <span class="string">"pause"</span>, -&gt;
+  engine.pause()</code></pre>
+</div>
+        </li>
+        
+    </ul>
+  </div>
+  <script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/coffee-script/1.6.3/coffee-script.min.js"></script>
+<script src="http://www.danielx.net/require/v0.2.2.js"></script><script>
+  $.ajax({
+    url: "http://strd6.github.io/interactive/v0.8.1.jsonp",
+    dataType: "jsonp",
+    jsonpCallback: "STRd6/interactive:v0.8.1",
+    cache: true
+  }).then(function(PACKAGE) {
+    Require.generateFor(PACKAGE)("./" + PACKAGE.entryPoint)
+  })
+</script><script src="package.js"></script>
+</body>
+</html>
