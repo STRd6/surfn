@@ -9,7 +9,7 @@ TODO: Error handling
       preload: ({resources, complete, progress}) ->
         loading = 0
         loaded = 0
-        
+
         failedResource = (url) ->
           # TODO: Something other than just logging and ignoring
           console.error "Failed to load:", url
