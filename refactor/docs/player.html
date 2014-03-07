@@ -90,7 +90,7 @@ module.exports = GameObject.registry.<span class="function"><span class="title">
 
   launch = () -&gt;
     I.airborne = <span class="literal">true</span>
-    I.velocity = I.velocity.scale(I.launchBoost)
+    I.velocity = I.velocity.norm(I.launchBoost * I.waterSpeed)
 
     Sound.play(<span class="string">"splash"</span>)
 
