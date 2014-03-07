@@ -79,15 +79,10 @@ module.exports = GameObject.registry.<span class="function"><span class="title">
       y: <span class="number">160</span>
 
   land = () -&gt;
-    <span class="keyword">if</span> I.velocity.x &gt; <span class="number">1.5</span>
-      <span class="keyword">unless</span> <span class="number">0</span> &lt;= I.heading &lt;= Math.PI/<span class="number">2</span>
-        wipeout(<span class="string">"bad landing"</span>)
-    <span class="keyword">else</span> <span class="keyword">if</span> I.velocity.x &lt; -<span class="number">1.5</span>
-      <span class="keyword">unless</span> Math.PI/<span class="number">2</span> &lt;= I.heading &lt;= Math.PI
-        wipeout(<span class="string">"bad landing"</span>)
-    <span class="keyword">else</span>
-      <span class="keyword">unless</span> Math.PI<span class="regexp">/5 &lt;= I.heading &lt;= 4*Math.PI/</span><span class="number">5</span>
-        wipeout(<span class="string">"bad landing"</span>)
+    projection = self.velocity().norm().dot(Point.fromAngle(I.heading))
+
+    <span class="keyword">if</span> projection &lt; <span class="number">0</span>
+      wipeout(<span class="string">"bad landing"</span>)
 
     I.airborne = <span class="literal">false</span>
 
@@ -99,7 +94,7 @@ module.exports = GameObject.registry.<span class="function"><span class="title">
 
     Sound.play(<span class="string">"splash"</span>)
 
-  self.bind <span class="string">"drawDebug"</span>, (canvas) -&gt;
+  self.<span class="literal">on</span> <span class="string">"drawDebug"</span>, (canvas) -&gt;
     canvas.strokeColor(<span class="string">"rgba(0, 255, 0, 0.75)"</span>)
 
     p = Point.fromAngle(I.heading).scale(<span class="number">10</span>)
@@ -107,7 +102,7 @@ module.exports = GameObject.registry.<span class="function"><span class="title">
       start: Point(I.x - p.x, I.y - p.y)
       end: Point(I.x + p.x, I.y + p.y, <span class="number">1</span>)
 
-  self.bind <span class="string">"update"</span>, -&gt;
+  self.<span class="literal">on</span> <span class="string">"update"</span>, -&gt;
     I.x += I.velocity.x
     I.y += I.velocity.y
 
