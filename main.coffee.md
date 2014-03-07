@@ -31,10 +31,6 @@ These register our GameObjects.
 
     DEBUG_DRAW = false
 
-    parent.gameControlData =
-      Movement: "Left/Right Arrow Keys"
-      Restart: "Enter or Spacebar"
-
 Get the app size from our config.
 
     {width, height} = require "/pixie"

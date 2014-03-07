@@ -46,18 +46,13 @@ Player
           y: 160
     
       land = () ->
-        if I.velocity.x > 1.5
-          unless 0 <= I.heading <= Math.PI/2
-            wipeout("bad landing")
-        else if I.velocity.x < -1.5
-          unless Math.PI/2 <= I.heading <= Math.PI
-            wipeout("bad landing")
-        else
-          unless Math.PI/5 <= I.heading <= 4*Math.PI/5
-            wipeout("bad landing")
-    
+        projection = self.velocity().norm().dot(Point.fromAngle(I.heading))
+
+        if projection < 0
+          wipeout("bad landing")
+
         I.airborne = false
-    
+
         Sound.play("land")
     
       launch = () ->
@@ -66,7 +61,7 @@ Player
     
         Sound.play("splash")
     
-      self.bind "drawDebug", (canvas) ->
+      self.on "drawDebug", (canvas) ->
         canvas.strokeColor("rgba(0, 255, 0, 0.75)")
     
         p = Point.fromAngle(I.heading).scale(10)
@@ -74,7 +69,7 @@ Player
           start: Point(I.x - p.x, I.y - p.y)
           end: Point(I.x + p.x, I.y + p.y, 1)
     
-      self.bind "update", ->
+      self.on "update", ->
         I.x += I.velocity.x
         I.y += I.velocity.y
     
