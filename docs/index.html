@@ -142,16 +142,18 @@ loadingBar = engine.add
 require(<span class="string">"/lib/preloader"</span>).preload
   resources: [
     <span class="string">"/images"</span>
-    <span class="string">"/music"</span>
-    <span class="string">"/sounds"</span>
   ].map require
   progress: (percent) -&gt;
     console.log percent
     loadingBar.I.width = percent * width
-
   complete: -&gt;
     loadingBar.destroy()
     setUpGame()
+
+require(<span class="string">"/lib/preloader"</span>).softPreload [
+  <span class="string">"/music"</span>
+  <span class="string">"/sounds"</span>
+].map require
 
 <span class="comment"># TODO: This should be simpler like engine.follow("Player")</span>
 <span class="comment">###

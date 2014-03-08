@@ -93,6 +93,7 @@ progress, success, or failure. Useful right now for audio which is unreliable.</
 
             </div>
             <div class="content"><pre><code class="lang-coffeescript">  softPreload: (resources) -&gt;
+    resources.forEach (resource) -&gt;
       Object.keys(resource).forEach (name) -&gt;
         url = resource[name]
 
@@ -100,10 +101,6 @@ progress, success, or failure. Useful right now for audio which is unreliable.</
           Sprite.load(url)
         <span class="keyword">else</span> <span class="keyword">if</span> url.match <span class="regexp">/\.(mp3|wav|ogg)/</span>
           element = <span class="keyword">new</span> Audio
-          element.<span class="function"><span class="title">onloadeddata</span></span> = -&gt;
-            loadedResource(url)
-          element.<span class="function"><span class="title">onerror</span></span> = -&gt;
-            failedResource(url)
           element.src = url
           element.load()
           element.volume = <span class="number">0</span>
