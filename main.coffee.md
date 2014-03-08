@@ -93,16 +93,18 @@ Get the app size from our config.
     require("/lib/preloader").preload
       resources: [
         "/images"
-        "/music"
-        "/sounds"
       ].map require
       progress: (percent) ->
         console.log percent
         loadingBar.I.width = percent * width
-
       complete: ->
         loadingBar.destroy()
         setUpGame()
+
+    require("/lib/preloader").softPreload [
+      "/music"
+      "/sounds"
+    ].map require
 
     # TODO: This should be simpler like engine.follow("Player")
     ###

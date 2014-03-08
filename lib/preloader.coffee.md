@@ -53,6 +53,7 @@ TODO: Error handling
 progress, success, or failure. Useful right now for audio which is unreliable.
 
       softPreload: (resources) ->
+        resources.forEach (resource) ->
           Object.keys(resource).forEach (name) ->
             url = resource[name]
 
@@ -60,10 +61,6 @@ progress, success, or failure. Useful right now for audio which is unreliable.
               Sprite.load(url)
             else if url.match /\.(mp3|wav|ogg)/
               element = new Audio
-              element.onloadeddata = ->
-                loadedResource(url)
-              element.onerror = ->
-                failedResource(url)
               element.src = url
               element.load()
               element.volume = 0
