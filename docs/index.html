@@ -62,6 +62,7 @@ require <span class="string">"/duct_tape"</span></code></pre>
 
             </div>
             <div class="content"><pre><code class="lang-coffeescript">require <span class="string">"./cloud"</span>
+require <span class="string">"./destruction"</span>
 require <span class="string">"./player"</span>
 require <span class="string">"./rock"</span>
 require <span class="string">"./water"</span>
@@ -90,10 +91,6 @@ window.engine = Dust.init
 
 engine.I.backgroundColor = <span class="string">"#CC5500"</span>
 
-churnSprites = [Sprite.loadByName(<span class="string">"churn"</span>)]
-waveSprites = [<span class="string">"wave"</span>, <span class="string">"wave1"</span>].map (name) -&gt;
-  Sprite.loadByName name
-
 <span class="function"><span class="title">setUpGame</span></span> = -&gt;
   player = engine.add
     class: <span class="string">"Player"</span>
@@ -113,24 +110,7 @@ waveSprites = [<span class="string">"wave"</span>, <span class="string">"wave1"<
   water = engine.add
     class: <span class="string">"Water"</span>
 
-  destruction = engine.add
-    color: <span class="string">"red"</span>
-    destruction: <span class="literal">true</span>
-    x: -<span class="number">240</span>
-    y: <span class="number">0</span>
-    width: <span class="number">10</span>
-    height: height
-    zIndex: <span class="number">7</span>
-
-  <span class="keyword">do</span> (I=destruction.I, self=destruction) -&gt;
-    self.<span class="literal">on</span> <span class="string">"update"</span>, -&gt;
-      I.x += <span class="number">2</span> + I.age / <span class="number">175</span>
-
-      I.x = I.x.clamp(player.I.x - <span class="number">4</span> * width, Infinity)
-
-    self.<span class="literal">on</span> <span class="string">"draw"</span>, (canvas) -&gt;
-      waveSprites.wrap((I.age / <span class="number">8</span>).floor()).fill(canvas, -width, <span class="number">0</span>, width + <span class="number">16</span>, height)
-      churnSprites.wrap((I.age / <span class="number">8</span>).floor()).fill(canvas, <span class="number">0</span>, <span class="number">0</span>, <span class="number">32</span>, height)
+  engine.add <span class="string">"Destruction"</span>
 
 loadingBar = engine.add
   x: width/<span class="number">2</span>

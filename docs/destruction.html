@@ -2,7 +2,7 @@
 
 <html>
 <head>
-  <title>game_over</title>
+  <title>destruction</title>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
   <link rel="stylesheet" media="all" href="http://strd6.github.io/cdn/parallel/docco.css" />
@@ -18,7 +18,7 @@
               <div class="pilwrap">
                 <a class="pilcrow" href="#section-1">&#182;</a>
               </div>
-              <h1 id="game-over">Game Over</h1>
+              <h1 id="destruction">Destruction</h1>
 
             </div>
             <div class="content"><pre><code class="lang-coffeescript">
@@ -32,41 +32,42 @@
               <div class="pilwrap">
                 <a class="pilcrow" href="#section-2">&#182;</a>
               </div>
-              
+              <p>A rogue wave that will crush the player.</p>
+
             </div>
             <div class="content"><pre><code class="lang-coffeescript">{Util:{defaults}, GameObject} = require <span class="string">"dust"</span>
 
-module.exports = GameObject.registry.<span class="function"><span class="title">GameOver</span></span> = (I={}) -&gt;
-  defaults I,
-    zIndex: <span class="number">10</span>
+Base = require <span class="string">"./base"</span>
 
-  lineHeight = <span class="number">24</span>
+{width, height} = require <span class="string">"./pixie"</span>
+
+churnSprites = [Sprite.loadByName(<span class="string">"churn"</span>)]
+waveSprites = [<span class="string">"wave"</span>, <span class="string">"wave1"</span>].map (name) -&gt;
+  Sprite.loadByName name
+
+module.exports = GameObject.registry.<span class="function"><span class="title">Destruction</span></span> = (I={}) -&gt;
+  defaults I,
+    color: <span class="string">"red"</span>
+    destruction: <span class="literal">true</span>
+    x: -<span class="number">240</span>
+    y: <span class="number">0</span>
+    width: <span class="number">10</span>
+    height: height
+    zIndex: <span class="number">7</span>
 
   self = GameObject(I)
 
-  self.<span class="literal">off</span> <span class="string">"draw"</span>
-  self.<span class="literal">on</span> <span class="string">"overlay"</span>, (canvas) -&gt;
-
-    <span class="comment"># TODO: Extract multiline text rendering</span>
-    lines = <span class="string">"""
-      surf'd for <span class="subst">#{(I.distance / <span class="number">100</span>).toFixed(<span class="number">2</span>)}</span> meters
-      sur5'd for <span class="subst">#{I.time.toFixed(<span class="number">2</span>)}</span> seconds
-      succumb'd to <span class="subst">#{I.causeOfDeath}</span>
-    """</span>.split(<span class="string">"\n"</span>)
-
-    canvas.font <span class="string">"24px bold 'HelveticaNeue-Light', 'Helvetica Neue Light', 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif"</span>
-
-    lines.forEach (line, i) -&gt;
-      canvas.centerText
-        color: <span class="string">"#FFF"</span>
-        text: line
-        y: <span class="number">160</span> - (lines.length/<span class="number">2</span> - i) * lineHeight
+  self.attrAccessor <span class="string">"destruction"</span>
 
   self.<span class="literal">on</span> <span class="string">"update"</span>, -&gt;
-    <span class="keyword">if</span> keydown.space <span class="keyword">or</span> keydown.<span class="keyword">return</span> <span class="keyword">or</span> keydown.escape
-      engine.trigger <span class="string">"restart"</span>
+    I.x += <span class="number">2</span> + I.age / <span class="number">175</span>
 
-  <span class="keyword">return</span> self</code></pre>
+    <span class="keyword">if</span> player = engine.find(<span class="string">"Player"</span>).first()
+      I.x = I.x.clamp(player.I.x - <span class="number">4</span> * width, Infinity)
+
+  self.<span class="literal">on</span> <span class="string">"draw"</span>, (canvas) -&gt;
+    waveSprites.wrap((I.age / <span class="number">8</span>).floor()).fill(canvas, -width, <span class="number">0</span>, width + <span class="number">16</span>, height)
+    churnSprites.wrap((I.age / <span class="number">8</span>).floor()).fill(canvas, <span class="number">0</span>, <span class="number">0</span>, <span class="number">32</span>, height)</code></pre>
 </div>
         </li>
         
