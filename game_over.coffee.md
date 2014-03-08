@@ -21,9 +21,10 @@ Game Over
           succumb'd to #{I.causeOfDeath}
         """.split("\n")
 
+        canvas.font "24px bold 'HelveticaNeue-Light', 'Helvetica Neue Light', 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif"
+
         lines.forEach (line, i) ->
           canvas.centerText
-            font: "24px bold 'HelveticaNeue-Light', 'Helvetica Neue Light', 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif"
             color: "#FFF"
             text: line
             y: 160 - (lines.length/2 - i) * lineHeight
