@@ -59,11 +59,12 @@ module.exports = GameObject.registry.<span class="function"><span class="title">
 
   self.attrAccessor <span class="string">"destruction"</span>
 
-  self.<span class="literal">on</span> <span class="string">"update"</span>, -&gt;
-    I.x += <span class="number">2</span> + I.age / <span class="number">175</span>
+  self.<span class="literal">on</span> <span class="string">"update"</span>, (dt) -&gt;
+    osc = <span class="number">30</span> * Math.sin(Math.TAU * I.age)
+    I.x += (osc + <span class="number">90</span>) * dt
 
     <span class="keyword">if</span> player = engine.find(<span class="string">"Player"</span>).first()
-      I.x = I.x.clamp(player.I.x - <span class="number">4</span> * width, Infinity)
+      I.x = I.x.clamp(player.I.x - width/<span class="number">2</span> + osc, Infinity)
 
   self.<span class="literal">on</span> <span class="string">"draw"</span>, (canvas) -&gt;
     waveSprites.wrap((I.age / <span class="number">8</span>).floor()).fill(canvas, -width, <span class="number">0</span>, width + <span class="number">16</span>, height)
