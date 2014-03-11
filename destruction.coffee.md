@@ -27,11 +27,12 @@ A rogue wave that will crush the player.
 
       self.attrAccessor "destruction"
 
-      self.on "update", ->
-        I.x += 2 + I.age / 175
+      self.on "update", (dt) ->
+        osc = 30 * Math.sin(Math.TAU * I.age)
+        I.x += (osc + 90) * dt
 
         if player = engine.find("Player").first()
-          I.x = I.x.clamp(player.I.x - 4 * width, Infinity)
+          I.x = I.x.clamp(player.I.x - width/2 + osc, Infinity)
 
       self.on "draw", (canvas) ->
         waveSprites.wrap((I.age / 8).floor()).fill(canvas, -width, 0, width + 16, height)
