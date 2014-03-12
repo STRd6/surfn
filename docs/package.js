@@ -78,7 +78,7 @@
     "pixie.cson": {
       "path": "pixie.cson",
       "mode": "100644",
-      "content": "author: \"STRd6\"\nname: \"SurfN-2-Sur5\"\nwidth: 480\nheight: 320\nentryPoint: \"main\"\nremoteDependencies: [\n  \"https://code.jquery.com/jquery-1.10.1.min.js\"\n]\ndependencies:\n  dust: \"distri/dust:v0.1.8-alpha.2\"\n  # sound: \"distri/sound:v0.1.0\"\n",
+      "content": "author: \"STRd6\"\nname: \"Surfing 2 Survive\"\ndescription: \"As a lone FBI agent you must surf to survive.\"\nwidth: 480\nheight: 320\nentryPoint: \"main\"\nremoteDependencies: [\n  \"https://code.jquery.com/jquery-1.10.1.min.js\"\n]\ndependencies:\n  dust: \"distri/dust:v0.1.8-alpha.2\"\n  # sound: \"distri/sound:v0.1.0\"\n",
       "type": "blob"
     },
     "player.coffee.md": {
@@ -170,7 +170,7 @@
     },
     "pixie": {
       "path": "pixie",
-      "content": "module.exports = {\"author\":\"STRd6\",\"name\":\"SurfN-2-Sur5\",\"width\":480,\"height\":320,\"entryPoint\":\"main\",\"remoteDependencies\":[\"https://code.jquery.com/jquery-1.10.1.min.js\"],\"dependencies\":{\"dust\":\"distri/dust:v0.1.8-alpha.2\"}};",
+      "content": "module.exports = {\"author\":\"STRd6\",\"name\":\"Surfing 2 Survive\",\"description\":\"As a lone FBI agent you must surf to survive.\",\"width\":480,\"height\":320,\"entryPoint\":\"main\",\"remoteDependencies\":[\"https://code.jquery.com/jquery-1.10.1.min.js\"],\"dependencies\":{\"dust\":\"distri/dust:v0.1.8-alpha.2\"}};",
       "type": "blob"
     },
     "player": {
