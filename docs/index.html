@@ -76,10 +76,11 @@ require <span class="string">"/duct_tape"</span></code></pre>
             </div>
             <div class="content"><pre><code class="lang-coffeescript">require <span class="string">"./cloud"</span>
 require <span class="string">"./destruction"</span>
+require <span class="string">"./game_over"</span>
 require <span class="string">"./player"</span>
 require <span class="string">"./rock"</span>
 require <span class="string">"./water"</span>
-require <span class="string">"./game_over"</span>
+require <span class="string">"./score"</span>
 
 Music = require <span class="string">"/lib/music"</span>
 
@@ -109,6 +110,8 @@ engine.I.backgroundColor = <span class="string">"#CC5500"</span>
     class: <span class="string">"Player"</span>
     x: <span class="number">240</span>
     y: <span class="number">0</span>
+
+  engine.add <span class="string">"Score"</span>
 
   box = engine.add
     class: <span class="string">"Rock"</span>

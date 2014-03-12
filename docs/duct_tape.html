@@ -35,10 +35,12 @@
               <p>Load Sprites by named resource.</p>
 
             </div>
-            <div class="content"><pre><code class="lang-coffeescript">{Util:{extend}, GameObject} = require <span class="string">"dust"</span>
+            <div class="content"><pre><code class="lang-coffeescript">{Util:{extend}, GameObject, Engine} = require <span class="string">"dust"</span>
 images = require <span class="string">"./images"</span>
 
 GameObject.defaultModules.push require <span class="string">"./bounds_extensions"</span>
+
+Engine.defaultModules.push require <span class="string">"./lib/extra_finders"</span>
 
 Sprite.<span class="function"><span class="title">loadByName</span></span> = (name) -&gt;
   <span class="comment"># TODO: Decide whether we want sprites or urls in here</span>

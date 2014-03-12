@@ -2,7 +2,7 @@
 
 <html>
 <head>
-  <title>game_over</title>
+  <title>score</title>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
   <link rel="stylesheet" media="all" href="http://strd6.github.io/cdn/parallel/docco.css" />
@@ -18,7 +18,7 @@
               <div class="pilwrap">
                 <a class="pilcrow" href="#section-1">&#182;</a>
               </div>
-              <h1 id="game-over">Game Over</h1>
+              <h1 id="score">Score</h1>
 
             </div>
             <div class="content"><pre><code class="lang-coffeescript">
@@ -32,38 +32,28 @@
               <div class="pilwrap">
                 <a class="pilcrow" href="#section-2">&#182;</a>
               </div>
-              
+              <p>Display a score in the upper right of the screen.</p>
+
             </div>
             <div class="content"><pre><code class="lang-coffeescript">{Util:{defaults}, GameObject} = require <span class="string">"dust"</span>
 
-module.exports = GameObject.registry.<span class="function"><span class="title">GameOver</span></span> = (I={}) -&gt;
-  defaults I,
-    zIndex: <span class="number">10</span>
-
-  lineHeight = <span class="number">24</span>
+module.exports = GameObject.registry.<span class="function"><span class="title">Score</span></span> = (I={}) -&gt;
+  value = <span class="number">0</span>
 
   self = GameObject(I)
 
+  self.<span class="literal">on</span> <span class="string">"update"</span>, -&gt;
+    <span class="keyword">if</span> player = engine.first(<span class="string">"Player"</span>)
+      value = player.I.distance
+
   self.<span class="literal">off</span> <span class="string">"draw"</span>
   self.<span class="literal">on</span> <span class="string">"overlay"</span>, (canvas) -&gt;
-
-    <span class="comment"># TODO: Extract multiline text rendering</span>
-    lines = <span class="string">"""
-      surf'd for <span class="subst">#{(I.distance / <span class="number">100</span>).toFixed(<span class="number">2</span>)}</span> meters
-      succumb'd to <span class="subst">#{I.causeOfDeath}</span>
-    """</span>.split(<span class="string">"\n"</span>)
-
-    canvas.font <span class="string">"24px bold 'HelveticaNeue-Light', 'Helvetica Neue Light', 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif"</span>
-
-    lines.forEach (line, i) -&gt;
-      canvas.centerText
-        color: <span class="string">"#FFF"</span>
-        text: line
-        y: <span class="number">160</span> - (lines.length/<span class="number">2</span> - i) * lineHeight
-
-  self.<span class="literal">on</span> <span class="string">"update"</span>, -&gt;
-    <span class="keyword">if</span> keydown.space <span class="keyword">or</span> keydown.<span class="keyword">return</span> <span class="keyword">or</span> keydown.escape
-      engine.trigger <span class="string">"restart"</span>
+    canvas.drawText
+      color: <span class="string">"white"</span>
+      font: <span class="string">"24px bold 'HelveticaNeue-Light', 'Helvetica Neue Light', 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif"</span>
+      text: (value / <span class="number">100</span>).toFixed(<span class="number">2</span>)
+      x: <span class="number">400</span>
+      y: <span class="number">30</span>
 
   <span class="keyword">return</span> self</code></pre>
 </div>
