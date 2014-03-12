@@ -95,9 +95,20 @@ channels = [<span class="number">0.</span>..maxChannels].map -&gt;
   freeChannels = channels.filter (sound) -&gt;
     sound.currentTime <span class="keyword">is</span> sound.duration <span class="keyword">or</span> sound.currentTime <span class="keyword">is</span> <span class="number">0</span>
 
-  freeChannels[<span class="number">0</span>]
+  freeChannels[<span class="number">0</span>]</code></pre>
+</div>
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              <div class="pilwrap">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>TODO: Incorporate a global volume control</p>
 
-module.exports =
+            </div>
+            <div class="content"><pre><code class="lang-coffeescript">module.exports =
   playFromURL: (url) -&gt;
     <span class="keyword">if</span> channel = freeChannel()
       <span class="keyword">try</span>
