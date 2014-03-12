@@ -10,8 +10,6 @@ Use the Dust game engine.
 
     Dust = require "dust"
 
-    require "./lib/volume_control"
-
     # TODO: Clean up globals
     global.Collision = Dust.Collision
     global.Sound = require "/lib/sound"
