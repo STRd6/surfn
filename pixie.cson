@@ -9,3 +9,6 @@ dependencies:
   jQuery: "distri/jQuery:v1.11.0.0"
   dust: "distri/dust:v0.1.8-alpha.2"
   # sound: "distri/sound:v0.1.0"
+permissions: [
+  "<all_urls>"
+]

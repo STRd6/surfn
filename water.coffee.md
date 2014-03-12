@@ -3,8 +3,6 @@ Water
 
     {Util:{defaults}, GameObject} = require "dust"
 
-    depthsSprites = [Sprite.loadByName("depths0"), Sprite.loadByName("depths1")]
-
     module.exports = GameObject.registry.Water = (I={}) ->
       defaults I,
         color: "blue"
@@ -14,6 +12,8 @@ Water
         width: 480
         height: 160
         zIndex: 0
+
+      depthsSprites = [Sprite.loadByName("depths0"), Sprite.loadByName("depths1")]
 
       self = GameObject(I)
 

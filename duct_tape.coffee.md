@@ -9,9 +9,13 @@ Load Sprites by named resource.
     GameObject.defaultModules.push require "./bounds_extensions"
 
     Sprite.loadByName = (name) ->
-      url = images[name]
+      # TODO: Decide whether we want sprites or urls in here
+      urlOrSprite = images[name]
 
-      Sprite.load(url)
+      if typeof urlOrSprite is "object"
+        urlOrSprite
+      else
+        Sprite.load(urlOrSprite)
 
     extend Number.prototype,
       approach: (target, maxDelta) ->

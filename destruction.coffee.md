@@ -9,10 +9,6 @@ A rogue wave that will crush the player.
 
     {width, height} = require "./pixie"
 
-    churnSprites = [Sprite.loadByName("churn")]
-    waveSprites = ["wave", "wave1"].map (name) ->
-      Sprite.loadByName name
-
     module.exports = GameObject.registry.Destruction = (I={}) ->
       defaults I,
         color: "red"
@@ -22,6 +18,10 @@ A rogue wave that will crush the player.
         width: 10
         height: height
         zIndex: 7
+
+      churnSprites = [Sprite.loadByName("churn")]
+      waveSprites = ["wave", "wave1"].map (name) ->
+        Sprite.loadByName name
 
       self = GameObject(I)
 
