@@ -26,10 +26,11 @@ These register our GameObjects.
 
     require "./cloud"
     require "./destruction"
+    require "./game_over"
     require "./player"
     require "./rock"
     require "./water"
-    require "./game_over"
+    require "./score"
 
     Music = require "/lib/music"
 
@@ -50,6 +51,8 @@ Get the app size from our config.
         class: "Player"
         x: 240
         y: 0
+      
+      engine.add "Score"
 
       box = engine.add
         class: "Rock"
