@@ -1,6 +1,7 @@
 author: "STRd6"
 name: "Surfing 2 Survive"
 description: "As a lone FBI agent you must surf to survive."
+version: "0.1.0"
 width: 480
 height: 320
 entryPoint: "main"
