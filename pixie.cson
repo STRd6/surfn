@@ -1,5 +1,6 @@
 author: "STRd6"
-name: "SurfN-2-Sur5"
+name: "Surfing 2 Survive"
+description: "As a lone FBI agent you must surf to survive."
 width: 480
 height: 320
 entryPoint: "main"
