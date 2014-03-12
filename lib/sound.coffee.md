@@ -32,6 +32,8 @@ Implementation
 
       freeChannels[0]
 
+TODO: Incorporate a global volume control
+
     module.exports =
       playFromURL: (url) ->
         if channel = freeChannel()
