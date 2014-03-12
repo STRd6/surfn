@@ -36,8 +36,6 @@
             </div>
             <div class="content"><pre><code class="lang-coffeescript">{Util:{defaults}, GameObject} = require <span class="string">"dust"</span>
 
-depthsSprites = [Sprite.loadByName(<span class="string">"depths0"</span>), Sprite.loadByName(<span class="string">"depths1"</span>)]
-
 module.exports = GameObject.registry.<span class="function"><span class="title">Water</span></span> = (I={}) -&gt;
   defaults I,
     color: <span class="string">"blue"</span>
@@ -47,6 +45,8 @@ module.exports = GameObject.registry.<span class="function"><span class="title">
     width: <span class="number">480</span>
     height: <span class="number">160</span>
     zIndex: <span class="number">0</span>
+
+  depthsSprites = [Sprite.loadByName(<span class="string">"depths0"</span>), Sprite.loadByName(<span class="string">"depths1"</span>)]
 
   self = GameObject(I)
 

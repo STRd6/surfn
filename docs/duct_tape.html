@@ -41,9 +41,13 @@ images = require <span class="string">"./images"</span>
 GameObject.defaultModules.push require <span class="string">"./bounds_extensions"</span>
 
 Sprite.<span class="function"><span class="title">loadByName</span></span> = (name) -&gt;
-  url = images[name]
+  <span class="comment"># TODO: Decide whether we want sprites or urls in here</span>
+  urlOrSprite = images[name]
 
-  Sprite.load(url)
+  <span class="keyword">if</span> <span class="keyword">typeof</span> urlOrSprite <span class="keyword">is</span> <span class="string">"object"</span>
+    urlOrSprite
+  <span class="keyword">else</span>
+    Sprite.load(urlOrSprite)
 
 extend Number.prototype,
   approach: (target, maxDelta) -&gt;

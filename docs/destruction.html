@@ -41,10 +41,6 @@ Base = require <span class="string">"./base"</span>
 
 {width, height} = require <span class="string">"./pixie"</span>
 
-churnSprites = [Sprite.loadByName(<span class="string">"churn"</span>)]
-waveSprites = [<span class="string">"wave"</span>, <span class="string">"wave1"</span>].map (name) -&gt;
-  Sprite.loadByName name
-
 module.exports = GameObject.registry.<span class="function"><span class="title">Destruction</span></span> = (I={}) -&gt;
   defaults I,
     color: <span class="string">"red"</span>
@@ -54,6 +50,10 @@ module.exports = GameObject.registry.<span class="function"><span class="title">
     width: <span class="number">10</span>
     height: height
     zIndex: <span class="number">7</span>
+
+  churnSprites = [Sprite.loadByName(<span class="string">"churn"</span>)]
+  waveSprites = [<span class="string">"wave"</span>, <span class="string">"wave1"</span>].map (name) -&gt;
+    Sprite.loadByName name
 
   self = GameObject(I)
 
