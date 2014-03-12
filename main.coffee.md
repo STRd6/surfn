@@ -3,6 +3,9 @@ Surfn
 
 As a lone FBI agent you must surf to survive.
 
+    # TODO: Maybe jQuery should move into Dust since that's what depends on it
+    require "jQuery"
+
 Use the Dust game engine.
 
     Dust = require "dust"

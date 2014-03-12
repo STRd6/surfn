@@ -5,9 +5,7 @@ version: "0.1.0"
 width: 480
 height: 320
 entryPoint: "main"
-remoteDependencies: [
-  "https://code.jquery.com/jquery-1.10.1.min.js"
-]
 dependencies:
+  jQuery: "distri/jQuery:v1.11.0.0"
   dust: "distri/dust:v0.1.8-alpha.2"
   # sound: "distri/sound:v0.1.0"
