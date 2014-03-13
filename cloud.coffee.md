@@ -12,8 +12,8 @@ Just floating along in the background.
         spriteName: "cloud"
         height: 32
         width: 128
-        y: -120 + rand(240)
-        zIndex: 1
+        y: -60 + rand(240)
+        zIndex: 0
 
       self = Base(I)
 

@@ -11,7 +11,7 @@ Water
         y: 240
         width: 480
         height: 160
-        zIndex: 0
+        zIndex: 1
 
       depthsSprites = [Sprite.loadByName("depths0"), Sprite.loadByName("depths1")]
 
