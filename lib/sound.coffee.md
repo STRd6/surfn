@@ -20,10 +20,16 @@ Helpers
 Implementation
 --------------
 
+    globalVolume = require "./global_volume"
+    
+    globalVolume.observe (newVolume) ->
+      channels.forEach updateVolume
+
     maxChannels = 16
     channels = [0...maxChannels].map ->
       extend document.createElement("audio"),
         autobuffer: true
+        baseVolume: 1 # Our reminder of the initial volume for the sound being played
         preload: 'auto'
 
     freeChannel = ->
@@ -32,15 +38,20 @@ Implementation
 
       freeChannels[0]
 
-TODO: Incorporate a global volume control
-
     module.exports =
-      playFromURL: (url) ->
+      playFromURL: (url, {volume}={}) ->
+        volume ?= 1
+
         if channel = freeChannel()
           try
             channel.currentTime = 0
 
           channel.src = url
+          channel.baseVolume = volume
+          updateVolume(channel)
           channel.play()
 
           return channel
+
+    updateVolume = (channel) ->
+      channel.volume = channel.baseVolume * globalVolume()
