@@ -3,46 +3,13 @@ Surfn
 
 As a lone FBI agent you must surf to survive.
 
-    # TODO: Maybe jQuery should move into Dust since that's what depends on it
-    require "jQuery"
-
-Use the Dust game engine.
-
-    Dust = require "dust"
-
-    # TODO: Clean up globals
-    global.Collision = Dust.Collision
-    global.Sound = require "/lib/sound"
-
-    # TODO: Fix this up a bit
-    Sound.play = (name) ->
-      sounds = require "/sounds"
-
-      Sound.playFromURL(sounds[name])
-
-    require "/duct_tape"
-
-These register our GameObjects.
-
-    require "./cloud"
-    require "./destruction"
-    require "./game_over"
-    require "./player"
-    require "./rock"
-    require "./water"
-    require "./score"
-
-    Music = require "/lib/music"
+    require "./setup"
 
     DEBUG_DRAW = false
 
 Get the app size from our config.
 
     {width, height} = require "/pixie"
-
-    window.engine = Dust.init
-      width: width
-      height: height
 
     engine.I.backgroundColor = "#CC5500"
 
@@ -51,7 +18,7 @@ Get the app size from our config.
         class: "Player"
         x: 240
         y: 0
-      
+
       engine.add "Score"
 
       box = engine.add

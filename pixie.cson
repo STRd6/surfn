@@ -8,7 +8,7 @@ entryPoint: "main"
 dependencies:
   observable: "distri/observable:v0.1.0"
   jQuery: "distri/jQuery:v1.11.0.0"
-  dust: "distri/dust:v0.1.8-alpha.2"
+  dust: "distri/dust:v0.1.8-alpha.3"
   # sound: "distri/sound:v0.1.0"
 permissions: [
   "<all_urls>"
