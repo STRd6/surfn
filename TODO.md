@@ -4,8 +4,6 @@ TODO
 Title Screen
 - Game States
 
-Volume Controls (Mute)
-
 Display Gameplay Controls
 
 Link to edit code in Editor

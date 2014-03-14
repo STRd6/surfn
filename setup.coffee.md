@@ -10,8 +10,8 @@ Expose package for debugging
     # TODO: Maybe jQuery should move into Dust since that's what depends on it
     require "jQuery"
 
-    {applyStylesheet} = require "/lib/util"
-    applyStylesheet(require("/style"))
+    {Util:{applyStylesheet}} = require "dust"
+    applyStylesheet(require("/style"), "primary")
 
 Use the Dust game engine.
 
@@ -19,9 +19,12 @@ Use the Dust game engine.
 
     # TODO: Clean up globals
     global.Observable = require "observable" # HACK: Needed for HamlJr runtime right now
+    
     global.Collision = Dust.Collision
-    global.Sound = require "/lib/sound"
-    global.Music = require "/lib/music"
+
+    Audio = require "audio"
+    global.Sound = Audio.Sound
+    global.Music = Audio.Music
 
     # TODO: Fix this up a bit, merge into a resource manager
     Sound.play = (name) ->

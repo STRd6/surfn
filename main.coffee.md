@@ -108,7 +108,8 @@ Get the app size from our config.
     engine.bind "restart", ->
       restartGame()
 
-    Music.play "SurfN-2-Sur5"
+    music = require "./music"
+    Music.playFromURL music["SurfN-2-Sur5"]
 
     engine.start()
 

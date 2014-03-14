@@ -3,8 +3,7 @@ Options
 
 The options module for the engine.
 
-    options =
-      volume: require "/lib/global_volume"
+    options = require("audio").Control
 
     options.volume.observe (newValue) ->
       console.log newValue
