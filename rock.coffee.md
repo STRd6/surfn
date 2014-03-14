@@ -3,11 +3,11 @@ Rock
 
 A little rocky patch that leads to death.
 
-    {Util:{defaults}, GameObject} = require "dust"
+    {Util:{defaults}} = require "dust"
 
     Base = require "./base"
 
-    module.exports = GameObject.registry.Rock = (I={}) ->
+    module.exports = (I={}) ->
       defaults I,
         spriteName: "rocks"
         height: 32

@@ -33,18 +33,20 @@ Use the Dust game engine.
 
     require "./engine/options"
 
-These register our GameObjects.
-
-    require "./cloud"
-    require "./destruction"
-    require "./game_over"
-    require "./player"
-    require "./rock"
-    require "./water"
-    require "./score"
+Create the engine.
 
     {width, height} = require "/pixie"
 
     global.engine = Dust.init
       width: width
       height: height
+
+Register our GameObjects.
+
+    engine.register "Cloud", require "./cloud"
+    engine.register "Destruction", require "./destruction"
+    engine.register "GameOver", require "./game_over"
+    engine.register "Player", require "./player"
+    engine.register "Rock", require "./rock"
+    engine.register "Water", require "./water"
+    engine.register "Score", require "./score"

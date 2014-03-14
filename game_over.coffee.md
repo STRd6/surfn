@@ -3,7 +3,7 @@ Game Over
 
     {Util:{defaults}, GameObject} = require "dust"
 
-    module.exports = GameObject.registry.GameOver = (I={}) ->
+    module.exports = (I={}) ->
       defaults I,
         zIndex: 10
 

@@ -5,7 +5,7 @@ Display a score in the upper right of the screen.
 
     {Util:{defaults}, GameObject} = require "dust"
 
-    module.exports = GameObject.registry.Score = (I={}) ->
+    module.exports = (I={}) ->
       value = 0
 
       self = GameObject(I)

@@ -5,11 +5,9 @@ A rogue wave that will crush the player.
 
     {Util:{defaults}, GameObject} = require "dust"
 
-    Base = require "./base"
-
     {width, height} = require "./pixie"
 
-    module.exports = GameObject.registry.Destruction = (I={}) ->
+    module.exports = (I={}) ->
       defaults I,
         color: "red"
         destruction: true

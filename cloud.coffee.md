@@ -3,11 +3,11 @@ Cloud
 
 Just floating along in the background.
 
-    {Util:{defaults}, GameObject} = require "dust"
+    {Util:{defaults}} = require "dust"
 
     Base = require "./base"
 
-    module.exports = GameObject.registry.Cloud = (I) ->
+    module.exports = (I) ->
       defaults I,
         spriteName: "cloud"
         height: 32

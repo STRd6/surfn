@@ -1,11 +1,11 @@
 Player
 ======
 
-    {Util:{defaults}, GameObject} = require "dust"
+    {Util:{defaults}} = require "dust"
 
     Base = require "./base"
 
-    module.exports = GameObject.registry.Player = (I={}) ->
+    module.exports = (I={}) ->
       defaults I,
         airborne: true
         distance: 0

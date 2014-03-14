@@ -3,7 +3,7 @@ Water
 
     {Util:{defaults}, GameObject} = require "dust"
 
-    module.exports = GameObject.registry.Water = (I={}) ->
+    module.exports = (I={}) ->
       defaults I,
         color: "blue"
         water: true
