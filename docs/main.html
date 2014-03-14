@@ -149,7 +149,8 @@ engine.<span class="literal">on</span> <span class="string">"draw"</span>, (canv
 engine.bind <span class="string">"restart"</span>, -&gt;
   restartGame()
 
-Music.play <span class="string">"SurfN-2-Sur5"</span>
+music = require <span class="string">"./music"</span>
+Music.playFromURL music[<span class="string">"SurfN-2-Sur5"</span>]
 
 engine.start()
 

@@ -41,8 +41,8 @@
 <span class="comment"># TODO: Maybe jQuery should move into Dust since that's what depends on it</span>
 require <span class="string">"jQuery"</span>
 
-{applyStylesheet} = require <span class="string">"/lib/util"</span>
-applyStylesheet(require(<span class="string">"/style"</span>))</code></pre>
+{Util:{applyStylesheet}} = require <span class="string">"dust"</span>
+applyStylesheet(require(<span class="string">"/style"</span>), <span class="string">"primary"</span>)</code></pre>
 </div>
         </li>
         
@@ -59,9 +59,12 @@ applyStylesheet(require(<span class="string">"/style"</span>))</code></pre>
 
 <span class="comment"># TODO: Clean up globals</span>
 global.Observable = require <span class="string">"observable"</span> <span class="comment"># HACK: Needed for HamlJr runtime right now</span>
+
 global.Collision = Dust.Collision
-global.Sound = require <span class="string">"/lib/sound"</span>
-global.Music = require <span class="string">"/lib/music"</span>
+
+Audio = require <span class="string">"audio"</span>
+global.Sound = Audio.Sound
+global.Music = Audio.Music
 
 <span class="comment"># TODO: Fix this up a bit, merge into a resource manager</span>
 Sound.<span class="function"><span class="title">play</span></span> = (name) -&gt;

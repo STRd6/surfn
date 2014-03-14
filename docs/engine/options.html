@@ -35,8 +35,7 @@
               <p>The options module for the engine.</p>
 
             </div>
-            <div class="content"><pre><code class="lang-coffeescript">options =
-  volume: require <span class="string">"/lib/global_volume"</span>
+            <div class="content"><pre><code class="lang-coffeescript">options = require(<span class="string">"audio"</span>).Control
 
 options.volume.observe (newValue) -&gt;
   console.log newValue
