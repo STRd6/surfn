@@ -37,11 +37,9 @@
             </div>
             <div class="content"><pre><code class="lang-coffeescript">{Util:{defaults}, GameObject} = require <span class="string">"dust"</span>
 
-Base = require <span class="string">"./base"</span>
-
 {width, height} = require <span class="string">"./pixie"</span>
 
-module.exports = GameObject.registry.<span class="function"><span class="title">Destruction</span></span> = (I={}) -&gt;
+module.<span class="function"><span class="title">exports</span></span> = (I={}) -&gt;
   defaults I,
     color: <span class="string">"red"</span>
     destruction: <span class="literal">true</span>

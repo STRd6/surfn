@@ -81,22 +81,33 @@ require <span class="string">"./engine/options"</span></code></pre>
               <div class="pilwrap">
                 <a class="pilcrow" href="#section-4">&#182;</a>
               </div>
-              <p>These register our GameObjects.</p>
+              <p>Create the engine.</p>
 
             </div>
-            <div class="content"><pre><code class="lang-coffeescript">require <span class="string">"./cloud"</span>
-require <span class="string">"./destruction"</span>
-require <span class="string">"./game_over"</span>
-require <span class="string">"./player"</span>
-require <span class="string">"./rock"</span>
-require <span class="string">"./water"</span>
-require <span class="string">"./score"</span>
-
-{width, height} = require <span class="string">"/pixie"</span>
+            <div class="content"><pre><code class="lang-coffeescript">{width, height} = require <span class="string">"/pixie"</span>
 
 global.engine = Dust.init
   width: width
   height: height</code></pre>
+</div>
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              <div class="pilwrap">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>Register our GameObjects.</p>
+
+            </div>
+            <div class="content"><pre><code class="lang-coffeescript">engine.register <span class="string">"Cloud"</span>, require <span class="string">"./cloud"</span>
+engine.register <span class="string">"Destruction"</span>, require <span class="string">"./destruction"</span>
+engine.register <span class="string">"GameOver"</span>, require <span class="string">"./game_over"</span>
+engine.register <span class="string">"Player"</span>, require <span class="string">"./player"</span>
+engine.register <span class="string">"Rock"</span>, require <span class="string">"./rock"</span>
+engine.register <span class="string">"Water"</span>, require <span class="string">"./water"</span>
+engine.register <span class="string">"Score"</span>, require <span class="string">"./score"</span></code></pre>
 </div>
         </li>
         

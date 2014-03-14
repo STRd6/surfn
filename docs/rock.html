@@ -35,11 +35,11 @@
               <p>A little rocky patch that leads to death.</p>
 
             </div>
-            <div class="content"><pre><code class="lang-coffeescript">{Util:{defaults}, GameObject} = require <span class="string">"dust"</span>
+            <div class="content"><pre><code class="lang-coffeescript">{Util:{defaults}} = require <span class="string">"dust"</span>
 
 Base = require <span class="string">"./base"</span>
 
-module.exports = GameObject.registry.<span class="function"><span class="title">Rock</span></span> = (I={}) -&gt;
+module.<span class="function"><span class="title">exports</span></span> = (I={}) -&gt;
   defaults I,
     spriteName: <span class="string">"rocks"</span>
     height: <span class="number">32</span>

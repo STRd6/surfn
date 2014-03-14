@@ -34,11 +34,11 @@
               </div>
               
             </div>
-            <div class="content"><pre><code class="lang-coffeescript">{Util:{defaults}, GameObject} = require <span class="string">"dust"</span>
+            <div class="content"><pre><code class="lang-coffeescript">{Util:{defaults}} = require <span class="string">"dust"</span>
 
 Base = require <span class="string">"./base"</span>
 
-module.exports = GameObject.registry.<span class="function"><span class="title">Player</span></span> = (I={}) -&gt;
+module.<span class="function"><span class="title">exports</span></span> = (I={}) -&gt;
   defaults I,
     airborne: <span class="literal">true</span>
     distance: <span class="number">0</span>
