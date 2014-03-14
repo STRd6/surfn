@@ -35,8 +35,9 @@
               <p>As a lone FBI agent you must surf to survive.</p>
 
             </div>
-            <div class="content"><pre><code class="lang-coffeescript"><span class="comment"># TODO: Maybe jQuery should move into Dust since that's what depends on it</span>
-require <span class="string">"jQuery"</span></code></pre>
+            <div class="content"><pre><code class="lang-coffeescript">require <span class="string">"./setup"</span>
+
+DEBUG_DRAW = <span class="literal">false</span></code></pre>
 </div>
         </li>
         
@@ -46,62 +47,10 @@ require <span class="string">"jQuery"</span></code></pre>
               <div class="pilwrap">
                 <a class="pilcrow" href="#section-3">&#182;</a>
               </div>
-              <p>Use the Dust game engine.</p>
-
-            </div>
-            <div class="content"><pre><code class="lang-coffeescript">Dust = require <span class="string">"dust"</span>
-
-<span class="comment"># TODO: Clean up globals</span>
-global.Collision = Dust.Collision
-global.Sound = require <span class="string">"/lib/sound"</span>
-
-<span class="comment"># TODO: Fix this up a bit</span>
-Sound.<span class="function"><span class="title">play</span></span> = (name) -&gt;
-  sounds = require <span class="string">"/sounds"</span>
-
-  Sound.playFromURL(sounds[name])
-
-require <span class="string">"/duct_tape"</span></code></pre>
-</div>
-        </li>
-        
-        
-        <li id="section-4">
-            <div class="annotation">
-              <div class="pilwrap">
-                <a class="pilcrow" href="#section-4">&#182;</a>
-              </div>
-              <p>These register our GameObjects.</p>
-
-            </div>
-            <div class="content"><pre><code class="lang-coffeescript">require <span class="string">"./cloud"</span>
-require <span class="string">"./destruction"</span>
-require <span class="string">"./game_over"</span>
-require <span class="string">"./player"</span>
-require <span class="string">"./rock"</span>
-require <span class="string">"./water"</span>
-require <span class="string">"./score"</span>
-
-Music = require <span class="string">"/lib/music"</span>
-
-DEBUG_DRAW = <span class="literal">false</span></code></pre>
-</div>
-        </li>
-        
-        
-        <li id="section-5">
-            <div class="annotation">
-              <div class="pilwrap">
-                <a class="pilcrow" href="#section-5">&#182;</a>
-              </div>
               <p>Get the app size from our config.</p>
 
             </div>
             <div class="content"><pre><code class="lang-coffeescript">{width, height} = require <span class="string">"/pixie"</span>
-
-window.engine = Dust.init
-  width: width
-  height: height
 
 engine.I.backgroundColor = <span class="string">"#CC5500"</span>
 

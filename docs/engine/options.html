@@ -35,7 +35,27 @@
               <p>The options module for the engine.</p>
 
             </div>
-            <div class="content"><pre><code class="lang-coffeescript">module.<span class="function"><span class="title">exports</span></span> = (I={}, self) -&gt;</code></pre>
+            <div class="content"><pre><code class="lang-coffeescript">options =
+  volume: require <span class="string">"/lib/global_volume"</span>
+
+options.volume.observe (newValue) -&gt;
+  console.log newValue
+
+optionsMenuShown = <span class="literal">false</span>
+
+template = require <span class="string">"/templates/options"</span>
+
+document.body.appendChild(template(options))
+
+$(document).<span class="literal">on</span> <span class="string">"keydown"</span>, <span class="literal">null</span>, <span class="string">"esc"</span>, -&gt;
+  optionsMenuShown = !optionsMenuShown
+
+  engine.pause(optionsMenuShown)
+
+  $(<span class="string">".options"</span>).toggleClass <span class="string">"up"</span>, optionsMenuShown
+
+  <span class="keyword">if</span> !optionsMenuShown
+    $(<span class="string">".options input"</span>).blur()</code></pre>
 </div>
         </li>
         

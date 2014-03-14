@@ -85,39 +85,41 @@ Sound.playFromURL &quot;data:audio/wav;base64,UklGRg6ZAABXQVZFZm10IBAAAAABAAEARK
               </div>
               
             </div>
-            <div class="content"><pre><code class="lang-coffeescript">maxChannels = <span class="number">16</span>
+            <div class="content"><pre><code class="lang-coffeescript">globalVolume = require <span class="string">"./global_volume"</span>
+
+globalVolume.observe (newVolume) -&gt;
+  channels.forEach updateVolume
+
+maxChannels = <span class="number">16</span>
 channels = [<span class="number">0.</span>..maxChannels].map -&gt;
   extend document.createElement(<span class="string">"audio"</span>),
     autobuffer: <span class="literal">true</span>
+    baseVolume: <span class="number">1</span> <span class="comment"># Our reminder of the initial volume for the sound being played</span>
     preload: <span class="string">'auto'</span>
 
 <span class="function"><span class="title">freeChannel</span></span> = -&gt;
   freeChannels = channels.filter (sound) -&gt;
     sound.currentTime <span class="keyword">is</span> sound.duration <span class="keyword">or</span> sound.currentTime <span class="keyword">is</span> <span class="number">0</span>
 
-  freeChannels[<span class="number">0</span>]</code></pre>
-</div>
-        </li>
-        
-        
-        <li id="section-6">
-            <div class="annotation">
-              <div class="pilwrap">
-                <a class="pilcrow" href="#section-6">&#182;</a>
-              </div>
-              <p>TODO: Incorporate a global volume control</p>
+  freeChannels[<span class="number">0</span>]
 
-            </div>
-            <div class="content"><pre><code class="lang-coffeescript">module.exports =
-  playFromURL: (url) -&gt;
+module.exports =
+  playFromURL: (url, {volume}={}) -&gt;
+    volume ?= <span class="number">1</span>
+
     <span class="keyword">if</span> channel = freeChannel()
       <span class="keyword">try</span>
         channel.currentTime = <span class="number">0</span>
 
       channel.src = url
+      channel.baseVolume = volume
+      updateVolume(channel)
       channel.play()
 
-      <span class="keyword">return</span> channel</code></pre>
+      <span class="keyword">return</span> channel
+
+<span class="function"><span class="title">updateVolume</span></span> = (channel) -&gt;
+  channel.volume = channel.baseVolume * globalVolume()</code></pre>
 </div>
         </li>
         

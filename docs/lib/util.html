@@ -2,7 +2,7 @@
 
 <html>
 <head>
-  <title>lib/music</title>
+  <title>lib/util</title>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
   <link rel="stylesheet" media="all" href="http://strd6.github.io/cdn/parallel/docco.css" />
@@ -18,7 +18,7 @@
               <div class="pilwrap">
                 <a class="pilcrow" href="#section-1">&#182;</a>
               </div>
-              <h1 id="music">Music</h1>
+              <h1 id="util">Util</h1>
 
             </div>
             <div class="content"><pre><code class="lang-coffeescript">
@@ -32,34 +32,30 @@
               <div class="pilwrap">
                 <a class="pilcrow" href="#section-2">&#182;</a>
               </div>
-              <p>Super hack way to have background music.</p>
+              
+            </div>
+            <div class="content"><pre><code class="lang-coffeescript">module.exports =</code></pre>
+</div>
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              <div class="pilwrap">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>Apply a stylesheet idempotently.</p>
 
             </div>
-            <div class="content"><pre><code class="lang-coffeescript">globalVolume = require <span class="string">"./global_volume"</span>
+            <div class="content"><pre><code class="lang-coffeescript">  applyStylesheet: (style, id=<span class="string">"primary"</span>) -&gt;
+    styleNode = document.createElement(<span class="string">"style"</span>)
+    styleNode.innerHTML = style
+    styleNode.id = id
 
-globalVolume.observe -&gt;
-  updateVolume(track)
+    <span class="keyword">if</span> previousStyleNode = document.head.querySelector(<span class="string">"style#<span class="subst">#{id}</span>"</span>)
+      previousStyleNode.parentNode.removeChild(prevousStyleNode)
 
-track = $ <span class="string">"&lt;audio /&gt;"</span>,
-  <span class="keyword">loop</span>: <span class="string">"loop"</span>
-.appendTo(<span class="string">'body'</span>).get(<span class="number">0</span>)
-
-track.baseVolume = <span class="number">1</span>
-
-module.exports =
-  play: (name, {volume}={}) -&gt;
-    volume ?= <span class="number">1</span>
-
-    <span class="comment"># TODO: Get music files from resource setup</span>
-    track.src = require(<span class="string">"/music"</span>)[<span class="string">"SurfN-2-Sur5"</span>]
-    track.baseVolume = volume
-
-    updateVolume(track)
-
-    track.play()
-
-<span class="function"><span class="title">updateVolume</span></span> = (channel) -&gt;
-  channel.volume = channel.baseVolume * globalVolume()</code></pre>
+    document.head.appendChild(styleNode)</code></pre>
 </div>
         </li>
         

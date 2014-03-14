@@ -2,7 +2,7 @@
 
 <html>
 <head>
-  <title>lib/music</title>
+  <title>lib/global_volume</title>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
   <link rel="stylesheet" media="all" href="http://strd6.github.io/cdn/parallel/docco.css" />
@@ -18,7 +18,7 @@
               <div class="pilwrap">
                 <a class="pilcrow" href="#section-1">&#182;</a>
               </div>
-              <h1 id="music">Music</h1>
+              <h1 id="global-volume">Global Volume</h1>
 
             </div>
             <div class="content"><pre><code class="lang-coffeescript">
@@ -32,34 +32,12 @@
               <div class="pilwrap">
                 <a class="pilcrow" href="#section-2">&#182;</a>
               </div>
-              <p>Super hack way to have background music.</p>
+              <p>A volume control shared by both sound and music.</p>
 
             </div>
-            <div class="content"><pre><code class="lang-coffeescript">globalVolume = require <span class="string">"./global_volume"</span>
+            <div class="content"><pre><code class="lang-coffeescript">Observable = require(<span class="string">"observable"</span>)
 
-globalVolume.observe -&gt;
-  updateVolume(track)
-
-track = $ <span class="string">"&lt;audio /&gt;"</span>,
-  <span class="keyword">loop</span>: <span class="string">"loop"</span>
-.appendTo(<span class="string">'body'</span>).get(<span class="number">0</span>)
-
-track.baseVolume = <span class="number">1</span>
-
-module.exports =
-  play: (name, {volume}={}) -&gt;
-    volume ?= <span class="number">1</span>
-
-    <span class="comment"># TODO: Get music files from resource setup</span>
-    track.src = require(<span class="string">"/music"</span>)[<span class="string">"SurfN-2-Sur5"</span>]
-    track.baseVolume = volume
-
-    updateVolume(track)
-
-    track.play()
-
-<span class="function"><span class="title">updateVolume</span></span> = (channel) -&gt;
-  channel.volume = channel.baseVolume * globalVolume()</code></pre>
+module.exports = Observable(<span class="number">0.5</span>)</code></pre>
 </div>
         </li>
         
