@@ -10,6 +10,9 @@ Expose package for debugging
     # TODO: Maybe jQuery should move into Dust since that's what depends on it
     require "jQuery"
 
+    {applyStylesheet} = require "/lib/util"
+    applyStylesheet(require("/style"))
+
 Use the Dust game engine.
 
     Dust = require "dust"
