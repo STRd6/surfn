@@ -39,6 +39,9 @@
             </div>
             <div class="content"><pre><code class="lang-coffeescript">images = require <span class="string">"/images"</span>
 
+<span class="comment"># TODO: Remove this when we move preloader into Resource package</span>
+{Resource:{Sprite}} = require <span class="string">"dust"</span>
+
 module.exports =
   preload: ({resources, complete, progress}) -&gt;
     loading = <span class="number">0</span>
