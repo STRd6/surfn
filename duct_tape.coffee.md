@@ -6,8 +6,6 @@ Load Sprites by named resource.
     {Util:{extend}, GameObject, Engine} = require "dust"
     images = require "./images"
 
-    Engine.defaultModules.push require "./lib/extra_finders"
-
     Sprite.loadByName = (name) ->
       # TODO: Decide whether we want sprites or urls in here
       urlOrSprite = images[name]
