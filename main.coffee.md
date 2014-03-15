@@ -5,6 +5,8 @@ As a lone FBI agent you must surf to survive.
 
     require "./setup"
 
+    {Resource:{Music}} = require "dust"
+
     DEBUG_DRAW = false
 
 Get the app size from our config.
@@ -108,8 +110,7 @@ Get the app size from our config.
     engine.bind "restart", ->
       restartGame()
 
-    music = require "./music"
-    Music.playFromURL music["SurfN-2-Sur5"]
+    Music.play "SurfN-2-Sur5"
 
     engine.start()
 

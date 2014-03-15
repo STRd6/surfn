@@ -3,34 +3,35 @@ Setup
 
 Require a bunch of junk and throw in some hacks for good measure.
 
-Expose package for debugging
+Expose package for debugging.
 
     global.PACKAGE = PACKAGE
 
     # TODO: Maybe jQuery should move into Dust since that's what depends on it
     require "jQuery"
 
-    {Util:{applyStylesheet}} = require "dust"
-    applyStylesheet(require("/style"), "primary")
-
 Use the Dust game engine.
 
     Dust = require "dust"
 
+Extract some things we'll need.
+
+    {
+      Collision
+      Util:{applyStylesheet} 
+      Resource:{Sound}
+    } = Dust
+
+Apply our stylesheet.
+
+    applyStylesheet(require("/style"), "primary")
+
     # TODO: Clean up globals
     global.Observable = require "observable" # HACK: Needed for HamlJr runtime right now
-    
-    global.Collision = Dust.Collision
 
-    Audio = require "audio"
-    global.Sound = Audio.Sound
-    global.Music = Audio.Music
+    global.Collision = Collision
 
-    # TODO: Fix this up a bit, merge into a resource manager
-    Sound.play = (name) ->
-      sounds = require "/sounds"
-
-      Sound.playFromURL(sounds[name])
+    global.Sound = Sound
 
     require "/duct_tape"
 
@@ -45,6 +46,8 @@ Create the engine.
       height: height
 
 Register our GameObjects.
+
+TODO: Figure out some sort of auto-registration mechanism.
 
     engine.register "Cloud", require "./cloud"
     engine.register "Destruction", require "./destruction"
