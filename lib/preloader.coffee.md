@@ -9,6 +9,9 @@ TODO: Gross hack forcing image url update
 
     images = require "/images"
 
+    # TODO: Remove this when we move preloader into Resource package
+    {Resource:{Sprite}} = require "dust"
+
     module.exports =
       preload: ({resources, complete, progress}) ->
         loading = 0

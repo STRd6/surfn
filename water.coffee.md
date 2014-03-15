@@ -1,7 +1,7 @@
 Water
 =====
 
-    {Util:{defaults}, GameObject} = require "dust"
+    {Util:{defaults}, GameObject, Resource:{Sprite}} = require "dust"
 
     module.exports = (I={}) ->
       defaults I,

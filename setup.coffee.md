@@ -18,24 +18,14 @@ Extract some things we'll need.
 
     {
       Collision
-      Util:{applyStylesheet} 
       Resource:{Sound}
     } = Dust
 
-Apply our stylesheet.
-
-    applyStylesheet(require("/style"), "primary")
-
     # TODO: Clean up globals
-    global.Observable = require "observable" # HACK: Needed for HamlJr runtime right now
-
     global.Collision = Collision
-
     global.Sound = Sound
 
     require "/duct_tape"
-
-    require "./engine/options"
 
 Create the engine.
 
