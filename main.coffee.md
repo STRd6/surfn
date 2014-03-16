@@ -5,7 +5,8 @@ As a lone FBI agent you must surf to survive.
 
     require "./setup"
 
-    {Resource:{Music}} = require "dust"
+    {Resource} = require "dust"
+    {Music} = Resource
 
     DEBUG_DRAW = false
 
