@@ -5,6 +5,9 @@ As a lone FBI agent you must surf to survive.
 
     require "./setup"
 
+    {Resource} = require "dust"
+    {Music} = Resource
+
     DEBUG_DRAW = false
 
 Get the app size from our config.
@@ -43,21 +46,13 @@ Get the app size from our config.
       height: height
       color: "white"
 
-    require("/lib/preloader").preload
-      resources: [
-        "/images"
-      ].map require
+    Resource.preload
       progress: (percent) ->
         console.log percent
         loadingBar.I.width = percent * width
       complete: ->
         loadingBar.destroy()
         setUpGame()
-
-    require("/lib/preloader").softPreload [
-      "/music"
-      "/sounds"
-    ].map require
 
     # TODO: This should be simpler like engine.follow("Player")
     ###
@@ -108,8 +103,7 @@ Get the app size from our config.
     engine.bind "restart", ->
       restartGame()
 
-    music = require "./music"
-    Music.playFromURL music["SurfN-2-Sur5"]
+    Music.play "SurfN-2-Sur5"
 
     engine.start()
 

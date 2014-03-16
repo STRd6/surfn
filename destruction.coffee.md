@@ -3,7 +3,7 @@ Destruction
 
 A rogue wave that will crush the player.
 
-    {Util:{defaults}, GameObject} = require "dust"
+    {Util:{defaults}, GameObject, Resource:{Sprite}} = require "dust"
 
     {width, height} = require "./pixie"
 

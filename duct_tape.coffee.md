@@ -3,17 +3,12 @@ Duct Tape
 
 Load Sprites by named resource.
 
-    {Util:{extend}, GameObject, Engine} = require "dust"
-    images = require "./images"
+    {Util:{extend}, Resource} = require "dust"
 
-    Sprite.loadByName = (name) ->
-      # TODO: Decide whether we want sprites or urls in here
-      urlOrSprite = images[name]
-
-      if typeof urlOrSprite is "object"
-        urlOrSprite
-      else
-        Sprite.load(urlOrSprite)
+    Resource.add
+      images: require "./images"
+      music: require "./music"
+      sounds: require "./sounds"
 
     extend Number.prototype,
       approach: (target, maxDelta) ->
