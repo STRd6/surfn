@@ -33,16 +33,9 @@
                 <a class="pilcrow" href="#section-2">&#182;</a>
               </div>
               <p>Require a bunch of junk and throw in some hacks for good measure.</p>
-<p>Expose package for debugging</p>
 
             </div>
-            <div class="content"><pre><code class="lang-coffeescript">global.PACKAGE = PACKAGE
-
-<span class="comment"># TODO: Maybe jQuery should move into Dust since that's what depends on it</span>
-require <span class="string">"jQuery"</span>
-
-{Util:{applyStylesheet}} = require <span class="string">"dust"</span>
-applyStylesheet(require(<span class="string">"/style"</span>), <span class="string">"primary"</span>)</code></pre>
+            <div class="content"><pre><code class="lang-coffeescript">require(<span class="string">"analytics"</span>).init(<span class="string">"UA-3464282-15"</span>)</code></pre>
 </div>
         </li>
         
@@ -52,29 +45,13 @@ applyStylesheet(require(<span class="string">"/style"</span>), <span class="stri
               <div class="pilwrap">
                 <a class="pilcrow" href="#section-3">&#182;</a>
               </div>
-              <p>Use the Dust game engine.</p>
+              <p>Expose package for debugging.</p>
 
             </div>
-            <div class="content"><pre><code class="lang-coffeescript">Dust = require <span class="string">"dust"</span>
+            <div class="content"><pre><code class="lang-coffeescript">global.PACKAGE = PACKAGE
 
-<span class="comment"># TODO: Clean up globals</span>
-global.Observable = require <span class="string">"observable"</span> <span class="comment"># HACK: Needed for HamlJr runtime right now</span>
-
-global.Collision = Dust.Collision
-
-Audio = require <span class="string">"audio"</span>
-global.Sound = Audio.Sound
-global.Music = Audio.Music
-
-<span class="comment"># TODO: Fix this up a bit, merge into a resource manager</span>
-Sound.<span class="function"><span class="title">play</span></span> = (name) -&gt;
-  sounds = require <span class="string">"/sounds"</span>
-
-  Sound.playFromURL(sounds[name])
-
-require <span class="string">"/duct_tape"</span>
-
-require <span class="string">"./engine/options"</span></code></pre>
+<span class="comment"># TODO: Maybe jQuery should move into Dust since that's what depends on it</span>
+require <span class="string">"jQuery"</span></code></pre>
 </div>
         </li>
         
@@ -83,6 +60,59 @@ require <span class="string">"./engine/options"</span></code></pre>
             <div class="annotation">
               <div class="pilwrap">
                 <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>Use the Dust game engine.</p>
+
+            </div>
+            <div class="content"><pre><code class="lang-coffeescript">Dust = require <span class="string">"dust"</span></code></pre>
+</div>
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              <div class="pilwrap">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>Extract some things we&#39;ll need.</p>
+
+            </div>
+            <div class="content"><pre><code class="lang-coffeescript">{
+  Collision
+  Resource
+} = Dust
+
+{Sound} = Resource</code></pre>
+</div>
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              <div class="pilwrap">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>Add our resource files.</p>
+
+            </div>
+            <div class="content"><pre><code class="lang-coffeescript">Resource.add
+  images: require <span class="string">"./images"</span>
+  music: require <span class="string">"./music"</span>
+  sounds: require <span class="string">"./sounds"</span>
+
+<span class="comment"># TODO: Clean up globals</span>
+global.Collision = Collision
+global.Sound = Sound
+
+require <span class="string">"/duct_tape"</span></code></pre>
+</div>
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              <div class="pilwrap">
+                <a class="pilcrow" href="#section-7">&#182;</a>
               </div>
               <p>Create the engine.</p>
 
@@ -96,12 +126,13 @@ global.engine = Dust.init
         </li>
         
         
-        <li id="section-5">
+        <li id="section-8">
             <div class="annotation">
               <div class="pilwrap">
-                <a class="pilcrow" href="#section-5">&#182;</a>
+                <a class="pilcrow" href="#section-8">&#182;</a>
               </div>
               <p>Register our GameObjects.</p>
+<p>TODO: Figure out some sort of auto-registration mechanism.</p>
 
             </div>
             <div class="content"><pre><code class="lang-coffeescript">engine.register <span class="string">"Cloud"</span>, require <span class="string">"./cloud"</span>

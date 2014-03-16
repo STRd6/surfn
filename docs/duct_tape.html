@@ -35,17 +35,7 @@
               <p>Load Sprites by named resource.</p>
 
             </div>
-            <div class="content"><pre><code class="lang-coffeescript">{Util:{extend}, GameObject, Engine} = require <span class="string">"dust"</span>
-images = require <span class="string">"./images"</span>
-
-Sprite.<span class="function"><span class="title">loadByName</span></span> = (name) -&gt;
-  <span class="comment"># TODO: Decide whether we want sprites or urls in here</span>
-  urlOrSprite = images[name]
-
-  <span class="keyword">if</span> <span class="keyword">typeof</span> urlOrSprite <span class="keyword">is</span> <span class="string">"object"</span>
-    urlOrSprite
-  <span class="keyword">else</span>
-    Sprite.load(urlOrSprite)
+            <div class="content"><pre><code class="lang-coffeescript">{Util:{extend}} = require <span class="string">"dust"</span>
 
 extend Number.prototype,
   approach: (target, maxDelta) -&gt;

@@ -37,6 +37,9 @@
             </div>
             <div class="content"><pre><code class="lang-coffeescript">require <span class="string">"./setup"</span>
 
+{Resource} = require <span class="string">"dust"</span>
+{Music} = Resource
+
 DEBUG_DRAW = <span class="literal">false</span></code></pre>
 </div>
         </li>
@@ -84,21 +87,13 @@ loadingBar = engine.add
   height: height
   color: <span class="string">"white"</span>
 
-require(<span class="string">"/lib/preloader"</span>).preload
-  resources: [
-    <span class="string">"/images"</span>
-  ].map require
+Resource.preload
   progress: (percent) -&gt;
     console.log percent
     loadingBar.I.width = percent * width
   complete: -&gt;
     loadingBar.destroy()
     setUpGame()
-
-require(<span class="string">"/lib/preloader"</span>).softPreload [
-  <span class="string">"/music"</span>
-  <span class="string">"/sounds"</span>
-].map require
 
 <span class="comment"># TODO: This should be simpler like engine.follow("Player")</span>
 <span class="comment">###
@@ -149,8 +144,7 @@ engine.<span class="literal">on</span> <span class="string">"draw"</span>, (canv
 engine.bind <span class="string">"restart"</span>, -&gt;
   restartGame()
 
-music = require <span class="string">"./music"</span>
-Music.playFromURL music[<span class="string">"SurfN-2-Sur5"</span>]
+Music.play <span class="string">"SurfN-2-Sur5"</span>
 
 engine.start()
 
