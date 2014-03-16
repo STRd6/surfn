@@ -7,7 +7,7 @@ height: 320
 entryPoint: "main"
 dependencies:
   jQuery: "distri/jQuery:v1.11.0.0"
-  dust: "distri/dust:v0.2.0-alpha.4"
+  dust: "distri/dust:v0.2.0"
 permissions: [
   "<all_urls>"
 ]
