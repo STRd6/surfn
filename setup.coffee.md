@@ -3,6 +3,8 @@ Setup
 
 Require a bunch of junk and throw in some hacks for good measure.
 
+    require("analytics").init("UA-3464282-15")
+
 Expose package for debugging.
 
     global.PACKAGE = PACKAGE
@@ -18,8 +20,17 @@ Extract some things we'll need.
 
     {
       Collision
-      Resource:{Sound}
+      Resource
     } = Dust
+
+    {Sound} = Resource
+
+Add our resource files.
+
+    Resource.add
+      images: require "./images"
+      music: require "./music"
+      sounds: require "./sounds"
 
     # TODO: Clean up globals
     global.Collision = Collision

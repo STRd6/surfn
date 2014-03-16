@@ -3,12 +3,7 @@ Duct Tape
 
 Load Sprites by named resource.
 
-    {Util:{extend}, Resource} = require "dust"
-
-    Resource.add
-      images: require "./images"
-      music: require "./music"
-      sounds: require "./sounds"
+    {Util:{extend}} = require "dust"
 
     extend Number.prototype,
       approach: (target, maxDelta) ->
