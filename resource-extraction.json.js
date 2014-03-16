@@ -57,7 +57,7 @@ window["STRd6/surfn:resource-extraction"]({
     "pixie.cson": {
       "path": "pixie.cson",
       "mode": "100644",
-      "content": "author: \"STRd6\"\nname: \"Surfing 2 Survive\"\ndescription: \"As a lone FBI agent you must surf to survive.\"\nversion: \"0.1.0\"\nwidth: 480\nheight: 320\nentryPoint: \"main\"\ndependencies:\n  jQuery: \"distri/jQuery:v1.11.0.0\"\n  dust: \"distri/dust:v0.2.0-alpha.4\"\npermissions: [\n  \"<all_urls>\"\n]\n",
+      "content": "author: \"STRd6\"\nname: \"Surfing 2 Survive\"\ndescription: \"As a lone FBI agent you must surf to survive.\"\nversion: \"0.1.0\"\nwidth: 480\nheight: 320\nentryPoint: \"main\"\ndependencies:\n  jQuery: \"distri/jQuery:v1.11.0.0\"\n  dust: \"distri/dust:v0.2.0\"\npermissions: [\n  \"<all_urls>\"\n]\n",
       "type": "blob"
     },
     "player.coffee.md": {
@@ -140,7 +140,7 @@ window["STRd6/surfn:resource-extraction"]({
     },
     "pixie": {
       "path": "pixie",
-      "content": "module.exports = {\"author\":\"STRd6\",\"name\":\"Surfing 2 Survive\",\"description\":\"As a lone FBI agent you must surf to survive.\",\"version\":\"0.1.0\",\"width\":480,\"height\":320,\"entryPoint\":\"main\",\"dependencies\":{\"jQuery\":\"distri/jQuery:v1.11.0.0\",\"dust\":\"distri/dust:v0.2.0-alpha.4\"},\"permissions\":[\"<all_urls>\"]};",
+      "content": "module.exports = {\"author\":\"STRd6\",\"name\":\"Surfing 2 Survive\",\"description\":\"As a lone FBI agent you must surf to survive.\",\"version\":\"0.1.0\",\"width\":480,\"height\":320,\"entryPoint\":\"main\",\"dependencies\":{\"jQuery\":\"distri/jQuery:v1.11.0.0\",\"dust\":\"distri/dust:v0.2.0\"},\"permissions\":[\"<all_urls>\"]};",
       "type": "blob"
     },
     "player": {
@@ -685,7 +685,7 @@ window["STRd6/surfn:resource-extraction"]({
         "pixie.cson": {
           "path": "pixie.cson",
           "mode": "100644",
-          "content": "version: \"0.2.0-alpha.4\"\nwidth: 640\nheight: 480\nremoteDependencies: [\n  \"https://code.jquery.com/jquery-1.11.0.min.js\"\n]\ndependencies:\n  appcache: \"distri/appcache:v0.2.0\"\n  cornerstone: \"distri/cornerstone:v0.2.0\"\n  \"finder\": \"distri/finder:v0.1.3\"\n  hotkeys: \"distri/hotkeys:v0.2.0\"\n  \"jquery-utils\": \"distri/jquery-utils:v0.2.0\"\n  observable: \"distri/observable:v0.1.0\"\n  resource: \"distri/resource:v0.2.0-alpha.2\"\n  \"touch-canvas\": \"distri/touch-canvas:v0.3.0\"\n",
+          "content": "version: \"0.2.0\"\nwidth: 640\nheight: 480\nremoteDependencies: [\n  \"https://code.jquery.com/jquery-1.11.0.min.js\"\n]\ndependencies:\n  appcache: \"distri/appcache:v0.2.0\"\n  cornerstone: \"distri/cornerstone:v0.2.0\"\n  \"finder\": \"distri/finder:v0.1.3\"\n  hotkeys: \"distri/hotkeys:v0.2.0\"\n  \"jquery-utils\": \"distri/jquery-utils:v0.2.0\"\n  observable: \"distri/observable:v0.1.0\"\n  resource: \"distri/resource:v0.2.0\"\n  \"touch-canvas\": \"distri/touch-canvas:v0.3.0\"\n",
           "type": "blob"
         },
         "registry.coffee.md": {
@@ -1022,7 +1022,7 @@ window["STRd6/surfn:resource-extraction"]({
         },
         "pixie": {
           "path": "pixie",
-          "content": "module.exports = {\"version\":\"0.2.0-alpha.4\",\"width\":640,\"height\":480,\"remoteDependencies\":[\"https://code.jquery.com/jquery-1.11.0.min.js\"],\"dependencies\":{\"appcache\":\"distri/appcache:v0.2.0\",\"cornerstone\":\"distri/cornerstone:v0.2.0\",\"finder\":\"distri/finder:v0.1.3\",\"hotkeys\":\"distri/hotkeys:v0.2.0\",\"jquery-utils\":\"distri/jquery-utils:v0.2.0\",\"observable\":\"distri/observable:v0.1.0\",\"resource\":\"distri/resource:v0.2.0-alpha.2\",\"touch-canvas\":\"distri/touch-canvas:v0.3.0\"}};",
+          "content": "module.exports = {\"version\":\"0.2.0\",\"width\":640,\"height\":480,\"remoteDependencies\":[\"https://code.jquery.com/jquery-1.11.0.min.js\"],\"dependencies\":{\"appcache\":\"distri/appcache:v0.2.0\",\"cornerstone\":\"distri/cornerstone:v0.2.0\",\"finder\":\"distri/finder:v0.1.3\",\"hotkeys\":\"distri/hotkeys:v0.2.0\",\"jquery-utils\":\"distri/jquery-utils:v0.2.0\",\"observable\":\"distri/observable:v0.1.0\",\"resource\":\"distri/resource:v0.2.0\",\"touch-canvas\":\"distri/touch-canvas:v0.3.0\"}};",
           "type": "blob"
         },
         "registry": {
@@ -1159,7 +1159,7 @@ window["STRd6/surfn:resource-extraction"]({
       "progenitor": {
         "url": "http://strd6.github.io/editor/"
       },
-      "version": "0.2.0-alpha.4",
+      "version": "0.2.0",
       "entryPoint": "main",
       "remoteDependencies": [
         "https://code.jquery.com/jquery-1.11.0.min.js"
@@ -1276,7 +1276,7 @@ window["STRd6/surfn:resource-extraction"]({
         },
         "network_count": 0,
         "subscribers_count": 1,
-        "branch": "v0.2.0-alpha.4",
+        "branch": "v0.2.0",
         "publishBranch": "gh-pages"
       },
       "dependencies": {
@@ -3873,7 +3873,7 @@ window["STRd6/surfn:resource-extraction"]({
             "pixie.cson": {
               "path": "pixie.cson",
               "mode": "100644",
-              "content": "version: \"0.2.0-alpha.2\"\ndependencies:\n  sprite: \"distri/sprite:v0.3.0\"\n  audio: \"distri/audio:v0.2.0\"\n",
+              "content": "version: \"0.2.0\"\ndependencies:\n  sprite: \"distri/sprite:v0.3.0\"\n  audio: \"distri/audio:v0.2.0\"\n",
               "type": "blob"
             },
             "test/main.coffee": {
@@ -3897,7 +3897,7 @@ window["STRd6/surfn:resource-extraction"]({
             },
             "pixie": {
               "path": "pixie",
-              "content": "module.exports = {\"version\":\"0.2.0-alpha.2\",\"dependencies\":{\"sprite\":\"distri/sprite:v0.3.0\",\"audio\":\"distri/audio:v0.2.0\"}};",
+              "content": "module.exports = {\"version\":\"0.2.0\",\"dependencies\":{\"sprite\":\"distri/sprite:v0.3.0\",\"audio\":\"distri/audio:v0.2.0\"}};",
               "type": "blob"
             },
             "test/main": {
@@ -3914,7 +3914,7 @@ window["STRd6/surfn:resource-extraction"]({
           "progenitor": {
             "url": "http://strd6.github.io/editor/"
           },
-          "version": "0.2.0-alpha.2",
+          "version": "0.2.0",
           "entryPoint": "main",
           "repository": {
             "id": 17570235,
@@ -4028,7 +4028,7 @@ window["STRd6/surfn:resource-extraction"]({
             },
             "network_count": 0,
             "subscribers_count": 2,
-            "branch": "v0.2.0-alpha.2",
+            "branch": "v0.2.0",
             "publishBranch": "gh-pages"
           },
           "dependencies": {
