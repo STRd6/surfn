@@ -72,6 +72,7 @@ Get the app size from our config.
         engine.objects().forEach (object) ->
           object.I.x += deltaX
 
+    # TODO: Clean up obstacle adding
     clock = 0
     engine.on "update", ->
       clock += 1
@@ -110,3 +111,7 @@ Get the app size from our config.
     # Meta controls
     $(document).on "keydown", null, "pause", ->
       engine.pause()
+
+    # Prepping for hot reload
+    $(document).on "", null, "f2", ->
+      engine.reload()
