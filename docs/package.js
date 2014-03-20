@@ -1,5 +1,158 @@
 (function(pkg) {
-  // Expose a require for our package so scripts can access our modules
+  (function() {
+  var cacheFor, circularGuard, defaultEntryPoint, fileSeparator, generateRequireFn, global, isPackage, loadModule, loadPackage, loadPath, normalizePath, rootModule, startsWith,
+    __slice = [].slice;
+
+  fileSeparator = '/';
+
+  global = window;
+
+  defaultEntryPoint = "main";
+
+  circularGuard = {};
+
+  rootModule = {
+    path: ""
+  };
+
+  loadPath = function(parentModule, pkg, path) {
+    var cache, localPath, module, normalizedPath;
+    if (startsWith(path, '/')) {
+      localPath = [];
+    } else {
+      localPath = parentModule.path.split(fileSeparator);
+    }
+    normalizedPath = normalizePath(path, localPath);
+    cache = cacheFor(pkg);
+    if (module = cache[normalizedPath]) {
+      if (module === circularGuard) {
+        throw "Circular dependency detected when requiring " + normalizedPath;
+      }
+    } else {
+      cache[normalizedPath] = circularGuard;
+      try {
+        cache[normalizedPath] = module = loadModule(pkg, normalizedPath);
+      } finally {
+        if (cache[normalizedPath] === circularGuard) {
+          delete cache[normalizedPath];
+        }
+      }
+    }
+    return module.exports;
+  };
+
+  normalizePath = function(path, base) {
+    var piece, result;
+    if (base == null) {
+      base = [];
+    }
+    base = base.concat(path.split(fileSeparator));
+    result = [];
+    while (base.length) {
+      switch (piece = base.shift()) {
+        case "..":
+          result.pop();
+          break;
+        case "":
+        case ".":
+          break;
+        default:
+          result.push(piece);
+      }
+    }
+    return result.join(fileSeparator);
+  };
+
+  loadPackage = function(parentModule, pkg) {
+    var path;
+    path = pkg.entryPoint || defaultEntryPoint;
+    return loadPath(parentModule, pkg, path);
+  };
+
+  loadModule = function(pkg, path) {
+    var args, context, dirname, file, module, program, values;
+    if (!(file = pkg.distribution[path])) {
+      throw "Could not find file at " + path + " in " + pkg.name;
+    }
+    program = file.content;
+    dirname = path.split(fileSeparator).slice(0, -1).join(fileSeparator);
+    module = {
+      path: dirname,
+      exports: {}
+    };
+    context = {
+      require: generateRequireFn(pkg, module),
+      global: global,
+      module: module,
+      exports: module.exports,
+      PACKAGE: pkg,
+      __filename: path,
+      __dirname: dirname
+    };
+    args = Object.keys(context);
+    values = args.map(function(name) {
+      return context[name];
+    });
+    Function.apply(null, __slice.call(args).concat([program])).apply(module, values);
+    return module;
+  };
+
+  isPackage = function(path) {
+    if (!(startsWith(path, fileSeparator) || startsWith(path, "." + fileSeparator) || startsWith(path, ".." + fileSeparator))) {
+      return path.split(fileSeparator)[0];
+    } else {
+      return false;
+    }
+  };
+
+  generateRequireFn = function(pkg, module) {
+    if (module == null) {
+      module = rootModule;
+    }
+    if (pkg.name == null) {
+      pkg.name = "ROOT";
+    }
+    return function(path) {
+      var otherPackage;
+      if (isPackage(path)) {
+        if (!(otherPackage = pkg.dependencies[path])) {
+          throw "Package: " + path + " not found.";
+        }
+        if (otherPackage.name == null) {
+          otherPackage.name = path;
+        }
+        return loadPackage(rootModule, otherPackage);
+      } else {
+        return loadPath(module, pkg, path);
+      }
+    };
+  };
+
+  if (typeof exports !== "undefined" && exports !== null) {
+    exports.generateFor = generateRequireFn;
+  } else {
+    global.Require = {
+      generateFor: generateRequireFn
+    };
+  }
+
+  startsWith = function(string, prefix) {
+    return string.lastIndexOf(prefix, 0) === 0;
+  };
+
+  cacheFor = function(pkg) {
+    if (pkg.cache) {
+      return pkg.cache;
+    }
+    Object.defineProperty(pkg, "cache", {
+      value: {}
+    });
+    return pkg.cache;
+  };
+
+}).call(this);
+
+//# sourceURL=main.coffee
   window.require = Require.generateFor(pkg);
 })({
   "source": {
@@ -48,7 +201,7 @@
     "main.coffee.md": {
       "path": "main.coffee.md",
       "mode": "100644",
-      "content": "Surfn\n=====\n\nAs a lone FBI agent you must surf to survive.\n\n    require \"./setup\"\n\n    {Resource} = require \"dust\"\n    {Music} = Resource\n\n    DEBUG_DRAW = false\n\nGet the app size from our config.\n\n    {width, height} = require \"/pixie\"\n\n    engine.I.backgroundColor = \"#CC5500\"\n\n    setUpGame = ->\n      player = engine.add\n        class: \"Player\"\n        x: 240\n        y: 0\n\n      engine.add \"Score\"\n\n      box = engine.add\n        class: \"Rock\"\n        x: 160\n        y: 200\n\n      4.times (n) ->\n        engine.add\n          class: \"Cloud\"\n          x: n * 128\n\n      water = engine.add\n        class: \"Water\"\n\n      engine.add \"Destruction\"\n\n    loadingBar = engine.add\n      x: width/2\n      y: height/2\n      width: 0\n      height: height\n      color: \"white\"\n\n    Resource.preload\n      progress: (percent) ->\n        console.log percent\n        loadingBar.I.width = percent * width\n      complete: ->\n        loadingBar.destroy()\n        setUpGame()\n\n    # TODO: This should be simpler like engine.follow(\"Player\")\n    ###\n    camera = engine.camera()\n    camera.on \"afterUpdate\", ->\n      if player = engine.find(\"Player\").first()\n        camera.I.transform.tx = 240 + player.I.x\n    ###\n\n    # TODO: This is a stupid hack because I haven't fixed the cameras yet\n    engine.on \"afterUpdate\", ->\n      if player = engine.find(\"Player\").first()\n        deltaX = 240 - player.I.x\n\n        player.I.distance -= deltaX\n\n        engine.objects().forEach (object) ->\n          object.I.x += deltaX\n\n    clock = 0\n    engine.on \"update\", ->\n      clock += 1\n\n      if player = engine.find(\"Player\").first()\n        if clock % 60 == 0\n            engine.add\n              class: \"Rock\"\n              x: player.I.x + 2 * width\n\n        if clock % 55 == 0\n          engine.add\n            class: \"Cloud\"\n            x: player.I.x + 2 * width\n\n    restartGame = ->\n      engine.objects().invoke \"destroy\"\n\n      doRestart = ->\n        engine.unbind \"afterUpdate\", doRestart\n        setUpGame()\n\n      engine.on \"afterUpdate\", doRestart\n\n    engine.on \"draw\", (canvas) ->\n      if DEBUG_DRAW\n        engine.find(\"Player, Rock\").invoke(\"trigger\", \"drawDebug\", canvas)\n\n    engine.bind \"restart\", ->\n      restartGame()\n\n    Music.play \"SurfN-2-Sur5\"\n\n    engine.start()\n\n    # Meta controls\n    $(document).on \"keydown\", null, \"pause\", ->\n      engine.pause()\n",
+      "content": "Surfn\n=====\n\nAs a lone FBI agent you must surf to survive.\n\n    require \"./setup\"\n\n    {Resource} = require \"dust\"\n    {Music} = Resource\n\n    DEBUG_DRAW = false\n\nGet the app size from our config.\n\n    {width, height} = require \"/pixie\"\n\n    engine.I.backgroundColor = \"#CC5500\"\n\n    setUpGame = ->\n      player = engine.add\n        class: \"Player\"\n        x: 240\n        y: 0\n\n      engine.add \"Score\"\n\n      box = engine.add\n        class: \"Rock\"\n        x: 160\n        y: 200\n\n      4.times (n) ->\n        engine.add\n          class: \"Cloud\"\n          x: n * 128\n\n      water = engine.add\n        class: \"Water\"\n\n      engine.add \"Destruction\"\n\n    loadingBar = engine.add\n      x: width/2\n      y: height/2\n      width: 0\n      height: height\n      color: \"white\"\n\n    Resource.preload\n      progress: (percent) ->\n        console.log percent\n        loadingBar.I.width = percent * width\n      complete: ->\n        loadingBar.destroy()\n        setUpGame()\n\n    # TODO: This should be simpler like engine.follow(\"Player\")\n    ###\n    camera = engine.camera()\n    camera.on \"afterUpdate\", ->\n      if player = engine.find(\"Player\").first()\n        camera.I.transform.tx = 240 + player.I.x\n    ###\n\n    # TODO: This is a stupid hack because I haven't fixed the cameras yet\n    engine.on \"afterUpdate\", ->\n      if player = engine.find(\"Player\").first()\n        deltaX = 240 - player.I.x\n\n        player.I.distance -= deltaX\n\n        engine.objects().forEach (object) ->\n          object.I.x += deltaX\n\n    # TODO: Clean up obstacle adding\n    clock = 0\n    engine.on \"update\", ->\n      clock += 1\n\n      if player = engine.find(\"Player\").first()\n        if clock % 60 == 0\n            engine.add\n              class: \"Rock\"\n              x: player.I.x + 2 * width\n\n        if clock % 55 == 0\n          engine.add\n            class: \"Cloud\"\n            x: player.I.x + 2 * width\n\n    restartGame = ->\n      engine.objects().invoke \"destroy\"\n\n      doRestart = ->\n        engine.unbind \"afterUpdate\", doRestart\n        setUpGame()\n\n      engine.on \"afterUpdate\", doRestart\n\n    engine.on \"draw\", (canvas) ->\n      if DEBUG_DRAW\n        engine.find(\"Player, Rock\").invoke(\"trigger\", \"drawDebug\", canvas)\n\n    engine.bind \"restart\", ->\n      restartGame()\n\n    Music.play \"SurfN-2-Sur5\"\n\n    engine.start()\n\n    # Meta controls\n    $(document).on \"keydown\", null, \"pause\", ->\n      engine.pause()\n\n    # Prepping for hot reload\n    $(document).on \"\", null, \"f2\", ->\n      engine.reload()\n",
       "type": "blob"
     },
     "music.json": {
@@ -133,7 +286,7 @@
     },
     "main": {
       "path": "main",
-      "content": "(function() {\n  var DEBUG_DRAW, Music, Resource, clock, height, loadingBar, restartGame, setUpGame, width, _ref;\n\n  require(\"./setup\");\n\n  Resource = require(\"dust\").Resource;\n\n  Music = Resource.Music;\n\n  DEBUG_DRAW = false;\n\n  _ref = require(\"/pixie\"), width = _ref.width, height = _ref.height;\n\n  engine.I.backgroundColor = \"#CC5500\";\n\n  setUpGame = function() {\n    var box, player, water;\n    player = engine.add({\n      \"class\": \"Player\",\n      x: 240,\n      y: 0\n    });\n    engine.add(\"Score\");\n    box = engine.add({\n      \"class\": \"Rock\",\n      x: 160,\n      y: 200\n    });\n    4..times(function(n) {\n      return engine.add({\n        \"class\": \"Cloud\",\n        x: n * 128\n      });\n    });\n    water = engine.add({\n      \"class\": \"Water\"\n    });\n    return engine.add(\"Destruction\");\n  };\n\n  loadingBar = engine.add({\n    x: width / 2,\n    y: height / 2,\n    width: 0,\n    height: height,\n    color: \"white\"\n  });\n\n  Resource.preload({\n    progress: function(percent) {\n      console.log(percent);\n      return loadingBar.I.width = percent * width;\n    },\n    complete: function() {\n      loadingBar.destroy();\n      return setUpGame();\n    }\n  });\n\n  /*\n  camera = engine.camera()\n  camera.on \"afterUpdate\", ->\n    if player = engine.find(\"Player\").first()\n      camera.I.transform.tx = 240 + player.I.x\n  */\n\n\n  engine.on(\"afterUpdate\", function() {\n    var deltaX, player;\n    if (player = engine.find(\"Player\").first()) {\n      deltaX = 240 - player.I.x;\n      player.I.distance -= deltaX;\n      return engine.objects().forEach(function(object) {\n        return object.I.x += deltaX;\n      });\n    }\n  });\n\n  clock = 0;\n\n  engine.on(\"update\", function() {\n    var player;\n    clock += 1;\n    if (player = engine.find(\"Player\").first()) {\n      if (clock % 60 === 0) {\n        engine.add({\n          \"class\": \"Rock\",\n          x: player.I.x + 2 * width\n        });\n      }\n      if (clock % 55 === 0) {\n        return engine.add({\n          \"class\": \"Cloud\",\n          x: player.I.x + 2 * width\n        });\n      }\n    }\n  });\n\n  restartGame = function() {\n    var doRestart;\n    engine.objects().invoke(\"destroy\");\n    doRestart = function() {\n      engine.unbind(\"afterUpdate\", doRestart);\n      return setUpGame();\n    };\n    return engine.on(\"afterUpdate\", doRestart);\n  };\n\n  engine.on(\"draw\", function(canvas) {\n    if (DEBUG_DRAW) {\n      return engine.find(\"Player, Rock\").invoke(\"trigger\", \"drawDebug\", canvas);\n    }\n  });\n\n  engine.bind(\"restart\", function() {\n    return restartGame();\n  });\n\n  Music.play(\"SurfN-2-Sur5\");\n\n  engine.start();\n\n  $(document).on(\"keydown\", null, \"pause\", function() {\n    return engine.pause();\n  });\n\n}).call(this);\n\n//# sourceURL=main.coffee",
+      "content": "(function() {\n  var DEBUG_DRAW, Music, Resource, clock, height, loadingBar, restartGame, setUpGame, width, _ref;\n\n  require(\"./setup\");\n\n  Resource = require(\"dust\").Resource;\n\n  Music = Resource.Music;\n\n  DEBUG_DRAW = false;\n\n  _ref = require(\"/pixie\"), width = _ref.width, height = _ref.height;\n\n  engine.I.backgroundColor = \"#CC5500\";\n\n  setUpGame = function() {\n    var box, player, water;\n    player = engine.add({\n      \"class\": \"Player\",\n      x: 240,\n      y: 0\n    });\n    engine.add(\"Score\");\n    box = engine.add({\n      \"class\": \"Rock\",\n      x: 160,\n      y: 200\n    });\n    4..times(function(n) {\n      return engine.add({\n        \"class\": \"Cloud\",\n        x: n * 128\n      });\n    });\n    water = engine.add({\n      \"class\": \"Water\"\n    });\n    return engine.add(\"Destruction\");\n  };\n\n  loadingBar = engine.add({\n    x: width / 2,\n    y: height / 2,\n    width: 0,\n    height: height,\n    color: \"white\"\n  });\n\n  Resource.preload({\n    progress: function(percent) {\n      console.log(percent);\n      return loadingBar.I.width = percent * width;\n    },\n    complete: function() {\n      loadingBar.destroy();\n      return setUpGame();\n    }\n  });\n\n  /*\n  camera = engine.camera()\n  camera.on \"afterUpdate\", ->\n    if player = engine.find(\"Player\").first()\n      camera.I.transform.tx = 240 + player.I.x\n  */\n\n\n  engine.on(\"afterUpdate\", function() {\n    var deltaX, player;\n    if (player = engine.find(\"Player\").first()) {\n      deltaX = 240 - player.I.x;\n      player.I.distance -= deltaX;\n      return engine.objects().forEach(function(object) {\n        return object.I.x += deltaX;\n      });\n    }\n  });\n\n  clock = 0;\n\n  engine.on(\"update\", function() {\n    var player;\n    clock += 1;\n    if (player = engine.find(\"Player\").first()) {\n      if (clock % 60 === 0) {\n        engine.add({\n          \"class\": \"Rock\",\n          x: player.I.x + 2 * width\n        });\n      }\n      if (clock % 55 === 0) {\n        return engine.add({\n          \"class\": \"Cloud\",\n          x: player.I.x + 2 * width\n        });\n      }\n    }\n  });\n\n  restartGame = function() {\n    var doRestart;\n    engine.objects().invoke(\"destroy\");\n    doRestart = function() {\n      engine.unbind(\"afterUpdate\", doRestart);\n      return setUpGame();\n    };\n    return engine.on(\"afterUpdate\", doRestart);\n  };\n\n  engine.on(\"draw\", function(canvas) {\n    if (DEBUG_DRAW) {\n      return engine.find(\"Player, Rock\").invoke(\"trigger\", \"drawDebug\", canvas);\n    }\n  });\n\n  engine.bind(\"restart\", function() {\n    return restartGame();\n  });\n\n  Music.play(\"SurfN-2-Sur5\");\n\n  engine.start();\n\n  $(document).on(\"keydown\", null, \"pause\", function() {\n    return engine.pause();\n  });\n\n  $(document).on(\"\", null, \"f2\", function() {\n    return engine.reload();\n  });\n\n}).call(this);\n\n//# sourceURL=main.coffee",
       "type": "blob"
     },
     "music": {
@@ -189,7 +342,7 @@
     "owner": {
       "login": "STRd6",
       "id": 18894,
-      "avatar_url": "https://gravatar.com/avatar/33117162fff8a9cf50544a604f60c045?d=https%3A%2F%2Fidenticons.github.com%2F39df222bffe39629d904e4883eabc654.png&r=x",
+      "avatar_url": "https://avatars.githubusercontent.com/u/18894?",
       "gravatar_id": "33117162fff8a9cf50544a604f60c045",
       "url": "https://api.github.com/users/STRd6",
       "html_url": "https://github.com/STRd6",
@@ -246,14 +399,14 @@
     "labels_url": "https://api.github.com/repos/STRd6/surfn/labels{/name}",
     "releases_url": "https://api.github.com/repos/STRd6/surfn/releases{/id}",
     "created_at": "2011-08-20T18:05:31Z",
-    "updated_at": "2014-03-15T01:10:15Z",
-    "pushed_at": "2014-03-15T01:10:15Z",
+    "updated_at": "2014-03-16T18:14:29Z",
+    "pushed_at": "2014-03-16T18:14:28Z",
     "git_url": "git://github.com/STRd6/surfn.git",
     "ssh_url": "git@github.com:STRd6/surfn.git",
     "clone_url": "https://github.com/STRd6/surfn.git",
     "svn_url": "https://github.com/STRd6/surfn",
     "homepage": "",
-    "size": 10152,
+    "size": 10496,
     "stargazers_count": 1,
     "watchers_count": 1,
     "language": "CoffeeScript",
