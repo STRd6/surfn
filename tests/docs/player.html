@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>player</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="http://strd6.github.io/cdn/parallel/docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    <ul class="sections">
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              <div class="pilwrap">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              <h1 id="player">Player</h1>
+
+            </div>
+            <div class="content"><pre><code class="lang-coffeescript">
+</code></pre>
+</div>
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              <div class="pilwrap">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              
+            </div>
+            <div class="content"><pre><code class="lang-coffeescript">{Util:{defaults}} = require <span class="string">"dust"</span>
+
+Base = require <span class="string">"./base"</span>
+
+module.<span class="function"><span class="title">exports</span></span> = (I={}) -&gt;
+  defaults I,
+    airborne: <span class="literal">true</span>
+    distance: <span class="number">0</span>
+    heading: Math.TAU / <span class="number">4</span>
+    spriteName: <span class="string">"player"</span>
+    launchBoost: <span class="number">1.5</span>
+    radius: <span class="number">8</span>
+    rotationVelocity: Math.TAU / <span class="number">64</span>
+    waterSpeed: <span class="number">5</span>
+    velocity: Point(<span class="number">0</span>, <span class="number">0</span>)
+    zIndex: <span class="number">5</span>
+
+  self = Base(I)
+
+  GRAVITY = Point(<span class="number">0</span>, <span class="number">0.25</span>)
+
+  sprites = []
+  angleSprites = <span class="number">8</span>
+  angleSprites.times (n) -&gt;
+    t = n * <span class="number">2</span>
+    sprites.push <span class="string">"player_<span class="subst">#{t}</span>"</span>
+
+  <span class="function"><span class="title">setSprite</span></span> = -&gt;
+    n = (angleSprites * I.heading / Math.TAU).round().mod(angleSprites)
+
+    I.spriteName = sprites[n]
+
+  <span class="function"><span class="title">wipeout</span></span> = (causeOfDeath) -&gt;
+    I.active = <span class="literal">false</span>
+
+    Sound.play(<span class="string">"crash"</span>)
+
+    engine.add
+      class: <span class="string">"GameOver"</span>
+      causeOfDeath: causeOfDeath
+      distance: I.distance
+      time: I.age
+      y: <span class="number">160</span>
+
+  land = () -&gt;
+    projection = self.velocity().norm().dot(Point.fromAngle(I.heading))
+
+    <span class="keyword">if</span> projection &lt; <span class="number">0</span>
+      wipeout(<span class="string">"bad landing"</span>)
+
+    I.airborne = <span class="literal">false</span>
+
+    Sound.play(<span class="string">"land"</span>)
+
+  launch = () -&gt;
+    I.airborne = <span class="literal">true</span>
+    I.velocity = I.velocity.norm(I.launchBoost * I.waterSpeed)
+
+    Sound.play(<span class="string">"splash"</span>)
+
+  self.<span class="literal">on</span> <span class="string">"drawDebug"</span>, (canvas) -&gt;
+    canvas.strokeColor(<span class="string">"rgba(0, 255, 0, 0.75)"</span>)
+
+    p = Point.fromAngle(I.heading).scale(<span class="number">10</span>)
+    canvas.drawLine
+      start: Point(I.x - p.x, I.y - p.y)
+      end: Point(I.x + p.x, I.y + p.y, <span class="number">1</span>)
+
+  self.<span class="literal">on</span> <span class="string">"update"</span>, -&gt;
+    I.x += I.velocity.x
+    I.y += I.velocity.y
+
+    I.waterSpeed = <span class="number">5</span> + I.age / <span class="number">30</span>
+
+    circle = self.circle()
+    hitRock = <span class="literal">false</span>
+    engine.find(<span class="string">"Rock"</span>).each (rock) -&gt;
+      <span class="keyword">if</span> Collision.circular circle, rock.circle()
+        hitRock = <span class="literal">true</span>
+
+    <span class="keyword">if</span> hitRock
+      wipeout(<span class="string">"a rock"</span>)
+      <span class="keyword">return</span>
+
+    hitDestruction = <span class="literal">false</span>
+    engine.find(<span class="string">".destruction"</span>).each (destruction) -&gt;
+      <span class="keyword">if</span> I.x &lt; destruction.I.x
+        hitDestruction = <span class="literal">true</span>
+    <span class="keyword">if</span> hitDestruction
+      wipeout(<span class="string">"a rogue wave"</span>)
+      <span class="keyword">return</span>
+
+    water = engine.find(<span class="string">".water"</span>).first()
+    waterLevel = water.top()
+    depthsLevel = water.bottom()
+
+    headingChange = I.rotationVelocity
+    headingChange *= <span class="number">2</span> <span class="keyword">if</span> I.airborne
+
+    <span class="keyword">if</span> keydown.left
+      I.heading -= headingChange
+    <span class="keyword">if</span> keydown.right
+      I.heading += headingChange
+
+    <span class="comment"># I.heading = I.heading.constrainRotation()</span>
+
+    setSprite()
+
+    <span class="keyword">if</span> I.y &gt; depthsLevel
+      wipeout(<span class="string">"the depths"</span>)
+    <span class="keyword">else</span> <span class="keyword">if</span> I.y &gt;= waterLevel
+      <span class="keyword">if</span> I.airborne
+        land()
+
+      speed = I.velocity.magnitude()
+
+      speed = speed.approachByRatio(I.waterSpeed, <span class="number">0.1</span>)
+
+      I.velocity = Point.fromAngle(I.heading).scale(speed)
+    <span class="keyword">else</span>
+      <span class="keyword">if</span> !I.airborne
+        launch()
+
+      I.velocity = I.velocity.add(GRAVITY)
+
+  <span class="keyword">return</span> self</code></pre>
+</div>
+        </li>
+        
+    </ul>
+  </div>
+  <script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/coffee-script/1.6.3/coffee-script.min.js"></script><script>
+  (function() {
+  var ErrorReporter, bindUpdates, createEditor, exec, findInteractiveElements, readShebang, runners;
+
+  createEditor = function(code, shebang, section) {
+    var annotationElement, contentElement, editorElement, exampleSection, runtimeElement;
+    exampleSection = $("<li>", {
+      "class": "example"
+    });
+    annotationElement = $("<div>", {
+      "class": "annotation"
+    });
+    editorElement = $("<textarea>", {
+      "class": "annotation",
+      text: code
+    });
+    contentElement = $("<div>", {
+      "class": "content"
+    });
+    runtimeElement = $("<div>", {
+      "class": "output"
+    });
+    contentElement.append(runtimeElement);
+    annotationElement.append(editorElement);
+    exampleSection.append(annotationElement);
+    exampleSection.append(contentElement);
+    section.after(exampleSection);
+    return bindUpdates(shebang, editorElement, runtimeElement);
+  };
+
+  bindUpdates = function(shebang, editorElement, runtimeElement) {
+    return editorElement.on("keyup", function() {
+      var e, report, source;
+      report = ErrorReporter(editorElement);
+      source = editorElement.val();
+      try {
+        runners[shebang]({
+          editorElement: editorElement,
+          source: source,
+          runtimeElement: runtimeElement
+        });
+        return report.clear();
+      } catch (_error) {
+        e = _error;
+        return report(e);
+      }
+    });
+  };
+
+  readShebang = function(source) {
+    var match;
+    if (match = source.match(/^\#\! (.*)\n/)) {
+      return match[1];
+    }
+  };
+
+  ErrorReporter = function(editor) {
+    var reporter;
+    reporter = function(error) {
+      var errorParagraph;
+      if (editor.next().is("p.error")) {
+        return editor.next().text(error);
+      } else {
+        errorParagraph = $("<p>", {
+          "class": "error",
+          text: error.toString()
+        });
+        return editor.after(errorParagraph);
+      }
+    };
+    reporter.clear = function() {
+      if (editor.next().is("p.error")) {
+        return editor.next().remove();
+      }
+    };
+    return reporter;
+  };
+
+  findInteractiveElements = function() {
+    return $("blockquote > pre > code").each(function() {
+      var blockQuoteElement, code, codeElement, sectionElement, shebang;
+      codeElement = $(this);
+      code = codeElement.text();
+      if (shebang = readShebang(code)) {
+        if (!runners[shebang]) {
+          return;
+        }
+        code = code.split("\n").slice(1).join("\n");
+        blockQuoteElement = codeElement.parent().parent();
+        sectionElement = blockQuoteElement.parent().parent();
+        blockQuoteElement.remove();
+        return createEditor(code, shebang, sectionElement);
+      }
+    });
+  };
+
+  runners = {};
+
+  (typeof window !== "undefined" && window !== null ? window : global).Interactive = {
+    register: function(name, runner) {
+      runners[name] = runner;
+      findInteractiveElements();
+      return $('#container').on('keyup', 'textarea', function() {
+        $(this).height(0);
+        return $(this).height(this.scrollHeight);
+      }).find('textarea').keyup();
+    }
+  };
+
+  exec = function(_arg) {
+    var code, editorElement, runtimeElement, source;
+    source = _arg.source, code = _arg.code, editorElement = _arg.editorElement, runtimeElement = _arg.runtimeElement;
+    runtimeElement.remove();
+    editorElement.replaceWith($("<pre>", {
+      text: source
+    }));
+    return setTimeout(function() {
+      return Function(code)();
+    }, 0);
+  };
+
+  $(function() {
+    Interactive.register("setup", function(params) {
+      params.code = CoffeeScript.compile(params.source);
+      return exec(params);
+    });
+    return Interactive.register("setup-js", function(params) {
+      params.code = params.source;
+      return exec(params);
+    });
+  });
+
+}).call(this);
+
+</script><script src="package.js"></script>
+</body>
+</html>
