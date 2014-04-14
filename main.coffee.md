@@ -105,7 +105,7 @@ Get the app size from our config.
       restartGame()
 
     Music.play "SurfN-2-Sur5"
-
+ 
     engine.start()
 
     # Meta controls
@@ -115,3 +115,8 @@ Get the app size from our config.
     # Prepping for hot reload
     $(document).on "", null, "f2", ->
       engine.reload()
+
+    console.log ENV?.APP_STATE
+
+    global.appData = ->
+      engine.saveState()
